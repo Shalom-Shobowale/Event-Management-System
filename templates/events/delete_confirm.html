@@ -1,0 +1,19 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Delete {{ event.name }}{% endblock %}
+{% block page_title %}Delete Event{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto text-center py-12">
+    <div class="w-16 h-16 rounded-2xl bg-error-50 dark:bg-error-500/10 flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-error-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+    </div>
+    <h2 class="text-xl font-bold mb-2">Delete Event</h2>
+    <p class="text-surface-600 dark:text-surface-400 mb-8">Are you sure you want to delete <strong>{{ event.name }}</strong>? This action cannot be undone. All guest data and check-in records will be permanently deleted.</p>
+    <form method="post" class="space-y-3">
+        {% csrf_token %}
+        <button type="submit" class="w-full px-6 py-3 text-sm font-medium text-white bg-error-600 hover:bg-error-700 rounded-xl transition-colors">Yes, Delete Event</button>
+        <a href="{% url 'event_dashboard' event.id %}" class="block w-full px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
+    </form>
+</div>
+{% endblock %}

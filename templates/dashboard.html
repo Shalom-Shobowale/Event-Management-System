@@ -1,0 +1,330 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}{{ event.name }}{% endblock %}
+{% block page_title %}{{ event.name }}{% endblock %}
+
+{% block content %}
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-md transition-shadow"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="text-xs font-semibold text-surface-500 uppercase tracking-wider"
+        >Total Events</span
+      >
+      <div
+        class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center"
+      >
+        <svg
+          class="w-4 h-4 text-brand-600 dark:text-brand-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold">{{ total_events }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-md transition-shadow"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="text-xs font-semibold text-surface-500 uppercase tracking-wider"
+        >Total Guests</span
+      >
+      <div
+        class="w-8 h-8 rounded-lg bg-success-50 dark:bg-success-900/30 flex items-center justify-center"
+      >
+        <svg
+          class="w-4 h-4 text-success-600 dark:text-success-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold">{{ total_guests }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-md transition-shadow"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="text-xs font-semibold text-surface-500 uppercase tracking-wider"
+        >Checked In</span
+      >
+      <div
+        class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center"
+      >
+        <svg
+          class="w-4 h-4 text-brand-600 dark:text-brand-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold">{{ checked_in }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-md transition-shadow"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="text-xs font-semibold text-surface-500 uppercase tracking-wider"
+        >Upcoming</span
+      >
+      <div
+        class="w-8 h-8 rounded-lg bg-warning-50 dark:bg-warning-900/30 flex items-center justify-center"
+      >
+        <svg
+          class="w-4 h-4 text-warning-600 dark:text-warning-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold">{{ upcoming }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-md transition-shadow"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="text-xs font-semibold text-surface-500 uppercase tracking-wider"
+        >Attendance</span
+      >
+      <div
+        class="w-8 h-8 rounded-lg bg-success-50 dark:bg-success-900/30 flex items-center justify-center"
+      >
+        <svg
+          class="w-4 h-4 text-success-600 dark:text-success-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-2xl font-bold">{{ attendance_rate }}%</p>
+  </div>
+</div>
+
+<!-- Quick Actions + Recent Events -->
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Recent Events -->
+  <div
+    class="lg:col-span-2 bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700"
+  >
+    <div
+      class="flex items-center justify-between p-5 border-b border-surface-100 dark:border-surface-700"
+    >
+      <h2 class="font-semibold">Recent Events</h2>
+      <a
+        href="{% url 'create_event' %}"
+        class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+      >
+        + New Event
+      </a>
+    </div>
+    {% if recent_events %}
+    <div class="divide-y divide-surface-100 dark:divide-surface-700">
+      {% for event in recent_events %}
+      <a
+        href="{% url 'event_dashboard' event.id %}"
+        class="flex items-center gap-4 p-4 hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+      >
+        <div
+          class="w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400 text-sm font-bold"
+        >
+          {{ event.name|make_list|first|upper }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-sm truncate">{{ event.name }}</p>
+          <p class="text-xs text-surface-500">
+            {{ event.venue }} &middot; {{ event.date|date:"M d, Y" }}
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm font-medium">
+            {{ event.registered_guests }}/{{ event.max_capacity }}
+          </p>
+          <p class="text-xs text-surface-500">guests</p>
+        </div>
+        <svg
+          class="w-4 h-4 text-surface-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-12 text-center">
+      <div
+        class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4"
+      >
+        <svg
+          class="w-8 h-8 text-surface-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+      </div>
+      <h3 class="font-semibold mb-1">No events yet</h3>
+      <p class="text-sm text-surface-500 mb-4">
+        Create your first event to get started
+      </p>
+      <a
+        href="{% url 'create_event' %}"
+        class="inline-flex px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+        >Create Event</a
+      >
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="space-y-4">
+    <div
+      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+    >
+      <h2 class="font-semibold mb-4">Quick Actions</h2>
+      <div class="space-y-2">
+        <a
+          href="{% url 'create_event' %}"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+        >
+          <div
+            class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 text-brand-600 dark:text-brand-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Create Event</span>
+        </a>
+        <a
+          href="{% url 'scanner' %}"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+        >
+          <div
+            class="w-8 h-8 rounded-lg bg-success-50 dark:bg-success-900/30 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 text-success-600 dark:text-success-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+              />
+            </svg>
+          </div>
+          <span class="text-sm font-medium">QR Scanner</span>
+        </a>
+        <a
+          href="{% url 'analytics' %}"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+        >
+          <div
+            class="w-8 h-8 rounded-lg bg-warning-50 dark:bg-warning-900/30 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 text-warning-600 dark:text-warning-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          </div>
+          <span class="text-sm font-medium">View Analytics</span>
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-5 text-white"
+    >
+      <h3 class="font-semibold mb-1">Pro Tip</h3>
+      <p class="text-sm text-brand-100">
+        Share your event registration link with guests. They can register
+        without creating accounts and receive QR tickets instantly.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

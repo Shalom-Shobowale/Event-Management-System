@@ -1,0 +1,42 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event List{{ event.name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold">Upcoming Events</h2>
+        <a
+          href="{% url 'create_event' %}"
+          class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+          >+ Create Event</a
+        >
+      </div>
+      {% if events %}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for event in events %}
+        <a
+          href="{% url 'event_dashboard' event.id %}"
+          class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5 hover:shadow-lg transition-shadow"
+        >
+          <h3 class="font-semibold text-lg">{{ event.name }}</h3>
+          <p class="text-sm text-surface-500">{{ event.venue }}</p>
+          <p class="text-sm text-surface-500">{{ event.date|date:"M d, Y" }}</p>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-surface-500">No upcoming events.</p>
+      {% endif %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - EventFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {
+                colors: {
+                    brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+                    surface: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a',950:'#020617' },
+                },
+                fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+            }}
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="min-h-screen bg-surface-50 flex">
+    <div class="hidden lg:flex lg:w-1/2 bg-brand-600 relative overflow-hidden items-center justify-center">
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-800"></div>
+        <div class="absolute top-20 left-20 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-20 w-80 h-80 bg-brand-400/10 rounded-full blur-3xl"></div>
+        <div class="relative text-center px-12">
+            <div class="w-16 h-16 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center mx-auto mb-8">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-4">Start managing events</h2>
+            <p class="text-brand-100 text-lg">Create your account and launch your first event in minutes.</p>
+        </div>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center p-8">
+        <div class="w-full max-w-md">
+            <div class="lg:hidden flex items-center gap-3 mb-8">
+                <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <span class="text-lg font-bold">EventFlow</span>
+            </div>
+
+            <h1 class="text-2xl font-bold mb-2">Create your account</h1>
+            <p class="text-surface-500 mb-8">Get started with EventFlow for free</p>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="mb-4 p-3 rounded-lg text-sm {% if message.tags == 'error' %}bg-error-50 text-error-600 border border-error-200{% else %}bg-success-50 text-success-600 border border-success-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-surface-700 mb-1.5">First Name</label>
+                        <input type="text" name="first_name" class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="John">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-surface-700 mb-1.5">Last Name</label>
+                        <input type="text" name="last_name" class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="Doe">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 mb-1.5">Username <span class="text-error-500">*</span></label>
+                    <input type="text" name="username" required class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="johndoe">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 mb-1.5">Email <span class="text-error-500">*</span></label>
+                    <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="john@example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 mb-1.5">Organization</label>
+                    <input type="text" name="organization" class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="Your company (optional)">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 mb-1.5">Password <span class="text-error-500">*</span></label>
+                    <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="Min 8 characters">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 mb-1.5">Confirm Password <span class="text-error-500">*</span></label>
+                    <input type="password" name="password2" required class="w-full px-4 py-3 rounded-xl border border-surface-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="Repeat password">
+                </div>
+                <button type="submit" class="w-full py-3 px-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all shadow-sm shadow-brand-600/25 hover:shadow-md hover:-translate-y-0.5 text-sm">
+                    Create Account
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-surface-500">
+                Already have an account?
+                <a href="{% url 'login' %}" class="text-brand-600 hover:text-brand-700 font-semibold">Sign in</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

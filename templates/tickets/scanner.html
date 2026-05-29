@@ -1,0 +1,196 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}QR Scanner{% endblock %}
+{% block page_title %}QR Scanner{% endblock %}
+{% block nav_scanner %}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Scanner Area -->
+    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden">
+        <div class="p-6 border-b border-surface-100 dark:border-surface-700">
+            <h2 class="font-semibold">Live QR Scanner</h2>
+            <p class="text-sm text-surface-500 mt-1">Point your camera at a guest's QR code to validate their ticket</p>
+        </div>
+
+        <!-- Camera View -->
+        <div class="relative bg-surface-900 aspect-video flex items-center justify-center">
+            <video id="scanner-video" class="w-full h-full object-cover" autoplay playsinline></video>
+            <div id="scanner-overlay" class="absolute inset-0 flex items-center justify-center">
+                <div class="w-64 h-64 border-2 border-white/50 rounded-2xl relative">
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-brand-400 rounded-tl-xl"></div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-brand-400 rounded-tr-xl"></div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-brand-400 rounded-bl-xl"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-brand-400 rounded-br-xl"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <p id="scanner-status" class="text-white/70 text-sm font-medium">Initializing camera...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Entry -->
+        <div class="p-6">
+            <p class="text-sm text-surface-500 mb-3">Or enter ticket code manually:</p>
+            <form id="manual-form" class="flex gap-3">
+                <input type="text" id="ticket-code-input" placeholder="EF-XXXXXXXX-XXXXXXXX" class="flex-1 px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm font-mono">
+                <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Validate</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Display -->
+    <div id="scan-result" class="mt-4 hidden">
+        <div id="result-valid" class="hidden bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-full bg-success-100 dark:bg-success-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-success-700 dark:text-success-400">Check-in Successful</h3>
+            </div>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+                <div><p class="text-success-600 dark:text-success-500 text-xs">Guest</p><p id="result-name" class="font-semibold text-success-800 dark:text-success-300"></p></div>
+                <div><p class="text-success-600 dark:text-success-500 text-xs">Event</p><p id="result-event" class="font-semibold text-success-800 dark:text-success-300"></p></div>
+                <div><p class="text-success-600 dark:text-success-500 text-xs">Seat</p><p id="result-seat" class="font-semibold text-success-800 dark:text-success-300"></p></div>
+            </div>
+        </div>
+        <div id="result-duplicate" class="hidden bg-warning-50 dark:bg-warning-500/10 border border-warning-200 dark:border-warning-500/20 rounded-xl p-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-warning-100 dark:bg-warning-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-warning-700 dark:text-warning-400">Already Checked In</h3>
+                    <p id="result-dup-info" class="text-sm text-warning-600 dark:text-warning-500"></p>
+                </div>
+            </div>
+        </div>
+        <div id="result-invalid" class="hidden bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20 rounded-xl p-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-error-100 dark:bg-error-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-error-700 dark:text-error-400">Invalid Ticket</h3>
+                    <p class="text-sm text-error-600 dark:text-error-500">Ticket code not found in the system</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const video = document.getElementById('scanner-video');
+const statusEl = document.getElementById('scanner-status');
+
+// Start camera
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        video.srcObject = stream;
+        statusEl.textContent = 'Scanning...';
+        startQRScanning();
+    } catch (err) {
+        statusEl.textContent = 'Camera not available. Use manual entry.';
+        console.error('Camera error:', err);
+    }
+}
+
+// QR Code scanning using canvas
+let scanning = true;
+function startQRScanning() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function scanFrame() {
+        if (!scanning) return;
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // In production, use a QR detection library like jsQR
+            // For now, we rely on manual entry
+        }
+        requestAnimationFrame(scanFrame);
+    }
+    scanFrame();
+}
+
+startCamera();
+
+// Manual form
+document.getElementById('manual-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const code = document.getElementById('ticket-code-input').value.trim();
+    if (!code) return;
+    await validateTicket(code);
+    document.getElementById('ticket-code-input').value = '';
+});
+
+async function validateTicket(code) {
+    try {
+        const resp = await fetch(`/api/validate/${code}/`, {
+            headers: { 'Authorization': 'Bearer {{ user.host.auth_token|default:"" }}' }
+        });
+        const data = await resp.json();
+        showResult(data);
+    } catch (err) {
+        showResult({ status: 'invalid', message: 'Network error' });
+    }
+}
+
+function showResult(data) {
+    const container = document.getElementById('scan-result');
+    container.classList.remove('hidden');
+    document.getElementById('result-valid').classList.add('hidden');
+    document.getElementById('result-duplicate').classList.add('hidden');
+    document.getElementById('result-invalid').classList.add('hidden');
+
+    if (data.status === 'valid') {
+        document.getElementById('result-valid').classList.remove('hidden');
+        document.getElementById('result-name').textContent = data.guest.name;
+        document.getElementById('result-event').textContent = data.guest.event;
+        document.getElementById('result-seat').textContent = data.guest.seat;
+        playSound('success');
+    } else if (data.status === 'duplicate') {
+        document.getElementById('result-duplicate').classList.remove('hidden');
+        document.getElementById('result-dup-info').textContent = `${data.guest.name} - Seat ${data.guest.seat}`;
+        playSound('warning');
+    } else {
+        document.getElementById('result-invalid').classList.remove('hidden');
+        playSound('error');
+    }
+
+    // Auto-hide after 5s
+    setTimeout(() => {
+        container.classList.add('hidden');
+    }, 5000);
+}
+
+function playSound(type) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.value = 0.3;
+
+    if (type === 'success') {
+        osc.frequency.value = 800;
+        osc.start();
+        setTimeout(() => { osc.frequency.value = 1200; }, 100);
+        setTimeout(() => { osc.stop(); }, 200);
+    } else if (type === 'warning') {
+        osc.frequency.value = 400;
+        osc.start();
+        setTimeout(() => { osc.stop(); }, 300);
+    } else {
+        osc.frequency.value = 200;
+        osc.start();
+        setTimeout(() => { osc.stop(); }, 400);
+    }
+}
+</script>
+{% endblock %}

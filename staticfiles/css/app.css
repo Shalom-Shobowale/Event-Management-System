@@ -1,0 +1,99 @@
+/* EventFlow - Premium SaaS Design System */
+
+/* Base */
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.dark ::-webkit-scrollbar-thumb { background: #475569; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Toast Notifications */
+.toast {
+    animation: toast-in 0.3s ease-out forwards;
+    max-width: 360px;
+}
+.toast.toast-out {
+    animation: toast-out 0.3s ease-in forwards;
+}
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+}
+
+/* Smooth page transitions */
+main {
+    animation: fade-in 0.2s ease-out;
+}
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Focus ring */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+    outline: none;
+}
+
+/* Card hover effects */
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Glassmorphism utility */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.dark .glass {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+.pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Print styles for tickets */
+@media print {
+    body { background: white !important; }
+    .no-print { display: none !important; }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+    .grid { gap: 0.75rem; }
+}
+
+/* Dark mode transitions */
+*, *::before, *::after {
+    transition-property: background-color, border-color, color;
+    transition-duration: 0ms;
+}
+.dark *, .dark *::before, .dark *::after {
+    transition-duration: 200ms;
+}

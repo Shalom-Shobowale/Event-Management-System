@@ -1,0 +1,689 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EventFlow - Smart Event Management & Guest Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                200: "#bfdbfe",
+                300: "#93c5fd",
+                400: "#60a5fa",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                800: "#1e40af",
+                900: "#1e3a8a",
+                950: "#172554",
+              },
+              surface: {
+                50: "#f8fafc",
+                100: "#f1f5f9",
+                200: "#e2e8f0",
+                300: "#cbd5e1",
+                400: "#94a3b8",
+                500: "#64748b",
+                600: "#475569",
+                700: "#334155",
+                800: "#1e293b",
+                900: "#0f172a",
+                950: "#020617",
+              },
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+  </head>
+  <body class="bg-white text-surface-900 font-sans antialiased">
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <span class="text-lg font-bold tracking-tight">EventFlow</span>
+          </div>
+          <div
+            class="hidden md:flex items-center gap-8 text-sm font-medium text-surface-600"
+          >
+            <a href="#features" class="hover:text-surface-900 transition-colors"
+              >Features</a
+            >
+            <a
+              href="#how-it-works"
+              class="hover:text-surface-900 transition-colors"
+              >How It Works</a
+            >
+            <a href="#pricing" class="hover:text-surface-900 transition-colors"
+              >Pricing</a
+            >
+          </div>
+          <div class="flex items-center gap-3">
+            <a
+              href="{% url 'login' %}"
+              class="px-4 py-2 text-sm font-medium text-surface-700 hover:text-surface-900 transition-colors"
+              >Sign In</a
+            >
+            <a
+              href="{% url 'register' %}"
+              class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors shadow-sm shadow-brand-600/25"
+              >Get Started</a
+            >
+            <a
+              href="{% url 'vendor_marketplace' %}"
+              class="px-4 py-2 text-sm font-medium text-brand-700 bg-white border border-brand-200 hover:bg-brand-50 rounded-lg transition-colors"
+              >Find Vendors</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative pt-32 pb-20 overflow-hidden">
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-surface-50"
+      ></div>
+      <div
+        class="absolute top-20 left-1/4 w-96 h-96 bg-brand-400/10 rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-10 right-1/4 w-80 h-80 bg-brand-600/5 rounded-full blur-3xl"
+      ></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-4xl mx-auto">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-50 border border-brand-200 rounded-full text-sm font-medium text-brand-700 mb-8"
+          >
+            <span
+              class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse"
+            ></span>
+            Now in Public Beta
+          </div>
+          <h1
+            class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]"
+          >
+            Event management,
+            <span
+              class="bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent"
+              >reimagined.</span
+            >
+          </h1>
+          <p
+            class="mt-6 text-lg sm:text-xl text-surface-600 max-w-2xl mx-auto leading-relaxed"
+          >
+            Create events, register guests, validate entries with QR codes, and
+            track attendance in real-time. The modern platform for professional
+            event operations.
+          </p>
+          <div
+            class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <a
+              href="{% url 'register' %}"
+              class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-all shadow-lg shadow-brand-600/25 hover:shadow-xl hover:shadow-brand-600/30 hover:-translate-y-0.5"
+            >
+              Create Your First Event
+            </a>
+            <a
+              href="#how-it-works"
+              class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-surface-700 bg-white hover:bg-surface-50 border border-surface-200 rounded-xl transition-all hover:-translate-y-0.5"
+            >
+              See How It Works
+            </a>
+          </div>
+          <div
+            class="mt-12 flex items-center justify-center gap-8 text-sm text-surface-500"
+          >
+            <div class="flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-success-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              No credit card required
+            </div>
+            <div class="flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-success-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Free to start
+            </div>
+            <div class="flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-success-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Setup in 2 minutes
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="py-16 bg-surface-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="relative rounded-2xl border border-surface-200 bg-white shadow-2xl shadow-surface-900/5 overflow-hidden"
+        >
+          <div
+            class="flex items-center gap-2 px-4 py-3 border-b border-surface-100"
+          >
+            <div class="w-3 h-3 rounded-full bg-error-400"></div>
+            <div class="w-3 h-3 rounded-full bg-warning-400"></div>
+            <div class="w-3 h-3 rounded-full bg-success-400"></div>
+            <span class="ml-4 text-xs text-surface-400"
+              >dashboard.eventflow.io</span
+            >
+          </div>
+          <div class="p-8 bg-gradient-to-br from-surface-50 to-white">
+            <div class="grid grid-cols-4 gap-4 mb-6">
+              <div class="p-4 rounded-xl bg-white border border-surface-100">
+                <p class="text-xs text-surface-500 font-medium">Total Events</p>
+                <p class="text-2xl font-bold mt-1">24</p>
+                <p class="text-xs text-success-600 mt-1">+12% this month</p>
+              </div>
+              <div class="p-4 rounded-xl bg-white border border-surface-100">
+                <p class="text-xs text-surface-500 font-medium">Total Guests</p>
+                <p class="text-2xl font-bold mt-1">1,847</p>
+                <p class="text-xs text-success-600 mt-1">+23% this month</p>
+              </div>
+              <div class="p-4 rounded-xl bg-white border border-surface-100">
+                <p class="text-xs text-surface-500 font-medium">Checked In</p>
+                <p class="text-2xl font-bold mt-1">1,423</p>
+                <p class="text-xs text-surface-400 mt-1">77.1% rate</p>
+              </div>
+              <div class="p-4 rounded-xl bg-white border border-surface-100">
+                <p class="text-xs text-surface-500 font-medium">Upcoming</p>
+                <p class="text-2xl font-bold mt-1">8</p>
+                <p class="text-xs text-brand-600 mt-1">Next in 3 days</p>
+              </div>
+            </div>
+            <div
+              class="h-32 bg-gradient-to-r from-brand-50 to-brand-100/50 rounded-xl flex items-center justify-center text-surface-400 text-sm"
+            >
+              Analytics Dashboard Preview
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-10">
+          <div class="w-full text-center">
+            <h2 class="text-3xl font-bold text-surface-900">Upcoming Events</h2>
+            <p class="text-surface-500 mt-2">
+              Discover trending and upcoming events
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for event in events %}
+          <div
+            class="bg-surface-50 rounded-2xl overflow-hidden border border-surface-200 hover:shadow-lg transition"
+          >
+            {% if event.banner %}
+            <img
+              src="{{ event.banner.url }}"
+              class="w-full h-48 object-cover"
+            />
+            {% endif %}
+
+            <div class="p-5">
+              <h3 class="text-xl font-semibold mb-2">{{ event.title }}</h3>
+
+              <p class="text-sm text-surface-500 mb-3">
+                {{ event.date }} • {{ event.location }}
+              </p>
+
+              <p class="text-surface-600 text-sm line-clamp-3">
+                {{ event.description|truncatechars:120 }}
+              </p>
+
+              <a
+                href="{% url 'event_dashboard' event.id %}"
+                class="inline-block mt-4 text-brand-600 font-semibold hover:text-brand-700"
+              >
+                View Event →
+              </a>
+            </div>
+          </div>
+          {% empty %}
+          <p>No events available yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <p
+            class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3"
+          >
+            Features
+          </p>
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            Everything you need to run events
+          </h2>
+          <p class="mt-4 text-lg text-surface-600">
+            From creation to check-in, EventFlow handles the entire event
+            lifecycle.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-brand-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Event Creation</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Create and customize events with venue details, capacity limits,
+              seating arrangements, and VIP support.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-success-50 flex items-center justify-center mb-4 group-hover:bg-success-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-success-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">QR Ticketing</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Every guest receives a unique QR code ticket. Premium digital
+              tickets with seat assignments and event details.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-warning-50 flex items-center justify-center mb-4 group-hover:bg-warning-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-warning-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Smart Validation</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Instant QR validation with duplicate prevention. Know exactly who
+              has entered and prevent unauthorized access.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-brand-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Guest Management</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Register guests without accounts. Automatic seat assignment,
+              search, filter, and export guest lists instantly.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-success-50 flex items-center justify-center mb-4 group-hover:bg-success-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-success-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Real-time Analytics</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Track attendance rates, no-show percentages, peak check-in times,
+              and live event metrics on your dashboard.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-warning-50 flex items-center justify-center mb-4 group-hover:bg-warning-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-warning-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Mobile Scanner</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Camera-based QR scanning for instant check-in. Audio feedback,
+              real-time validation, and queue management.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-brand-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Vendor Marketplace</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Discover trusted vendors for your event - caterers, photographers,
+              DJs, decorators, and more in one marketplace.
+            </p>
+          </div>
+          <div
+            class="group p-6 rounded-2xl border border-surface-100 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-600/5 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-success-50 flex items-center justify-center mb-4 group-hover:bg-success-100 transition-colors"
+            >
+              <svg
+                class="w-6 h-6 text-success-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Task Management</h3>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              Create tasks, set priorities, track progress, and collaborate with
+              your team to deliver successful events.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-surface-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <p
+            class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3"
+          >
+            How It Works
+          </p>
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            From event to entry in minutes
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-4 gap-8">
+          <div class="text-center">
+            <div
+              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+            >
+              1
+            </div>
+            <h3 class="font-semibold mb-2">Create Event</h3>
+            <p class="text-sm text-surface-600">
+              Set up your event with all details, capacity, and seating options.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+            >
+              2
+            </div>
+            <h3 class="font-semibold mb-2">Share Link</h3>
+            <p class="text-sm text-surface-600">
+              Share the registration link. Guests register without creating
+              accounts.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+            >
+              3
+            </div>
+            <h3 class="font-semibold mb-2">Get QR Ticket</h3>
+            <p class="text-sm text-surface-600">
+              Guests receive a unique QR code ticket with seat assignment
+              instantly.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+            >
+              4
+            </div>
+            <h3 class="font-semibold mb-2">Scan & Enter</h3>
+            <p class="text-sm text-surface-600">
+              Staff scans QR codes for instant validation and seamless entry.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-24 bg-brand-600 relative overflow-hidden">
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-800"
+      ></div>
+      <div
+        class="absolute top-0 right-0 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl"
+      ></div>
+      <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          Ready to transform your events?
+        </h2>
+        <p class="mt-4 text-lg text-brand-100">
+          Join thousands of organizers who trust EventFlow for professional
+          event management.
+        </p>
+        <div
+          class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <a
+            href="{% url 'register' %}"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-brand-700 bg-white hover:bg-brand-50 rounded-xl transition-all shadow-lg hover:-translate-y-0.5"
+          >
+            Start Free Today
+          </a>
+          <a
+            href="{% url 'vendor_register' %}"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white border border-white/30 hover:bg-white/10 rounded-xl transition-all"
+          >
+            Become a Vendor
+          </a>
+          <a
+            href="{% url 'vendor_marketplace' %}"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-brand-300 border border-white/30 hover:bg-white/10 rounded-xl transition-all"
+          >
+            Browse Vendors
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-surface-900 text-surface-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-4"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <span class="text-white font-semibold">EventFlow</span>
+          </div>
+          <p class="text-sm">
+            2026 EventFlow. Smart event management platform.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+</html>

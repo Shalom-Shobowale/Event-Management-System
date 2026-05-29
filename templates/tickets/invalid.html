@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Ticket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+    </style>
+</head>
+<body class="min-h-screen bg-surface-50 flex items-center justify-center p-4 font-sans">
+    <div class="text-center max-w-sm">
+        <div class="w-20 h-20 rounded-full bg-error-50 flex items-center justify-center mx-auto mb-6 animate-shake">
+            <svg class="w-10 h-10 text-error-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <h1 class="text-3xl font-extrabold text-error-600 mb-2">Invalid Ticket</h1>
+        <p class="text-surface-600">This ticket code was not found in our system. Please check the code and try again.</p>
+    </div>
+</body>
+</html>

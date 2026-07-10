@@ -1,0 +1,49 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Add Portfolio Item{% endblock %}
+{% block page_title %}Add to Portfolio{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
+        <p class="text-surface-600 dark:text-surface-400">Showcase your best work! Add photos from events you've serviced.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+            <h2 class="font-semibold mb-4">Portfolio Details</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Title</label>
+                    <input type="text" name="title" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="e.g., Sarah & John's Wedding">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Event Name</label>
+                    <input type="text" name="event_name" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="Type of event">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Photo <span class="text-red-500">*</span></label>
+                    <input type="file" name="image" accept="image/*" required class="w-full text-sm text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-50 file:text-brand-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Description</label>
+                    <textarea name="description" rows="3" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm resize-none" placeholder="Describe this project..."></textarea>
+                </div>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" name="is_featured" class="w-5 h-5 rounded border-surface-300 text-brand-600">
+                    <div>
+                        <span class="text-sm font-medium">Feature this item</span>
+                        <p class="text-xs text-surface-500">Featured items appear first on your profile</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+            <a href="{% url 'vendor_dashboard' %}" class="px-6 py-3 text-sm font-medium border rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
+            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Add to Portfolio</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

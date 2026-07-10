@@ -1,155 +1,221 @@
-{% extends "base_dashboard.html" %}
-
-{% block title %}Analytics{% endblock %}
-{% block page_title %}Analytics{% endblock %}
-{% block nav_analytics %}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400{% endblock %}
-
-{% block content %}
+{% extends "base_dashboard.html" %} {% block title %}Analytics{% endblock %}
+{%block page_title %}Analytics{% endblock %} {% block nav_analytics
+%}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400{% endblock
+%} {% block content %}
 <!-- Stats Overview -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Total Events</p>
-        <p class="text-2xl font-bold mt-1">{{ total_events }}</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Total Guests</p>
-        <p class="text-2xl font-bold mt-1">{{ total_guests }}</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Checked In</p>
-        <p class="text-2xl font-bold mt-1 text-success-600">{{ total_checked_in }}</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">No-Show Rate</p>
-        <p class="text-2xl font-bold mt-1 text-warning-600">{{ no_show_rate }}%</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Total Scans</p>
-        <p class="text-2xl font-bold mt-1">{{ total_scans }}</p>
-    </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Total Events
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ total_events }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Total Guests
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ total_guests }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Checked In
+    </p>
+    <p class="text-2xl font-bold mt-1 text-success-600">
+      {{ total_checked_in }}
+    </p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      No-Show Rate
+    </p>
+    <p class="text-2xl font-bold mt-1 text-warning-600">{{ no_show_rate }}%</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Total Scans
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ total_scans }}</p>
+  </div>
 </div>
 
 <!-- Charts -->
 <div class="grid lg:grid-cols-2 gap-6 mb-8">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-        <h3 class="font-semibold mb-4">Event Attendance</h3>
-        <canvas id="attendanceChart" height="250"></canvas>
+  <!-- Attendance -->
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
+  >
+    <h3 class="font-semibold mb-4">Event Attendance</h3>
+
+    <div class="relative h-80">
+      <canvas id="attendanceChart"></canvas>
     </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-        <h3 class="font-semibold mb-4">Peak Check-in Times</h3>
-        <canvas id="peakChart" height="250"></canvas>
+  </div>
+
+  <!-- Peak -->
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
+  >
+    <h3 class="font-semibold mb-4">Peak Check-in Times</h3>
+
+    <div class="relative h-80">
+      <canvas id="peakChart"></canvas>
     </div>
+  </div>
 </div>
 
 <!-- Event Breakdown -->
-<div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-    <div class="p-5 border-b border-surface-100 dark:border-surface-700">
-        <h2 class="font-semibold">Event Breakdown</h2>
-    </div>
-    {% if events %}
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-surface-100 dark:border-surface-700">
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Event</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Registered</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Checked In</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Rate</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
-                {% for event in events %}
-                <tr class="hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors">
-                    <td class="px-5 py-3">
-                        <a href="{% url 'event_dashboard' event.id %}" class="font-medium text-brand-600 dark:text-brand-400 hover:underline">{{ event.name }}</a>
-                        <p class="text-xs text-surface-500">{{ event.date|date:"M d, Y" }}</p>
-                    </td>
-                    <td class="px-5 py-3">{{ event.registered_guests }}</td>
-                    <td class="px-5 py-3">{{ event.checked_in_guests }}</td>
-                    <td class="px-5 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 h-2 bg-surface-100 dark:bg-surface-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-brand-600 rounded-full" style="width: {{ event.attendance_rate }}%"></div>
-                            </div>
-                            <span class="text-xs font-medium">{{ event.attendance_rate }}%</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="p-12 text-center">
-        <p class="text-surface-500">No events to analyze yet.</p>
-    </div>
-    {% endif %}
+<div
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700"
+>
+  <div class="p-5 border-b border-surface-100 dark:border-surface-700">
+    <h2 class="font-semibold">Event Breakdown</h2>
+  </div>
+  {% if events %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-surface-100 dark:border-surface-700">
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Event
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Registered
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Checked In
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Rate
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
+        {% for event in events %}
+        <tr
+          class="hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+        >
+          <td class="px-5 py-3">
+            <a
+              href="{% url 'event_dashboard' event.id %}"
+              class="font-medium text-brand-600 dark:text-brand-400 hover:underline"
+              >{{ event.name }}</a
+            >
+            <p class="text-xs text-surface-500">
+              {{ event.date|date:"M d, Y" }}
+            </p>
+          </td>
+          <td class="px-5 py-3">{{ event.registered_guests }}</td>
+          <td class="px-5 py-3">{{ event.checked_in_guests }}</td>
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-2">
+              <div
+                class="flex-1 h-2 bg-surface-100 dark:bg-surface-700 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full bg-brand-600 rounded-full"
+                  style="width: {{ event.attendance_rate }}%"
+                ></div>
+              </div>
+              <span class="text-xs font-medium"
+                >{{ event.attendance_rate }}%</span
+              >
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="p-12 text-center">
+    <p class="text-surface-500">No events to analyze yet.</p>
+  </div>
+  {% endif %}
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const eventData = {{ event_data_json|safe }};
-    const hourlyData = {{ hourly_data_json|safe }};
+  document.addEventListener('DOMContentLoaded', function() {
+      const eventData = {{ event_data_json|safe }};
+      const hourlyData = {{ hourly_data_json|safe }};
 
-    // Attendance Chart
-    if (eventData.length > 0) {
-        new Chart(document.getElementById('attendanceChart'), {
-            type: 'bar',
-            data: {
-                labels: eventData.map(e => e.name.length > 15 ? e.name.substring(0, 15) + '...' : e.name),
-                datasets: [{
-                    label: 'Registered',
-                    data: eventData.map(e => e.registered),
-                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                    borderRadius: 6,
-                }, {
-                    label: 'Checked In',
-                    data: eventData.map(e => e.checked_in),
-                    backgroundColor: 'rgba(34, 197, 94, 0.7)',
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-    }
+      // Attendance Chart
+      console.log(eventData);
+      if (eventData.length > 0) {
+          new Chart(document.getElementById('attendanceChart'), {
+              type: 'bar',
+              data: {
+                  labels: eventData.map(e => e.name.length > 15 ? e.name.substring(0, 15) + '...' : e.name),
+                  datasets: [{
+                      label: 'Registered',
+                      data: eventData.map(e => e.registered),
+                      backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                      borderRadius: 6,
+                  }, {
+                      label: 'Checked In',
+                      data: eventData.map(e => e.checked_in),
+                      backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                      borderRadius: 6,
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { position: 'bottom' } },
+                  scales: {
+                      y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                      x: { grid: { display: false } }
+                  }
+              }
+          });
+      }
 
-    // Peak Times Chart
-    const hours = Object.keys(hourlyData).sort();
-    if (hours.length > 0) {
-        new Chart(document.getElementById('peakChart'), {
-            type: 'line',
-            data: {
-                labels: hours,
-                datasets: [{
-                    label: 'Check-ins',
-                    data: hours.map(h => hourlyData[h]),
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: 'rgb(59, 130, 246)',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-    }
-});
+      // Peak Times Chart
+      const hours = Object.keys(hourlyData).sort();
+      if (hours.length > 0) {
+          new Chart(document.getElementById('peakChart'), {
+              type: 'line',
+              data: {
+                  labels: hours,
+                  datasets: [{
+                      label: 'Check-ins',
+                      data: hours.map(h => hourlyData[h]),
+                      borderColor: 'rgb(59, 130, 246)',
+                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                      fill: true,
+                      tension: 0.4,
+                      pointRadius: 4,
+                      pointBackgroundColor: 'rgb(59, 130, 246)',
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { display: false } },
+                  scales: {
+                      y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                      x: { grid: { display: false } }
+                  }
+              }
+          });
+      }
+  });
 </script>
 {% endblock %}

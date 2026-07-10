@@ -107,8 +107,19 @@ class Budget(models.Model):
 
     @property
     def spent(self):
-        total = self.event.expenses.aggregate(models.Sum('amount'))['amount__sum'] or 0
-        return total
+        return (
+            self.event.expenses
+            .filter(paid=True)
+            .aggregate(total=models.Sum("amount"))["total"] or 0
+        )
+
+    @property
+    def pending(self):
+        return (
+            self.event.expenses
+            .filter(paid=False)
+            .aggregate(total=models.Sum("amount"))["total"] or 0
+        )
 
     @property
     def remaining(self):

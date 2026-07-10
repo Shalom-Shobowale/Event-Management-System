@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Sum
+from django.core.paginator import Paginator
 from .models import Event, EventCategory, SeatArrangement, Budget, Expense
 from guest.models import Guest
 from ticket.models import CheckInLog
@@ -13,6 +14,9 @@ from bookings.models import Booking
 
 def event_lists(request):
     events = Event.objects.filter(is_published=True, date__gte=timezone.now()).order_by('date')
+    paginator = Paginator(events, 20)
+    page = request.GET.get("page")
+    events = paginator.get_page(page)
     context = {
         'events': events
     }
@@ -260,3 +264,19 @@ def edit_expense(request, expense_id):
         'expense': expense,
         'categories': Expense.Category.choices
     })
+
+@login_required
+def delete_expense(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)
+
+    if expense.event.host != request.user:
+        messages.error(request, "Access denied.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        event_id = expense.event.id
+        expense.delete()
+        messages.success(request, "Expense deleted successfully.")
+        return redirect("event_budget", event_id=event_id)
+
+    return redirect("event_budget", event_id=expense.event.id)

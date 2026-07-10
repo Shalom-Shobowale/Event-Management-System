@@ -1,0 +1,78 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Request Quote{% endblock %}
+{% block page_title %}Request for Quotation{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div>
+                <h2 class="font-semibold">Event: {{ event.name }}</h2>
+                <p class="text-sm text-surface-500">{{ event.date|date:"M d, Y" }} | {{ event.venue }}</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+            <h2 class="font-semibold mb-4">Service Requirements</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Title <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="e.g., Wedding Photography Services">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Service Category</label>
+                    <select name="category" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
+                        {% for value, label in categories %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Description <span class="text-red-500">*</span></label>
+                    <textarea name="description" rows="4" required class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm resize-none" placeholder="Describe what you need in detail..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+            <h2 class="font-semibold mb-4">Budget & Timeline</h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5">Budget Min (₦)</label>
+                        <input type="number" name="budget_min" min="0" step="100" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5">Budget Max (₦)</label>
+                        <input type="number" name="budget_max" min="0" step="100" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="2000">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Required Date <span class="text-red-500">*</span></label>
+                    <input type="date" name="required_date" required class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Expected Guests</label>
+                    <input type="number" name="guest_count" min="0" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" value="{{ event.max_capacity }}">
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="is_urgent" class="w-4 h-4 rounded border-surface-300 text-brand-600">
+                    <span class="text-sm font-medium">Mark as Urgent</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+            <a href="{% url 'event_dashboard' event.id %}" class="px-6 py-3 text-sm font-medium border rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
+            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Submit Request</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

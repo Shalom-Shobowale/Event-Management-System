@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from core import views as core_views
@@ -13,6 +13,7 @@ from event import views as budget_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
 
     # Landing
     path('', core_views.landing, name='landing'),
@@ -57,24 +58,30 @@ urlpatterns = [
 
     # Vendor Registration & Dashboard
     path('vendors/register/', vendor_views.vendor_register, name='vendor_register'),
+    # urls.py
+
+    path('vendors/profile/edit/', vendor_views.edit_vendor_profile, name='edit_vendor_profile'),
     path('vendors/dashboard/', vendor_views.vendor_dashboard, name='vendor_dashboard'),
     path('vendors/services/add/', vendor_views.add_service, name='add_service'),
     path('vendors/portfolio/add/', vendor_views.add_portfolio, name='add_portfolio'),
 
+
+     # Saved Vendors
+    path('vendors/saved/', vendor_views.saved_vendors, name='saved_vendors'),
 
     # Marketplace
     path('vendors/', vendor_views.marketplace, name='vendor_marketplace'),
     path('vendors/<slug:slug>/', vendor_views.vendor_profile, name='vendor_profile'),
     path('vendors/<uuid:vendor_id>/save/', vendor_views.save_vendor, name='save_vendor'),
     path('vendors/<uuid:vendor_id>/review/', vendor_views.submit_review, name='submit_review'),
+    path('vendors/<uuid:vendor_id>/request/', vendor_views.request_quote_vendor, name='request_quote_vendor'),
 
-    # Saved Vendors
-    path('vendors/saved/', vendor_views.saved_vendors, name='saved_vendors'),
 
     # ========== BOOKINGS & RFQ ==========
 
     # Quote Requests
     path('bookings/rfq/', booking_views.my_quote_requests, name='my_quote_requests'),
+    path('bookings/rfq/browse/', booking_views.browse_rfqs, name='browse_rfqs'),
     path('bookings/rfq/<uuid:rfq_id>/', booking_views.quote_request_detail, name='quote_request_detail'),
     path('bookings/rfq/<uuid:rfq_id>/submit/', booking_views.submit_proposal, name='submit_proposal'),
     path('bookings/rfq/proposals/', booking_views.vendor_proposals, name='vendor_proposals'),
@@ -115,8 +122,11 @@ urlpatterns = [
     path('events/<uuid:event_id>/budget/update/', event_views.update_budget, name='update_budget'),
     path('events/<uuid:event_id>/budget/expense/', event_views.add_expense, name='add_expense'),
     path('expenses/<uuid:expense_id>/edit/', event_views.edit_expense, name='edit_expense'),
+    path("expenses/<uuid:expense_id>/delete/", event_views.delete_expense, name="delete_expense",
+),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

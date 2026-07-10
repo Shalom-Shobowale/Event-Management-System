@@ -1,0 +1,168 @@
+{% extends "base_dashboard.html" %} 
+{% block title %}{{ rfq.title }}{% endblock %} 
+{% load humanize %}
+{% block page_title %}Quote Request Details{% endblock %} 
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6"
+  >
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full {% if rfq.status == 'open' %}bg-green-50 text-green-700 {% elif rfq.status == 'awarded' %}bg-blue-50 text-blue-700 {% else %}bg-gray-50 text-gray-600{% endif %}"
+          >
+            {{ rfq.get_status_display }}
+          </span>
+          {% if rfq.is_urgent %}
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-50 text-red-600"
+            >Urgent</span
+          >
+          {% endif %}
+        </div>
+        <h1 class="text-xl font-bold">{{ rfq.title }}</h1>
+        <p class="text-sm text-surface-500 mt-1">
+          {{ rfq.event.name }} | {{ rfq.category }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-surface-100 dark:border-surface-700"
+    >
+      <div>
+        <p class="text-xs text-surface-500">Required Date</p>
+        <p class="font-medium">{{ rfq.required_date|date:"M d, Y" }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-surface-500">Budget Range</p>
+        <p class="font-medium">Budget: ₦{{ rfq.budget_min|default:0|intcomma }} - ₦{{ rfq.budget_max|default:0|intcomma }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-surface-500">Guest Count</p>
+        <p class="font-medium">{{ rfq.guest_count|default:"TBD" }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-surface-500">Location</p>
+        <p class="font-medium">{{ rfq.location|default:"TBD" }}</p>
+      </div>
+    </div>
+
+    <div class="mt-6 pt-6 border-t border-surface-100 dark:border-surface-700">
+      <p class="text-xs text-surface-500 mb-2">Description</p>
+      <p class="text-sm">{{ rfq.description }}</p>
+    </div>
+  </div>
+
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700"
+  >
+    <div class="p-5 border-b border-surface-100 dark:border-surface-700">
+      <h2 class="font-semibold">Proposals ({{ proposals.count }})</h2>
+    </div>
+
+    {% if proposals %}
+    <div class="divide-y divide-surface-100 dark:divide-surface-700">
+      {% for proposal in proposals %}
+      <div class="p-5">
+        <div class="flex items-start justify-between">
+          <div class="flex items-start gap-4">
+            <div
+              class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold overflow-hidden"
+            >
+              {% if proposal.vendor.logo %}
+              <img
+                src="{{ proposal.vendor.logo.url }}"
+                class="w-full h-full object-cover"
+                alt=""
+              />
+              {% else %} {{ proposal.vendor.business_name|make_list|first|upper
+              }} {% endif %}
+            </div>
+            <div>
+              <h3 class="font-semibold">{{ proposal.vendor.business_name }}</h3>
+              <div
+                class="flex items-center gap-2 mt-1 text-sm text-surface-500"
+              >
+                <span class="text-yellow-500">★</span>
+                {{ proposal.vendor.average_rating|floatformat:1 }} ({{
+                proposal.vendor.total_reviews }} reviews)
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-brand-600">
+             ₦{{ proposal.proposed_price|default:0|floatformat:0|intcomma }}
+            </p>
+            <span class="text-xs text-surface-500"
+              >{{ proposal.estimated_duration_hours }} hours</span
+            >
+          </div>
+        </div>
+
+        <div class="mt-4 p-4 bg-surface-50 dark:bg-surface-700/50 rounded-lg">
+          <p class="text-sm">{{ proposal.cover_letter }}</p>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between">
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full {% if proposal.status == 'accepted' %}bg-green-50 text-green-700 {% elif proposal.status == 'rejected' %}bg-red-50 text-red-700 {% else %}bg-yellow-50 text-yellow-700{% endif %}"
+          >
+            {{ proposal.get_status_display }}
+          </span>
+          <div class="flex items-center gap-2">
+            {% if proposal.status == 'submitted' and rfq.status == 'open' %}
+            <a
+              href="{% url 'accept_proposal' proposal.id %}"
+              class="px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >Accept Proposal</a
+            >
+            {% endif %}
+            <a
+              href="{% url 'vendor_profile' slug=proposal.vendor.slug %}"
+              class="px-4 py-2 text-sm font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
+              >View Vendor</a
+            >
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-12 text-center">
+      <div
+        class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4"
+      >
+        <svg
+          class="w-8 h-8 text-surface-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+      </div>
+      <h3 class="font-semibold mb-1">No proposals yet</h3>
+      <p class="text-sm text-surface-500">
+        Vendors will submit proposals here. Check back soon!
+      </p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="mt-6">
+    <a
+      href="{% url 'my_quote_requests' %}"
+      class="text-sm text-brand-600 hover:underline"
+      >&larr; Back to Quote Requests</a
+    >
+  </div>
+</div>
+{% endblock %}

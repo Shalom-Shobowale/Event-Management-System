@@ -1,244 +1,498 @@
-{% extends "base_dashboard.html" %}
-
-{% block title %}{{ event.name }}{% endblock %}
-{% block page_title %}{{ event.name }}{% endblock %}
+{% extends "base_dashboard.html" %} 
+{% load humanize %}
+{% block title %}{{ event.name }}{% endblock%} 
+{% block page_title %}{{ event.name }}{% endblock %} 
 
 {% block content %}
 <!-- Event Header -->
-<div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden mb-6">
-    {% if event.banner %}
-    <img src="{{ event.banner.url }}" class="w-full h-48 object-cover" alt="{{ event.name }}">
-    {% else %}
-    <div class="w-full h-32 bg-gradient-to-r from-brand-500 to-brand-700"></div>
-    {% endif %}
-    <div class="p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="px-2 py-0.5 text-xs font-medium rounded-full {% if event.is_published %}bg-success-50 text-success-700{% else %}bg-warning-50 text-warning-700{% endif %}">
-                        {% if event.is_published %}Published{% else %}Draft{% endif %}
-                    </span>
-                    <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-surface-100 text-surface-600">{{ event.get_category_display }}</span>
-                </div>
-                <h1 class="text-2xl font-bold">{{ event.name }}</h1>
-                <p class="text-surface-500 text-sm mt-1">{{ event.venue }} &middot; {{ event.date|date:"M d, Y \a\t H:i" }}</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{% url 'edit_event' event.id %}" class="px-4 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-600 transition-colors">Edit</a>
-                <a href="{% url 'export_guests' event.id %}" class="px-4 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-600 transition-colors">Export</a>
-            </div>
+<div
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden mb-6"
+>
+  {% if event.banner %}
+  <img
+    src="{{ event.banner.url }}"
+    class="w-full h-48 object-cover"
+    alt="{{ event.name }}"
+  />
+  {% else %}
+  <div class="w-full h-32 bg-gradient-to-r from-brand-500 to-brand-700"></div>
+  {% endif %}
+  <div class="p-6">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+    >
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full {% if event.is_published %}bg-success-50 text-success-700{% else %}bg-warning-50 text-warning-700{% endif %}"
+          >
+            {% if event.is_published %}Published{% else %}Draft{% endif %}
+          </span>
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full bg-surface-100 text-surface-600"
+            >{{ event.get_category_display }}</span
+          >
         </div>
-
-        <!-- Registration Link -->
-        <div class="mt-4 p-3 bg-surface-50 dark:bg-surface-700/50 rounded-lg flex items-center gap-3">
-            <svg class="w-5 h-5 text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-            <span class="text-sm text-surface-600 dark:text-surface-400 truncate flex-1">{{ request.scheme }}://{{ request.get_host }}{% url 'guest_register' event.id %}</span>
-            <button onclick="copyLink()" class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-md hover:bg-brand-700 transition-colors flex-shrink-0">Copy Link</button>
-        </div>
+        <h1 class="text-2xl font-bold">{{ event.name }}</h1>
+        <p class="text-surface-500 text-sm mt-1">
+          {{ event.venue }} &middot; {{ event.date|date:"M d, Y \a\t H:i" }}
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a
+          href="{% url 'edit_event' event.id %}"
+          class="px-4 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-600 transition-colors"
+          >Edit</a
+        >
+        <a
+          href="{% url 'export_guests' event.id %}"
+          class="px-4 py-2 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-600 transition-colors"
+          >Export</a
+        >
+      </div>
     </div>
+
+    <!-- Registration Link -->
+    <div
+      class="mt-4 p-3 bg-surface-50 dark:bg-surface-700/50 rounded-lg flex items-center gap-3"
+    >
+      <svg
+        class="w-5 h-5 text-surface-400 flex-shrink-0"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+        />
+      </svg>
+      <span
+        class="text-sm text-surface-600 dark:text-surface-400 truncate flex-1"
+        >{{ request.scheme }}://{{ request.get_host }}{% url 'guest_register'
+        event.id %}</span
+      >
+      <button
+        onclick="copyLink()"
+        class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-md hover:bg-brand-700 transition-colors flex-shrink-0"
+      >
+        Copy Link
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- Stats -->
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Registered</p>
-        <p class="text-2xl font-bold mt-1">{{ event.registered_guests }}</p>
-        <p class="text-xs text-surface-400">of {{ event.max_capacity }}</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Checked In</p>
-        <p class="text-2xl font-bold mt-1 text-success-600">{{ event.checked_in_guests }}</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Attendance</p>
-        <p class="text-2xl font-bold mt-1">{{ event.attendance_rate }}%</p>
-    </div>
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-        <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Available</p>
-        <p class="text-2xl font-bold mt-1">{{ event.available_seats }}</p>
-    </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Registered
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ event.registered_guests }}</p>
+    <p class="text-xs text-surface-400">of {{ event.max_capacity }}</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Checked In
+    </p>
+    <p class="text-2xl font-bold mt-1 text-success-600">
+      {{ event.checked_in_guests }}
+    </p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Attendance
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ event.attendance_rate }}%</p>
+  </div>
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4"
+  >
+    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
+      Available
+    </p>
+    <p class="text-2xl font-bold mt-1">{{ event.available_seats }}</p>
+  </div>
 </div>
 
 <!-- Quick Navigation Tabs -->
 <div class="flex items-center gap-2 mb-6 overflow-x-auto">
-    <a href="#guests" class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg">Guests</a>
-    <a href="#vendors" class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors">Vendors</a>
-    <a href="#tasks" class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors">Tasks</a>
-    <a href="#budget" class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors">Budget</a>
-    <a href="{% url 'event_workspace' event.id %}" class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors">Workspace</a>
+  <a
+    href="#guests"
+    class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg"
+    >Guests</a
+  >
+  <a
+    href="#vendors"
+    class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+    >Vendors</a
+  >
+  <a
+    href="#tasks"
+    class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+    >Tasks</a
+  >
+  <a
+    href="#budget"
+    class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+    >Budget</a
+  >
+  <a
+    href="{% url 'event_workspace' event.id %}"
+    class="px-4 py-2 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
+    >Workspace</a
+  >
 </div>
 
 <!-- Vendors Section -->
-<div id="vendors" class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6">
-    <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-        <h2 class="font-semibold">Vendors ({{ bookings.count }})</h2>
-        <div class="flex items-center gap-2">
-            <a href="{% url 'vendor_marketplace' %}" class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Find Vendors</a>
-            <a href="{% url 'create_quote_request' event.id %}" class="px-3 py-1.5 text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Request Quote</a>
+<div
+  id="vendors"
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6"
+>
+  <div
+    class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between"
+  >
+    <h2 class="font-semibold">Vendors ({{ bookings.count }})</h2>
+    <div class="flex items-center gap-2">
+      <a
+        href="{% url 'vendor_marketplace' %}"
+        class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+        >Find Vendors</a
+      >
+      <a
+        href="{% url 'create_quote_request' event.id %}"
+        class="px-3 py-1.5 text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
+        >Request Quote</a
+      >
+    </div>
+  </div>
+  {% if bookings %}
+  <div class="divide-y divide-surface-100 dark:divide-surface-700">
+    {% for booking in bookings %}
+    <div
+      class="p-4 flex items-center justify-between hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold text-sm"
+        >
+          {{ booking.vendor.business_name|make_list|first|upper }}
         </div>
-    </div>
-    {% if bookings %}
-    <div class="divide-y divide-surface-100 dark:divide-surface-700">
-        {% for booking in bookings %}
-        <div class="p-4 flex items-center justify-between hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold text-sm">
-                    {{ booking.vendor.business_name|make_list|first|upper }}
-                </div>
-                <div>
-                    <a href="{% url 'booking_detail' booking.id %}" class="font-medium text-brand-600 dark:text-brand-400 hover:underline">{{ booking.vendor.business_name }}</a>
-                    <p class="text-xs text-surface-500">{{ booking.service_name }}</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="px-2 py-0.5 text-xs font-medium rounded-full
-                    {% if booking.status == 'confirmed' %}bg-success-50 text-success-700
-                    {% elif booking.status == 'pending' %}bg-warning-50 text-warning-700
-                    {% elif booking.status == 'completed' %}bg-brand-50 text-brand-700
-                    {% else %}bg-surface-100 text-surface-600{% endif %}">
-                    {{ booking.get_status_display }}
-                </span>
-                <span class="text-sm font-medium">${{ booking.agreed_price|floatformat:0 }}</span>
-            </div>
+        <div>
+          <a
+            href="{% url 'booking_detail' booking.id %}"
+            class="font-medium text-brand-600 dark:text-brand-400 hover:underline"
+            >{{ booking.vendor.business_name }}</a
+          >
+          <p class="text-xs text-surface-500">{{ booking.service_name }}</p>
         </div>
-        {% endfor %}
+      </div>
+      <div class="flex items-center gap-3">
+       <span class="px-2 py-0.5 text-xs font-medium rounded-full inline-flex items-center
+            {% if booking.status == 'confirmed' %}
+                bg-success-50 text-success-600
+            {% elif booking.status == 'pending' %}
+                bg-warning-50 text-warning-600
+            {% elif booking.status == 'completed' %}
+                bg-brand-50 text-brand-700
+            {% else %}
+                bg-surface-200 text-surface-800
+            {% endif %}
+            ">
+                {{ booking.get_status_display }}
+        </span>
+        <span class="text-sm font-medium">₦{{ booking.agreed_price|floatformat:0|intcomma }}</span>
+      </div>
     </div>
-    {% else %}
-    <div class="p-8 text-center">
-        <p class="text-sm text-surface-500 mb-3">No vendors booked yet</p>
-        <a href="{% url 'vendor_marketplace' %}" class="text-sm text-brand-600 hover:underline">Browse vendors</a>
-    </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="p-8 text-center">
+    <p class="text-sm text-surface-500 mb-3">No vendors booked yet</p>
+    <a
+      href="{% url 'vendor_marketplace' %}"
+      class="text-sm text-brand-600 hover:underline"
+      >Browse vendors</a
+    >
+  </div>
+  {% endif %}
 </div>
 
 <!-- Tasks Section -->
-<div id="tasks" class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6">
-    <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-        <h2 class="font-semibold">Tasks</h2>
-        <a href="{% url 'event_tasks' event.id %}" class="text-sm text-brand-600 hover:underline">View All</a>
+<div
+  id="tasks"
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6"
+>
+  <div
+    class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between"
+  >
+    <h2 class="font-semibold">Tasks</h2>
+    <a
+      href="{% url 'event_tasks' event.id %}"
+      class="text-sm text-brand-600 hover:underline"
+      >View All</a
+    >
+  </div>
+  {% if event.tasks.exists %}
+  <div class="divide-y divide-surface-100 dark:divide-surface-700">
+    {% for task in event.tasks.all|slice:":5" %}
+    <div class="p-4 flex items-center gap-3">
+      <div
+        class="w-5 h-5 rounded-full border-2 {% if task.status == 'done' %}border-success-500 bg-success-500 {% elif task.priority == 'urgent' %}border-error-500 {% elif task.priority == 'high' %}border-warning-500 {% else %}border-surface-300{% endif %} flex items-center justify-center"
+      >
+        {% if task.status == 'done' %}
+        <svg
+          class="w-3 h-3 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="3"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        {% endif %}
+      </div>
+      <span
+        class="{% if task.status == 'done' %}line-through text-surface-400{% endif %}"
+        >{{ task.title }}</span
+      >
     </div>
-    {% if event.tasks.exists %}
-    <div class="divide-y divide-surface-100 dark:divide-surface-700">
-        {% for task in event.tasks.all|slice:":5" %}
-        <div class="p-4 flex items-center gap-3">
-            <div class="w-5 h-5 rounded-full border-2
-                {% if task.status == 'done' %}border-success-500 bg-success-500
-                {% elif task.priority == 'urgent' %}border-error-500
-                {% elif task.priority == 'high' %}border-warning-500
-                {% else %}border-surface-300{% endif %}
-                flex items-center justify-center">
-                {% if task.status == 'done' %}
-                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                {% endif %}
-            </div>
-            <span class="{% if task.status == 'done' %}line-through text-surface-400{% endif %}">{{ task.title }}</span>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="p-8 text-center">
-        <p class="text-sm text-surface-500 mb-3">No tasks yet</p>
-        <a href="{% url 'create_task' event.id %}" class="text-sm text-brand-600 hover:underline">Create task</a>
-    </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="p-8 text-center">
+    <p class="text-sm text-surface-500 mb-3">No tasks yet</p>
+    <a
+      href="{% url 'create_task' event.id %}"
+      class="text-sm text-brand-600 hover:underline"
+      >Create task</a
+    >
+  </div>
+  {% endif %}
 </div>
 
 <!-- Budget Section -->
-<div id="budget" class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6">
-    <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-        <h2 class="font-semibold">Budget</h2>
-        <a href="{% url 'event_budget' event.id %}" class="text-sm text-brand-600 hover:underline">Manage</a>
+<div
+  id="budget"
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 mb-6"
+>
+  <div
+    class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between"
+  >
+    <h2 class="font-semibold">Budget</h2>
+    <a
+      href="{% url 'event_budget' event.id %}"
+      class="text-sm text-brand-600 hover:underline"
+      >Manage</a
+    >
+  </div>
+  <div class="p-5">
+    {% with budget=event.budget %}
+    <div class="grid grid-cols-3 gap-4 text-center">
+      <div>
+        <p class="text-xs text-surface-500">Budget</p>
+        <p class="text-xl font-bold">
+          ₦{% if budget %}{{ budget.total_budget|default:0|floatformat:0|intcomma }}{% else %}0{% endif %}
+        </p>
+      </div>
+      <div>
+        <p class="text-xs text-surface-500">Spent</p>
+        <p class="text-xl font-bold text-error-600">
+          ₦{{ event.total_spent|default:0|floatformat:0|intcomma }}
+        </p>
+      </div>
+      <div>
+        <p class="text-xs text-surface-500">Remaining</p>
+        <p class="text-xl font-bold text-success-600">
+          ₦{% if budget %}{{ budget.remaining|default:0|floatformat:0|intcomma }}{% else %}0{% endif %}
+        </p>
+      </div>
     </div>
-    <div class="p-5">
-        <div class="grid grid-cols-3 gap-4 text-center">
-            <div>
-                <p class="text-xs text-surface-500">Budget</p>
-                <p class="text-xl font-bold">${{ event.total_budget|floatformat:0 }}</p>
-            </div>
-            <div>
-                <p class="text-xs text-surface-500">Spent</p>
-                <p class="text-xl font-bold text-error-600">${{ event.total_spent|floatformat:0 }}</p>
-            </div>
-            <div>
-                <p class="text-xs text-surface-500">Remaining</p>
-                <p class="text-xl font-bold text-success-600">${{ event.total_budget|floatformat:0 }}</p>
-            </div>
-        </div>
-    </div>
+    {% endwith %}
+  </div>
 </div>
 
 <!-- Guest Table -->
-<div id="guests" class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-    <div class="p-5 border-b border-surface-100 dark:border-surface-700">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 class="font-semibold">Guest List ({{ event.registered_guests }})</h2>
-            <div class="flex items-center gap-3">
-                <form method="get" class="flex items-center gap-2">
-                    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search guests..." class="px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                    <select name="status" class="px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                        <option value="">All</option>
-                        <option value="checked_in" {% if request.GET.status == 'checked_in' %}selected{% endif %}>Checked In</option>
-                        <option value="not_checked_in" {% if request.GET.status == 'not_checked_in' %}selected{% endif %}>Not Checked In</option>
-                    </select>
-                    <button type="submit" class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Filter</button>
-                </form>
-            </div>
-        </div>
+<div
+  id="guests"
+  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700"
+>
+  <div class="p-5 border-b border-surface-100 dark:border-surface-700">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+    >
+      <h2 class="font-semibold">Guest List ({{ event.registered_guests }})</h2>
+      <div class="flex items-center gap-3">
+        <form method="get" class="flex items-center gap-2">
+          <input
+            type="text"
+            name="search"
+            value="{{ request.GET.search }}"
+            placeholder="Search guests..."
+            class="px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+          />
+          <select
+            name="status"
+            class="px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+          >
+            <option value="">All</option>
+            <option
+              value="checked_in"
+              {%
+              if
+              request.GET.status=""
+              ="checked_in"
+              %}selected{%
+              endif
+              %}
+            >
+              Checked In
+            </option>
+            <option
+              value="not_checked_in"
+              {%
+              if
+              request.GET.status=""
+              ="not_checked_in"
+              %}selected{%
+              endif
+              %}
+            >
+              Not Checked In
+            </option>
+          </select>
+          <button
+            type="submit"
+            class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+          >
+            Filter
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 
-    {% if guests %}
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-surface-100 dark:border-surface-700">
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Guest</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Seat</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Status</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Registered</th>
-                    <th class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider">Checked In</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
-                {% for guest in guests %}
-                <tr class="hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors">
-                    <td class="px-5 py-3">
-                        <a href="{% url 'guest_ticket' guest.id %}" class="font-medium text-brand-600 dark:text-brand-400 hover:underline">{{ guest.full_name }}</a>
-                        <p class="text-xs text-surface-500">{{ guest.email }}</p>
-                    </td>
-                    <td class="px-5 py-3">
-                        <span class="px-2 py-1 text-xs font-medium rounded-md bg-surface-100 dark:bg-surface-700">{{ guest.seat_number }}</span>
-                    </td>
-                    <td class="px-5 py-3">
-                        {% if guest.checked_in %}
-                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400">Checked In</span>
-                        {% else %}
-                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-400">Registered</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-5 py-3 text-surface-500">{{ guest.registered_at|date:"M d, H:i" }}</td>
-                    <td class="px-5 py-3 text-surface-500">{% if guest.checked_in_at %}{{ guest.checked_in_at|date:"M d, H:i" }}{% else %}-{% endif %}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  {% if guests %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-surface-100 dark:border-surface-700">
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Guest
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Seat
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Status
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Registered
+          </th>
+          <th
+            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
+          >
+            Checked In
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
+        {% for guest in guests %}
+        <tr
+          class="hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
+        >
+          <td class="px-5 py-3">
+            <a
+              href="{% url 'guest_ticket' guest.id %}"
+              class="font-medium text-brand-600 dark:text-brand-400 hover:underline"
+              >{{ guest.full_name }}</a
+            >
+            <p class="text-xs text-surface-500">{{ guest.email }}</p>
+          </td>
+          <td class="px-5 py-3">
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-md bg-surface-100 dark:bg-surface-700"
+              >{{ guest.seat_number }}</span
+            >
+          </td>
+          <td class="px-5 py-3">
+            {% if guest.checked_in %}
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400"
+              >Checked In</span
+            >
+            {% else %}
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-400"
+              >Registered</span
+            >
+            {% endif %}
+          </td>
+          <td class="px-5 py-3 text-surface-500">
+            {{ guest.registered_at|date:"M d, H:i" }}
+          </td>
+          <td class="px-5 py-3 text-surface-500">
+            {% if guest.checked_in_at %}{{ guest.checked_in_at|date:"M d, H:i"}}{% else %}-{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="p-12 text-center">
+    <div
+      class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4"
+    >
+      <svg
+        class="w-8 h-8 text-surface-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
     </div>
-    {% else %}
-    <div class="p-12 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        </div>
-        <h3 class="font-semibold mb-1">No guests yet</h3>
-        <p class="text-sm text-surface-500">Share the registration link to start receiving guests</p>
-    </div>
-    {% endif %}
+    <h3 class="font-semibold mb-1">No guests yet</h3>
+    <p class="text-sm text-surface-500">
+      Share the registration link to start receiving guests
+    </p>
+  </div>
+  {% endif %}
 </div>
 
 <script>
-function copyLink() {
-    const link = "{{ request.scheme }}://{{ request.get_host }}{% url 'guest_register' event.id %}";
+  function copyLink() {
+    const link =
+      "{{ request.scheme }}://{{ request.get_host }}{% url 'guest_register' event.id %}";
     navigator.clipboard.writeText(link).then(() => {
-        showToast('Registration link copied!', 'success');
+      showToast("Registration link copied!", "success");
     });
-}
+  }
 </script>
 {% endblock %}

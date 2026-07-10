@@ -52,35 +52,14 @@
     />
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
   </head>
-  <body class="bg-white text-surface-900 font-sans antialiased">
+  <body class="bg-white text-[#001233] font-sans">
     <!-- Navigation -->
-    <nav
-      class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-100"
-    >
+    <nav class="bg-white/80 backdrop-blur-xl border-b border-surface-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center"
-            >
-              <svg
-                class="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <span class="text-lg font-bold tracking-tight">EventFlow</span>
-          </div>
+          <img src="/media/event_banners/logo.png" alt="EventFlow Logo" class="h-24" />
           <div
-            class="hidden md:flex items-center gap-8 text-sm font-medium text-surface-600"
+            class="hidden md:flex items-center gap-8 text-sm font-medium"
           >
             <a href="#features" class="hover:text-surface-900 transition-colors"
               >Features</a
@@ -97,17 +76,17 @@
           <div class="flex items-center gap-3">
             <a
               href="{% url 'login' %}"
-              class="px-4 py-2 text-sm font-medium text-surface-700 hover:text-surface-900 transition-colors"
+              class="px-4 py-2 text-sm font-medium text-[#001233] hover:text-[#ff4800] transition-colors"
               >Sign In</a
             >
             <a
               href="{% url 'register' %}"
-              class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors shadow-sm shadow-brand-600/25"
+              class="px-4 py-2 text-sm font-medium text-white bg-[#001233] rounded-lg transition-colors shadow-sm shadow-brand-600/25"
               >Get Started</a
             >
             <a
               href="{% url 'vendor_marketplace' %}"
-              class="px-4 py-2 text-sm font-medium text-brand-700 bg-white border border-brand-200 hover:bg-brand-50 rounded-lg transition-colors"
+              class="px-4 py-2 text-sm font-medium text-[#001233] bg-white border border-brand-200 hover:bg-brand-50 rounded-lg transition-colors"
               >Find Vendors</a
             >
           </div>
@@ -116,6 +95,7 @@
     </nav>
 
     <!-- Hero -->
+    {% comment %}
     <section class="relative pt-32 pb-20 overflow-hidden">
       <div
         class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-surface-50"
@@ -217,9 +197,32 @@
         </div>
       </div>
     </section>
+    {% endcomment %}
+
+    {% comment %} <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1440 400"
+      preserveAspectRatio="none"
+    >
+      <path
+        fill="#15175a"
+        d="
+      M0,220
+      C220,140 500,120 720,280
+      C950,430 1220,420 1440,280
+      L1440,0
+      L0,0
+      Z
+    "
+      />
+    </svg> {% endcomment %}
+
+    <div class="bg-green-600 h-[30vh] lg:h-[75vh] bg-[url('/media/event_banners/bgImg.png')] bg-cover bg-center mx-auto bg-no-repeat lg:w-[80%] lg:rounded-md">
+
+    </div>
 
     <!-- Dashboard Preview -->
-    <section class="py-16 bg-surface-50">
+    {% comment %} <section class="py-16 bg-surface-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           class="relative rounded-2xl border border-surface-200 bg-white shadow-2xl shadow-surface-900/5 overflow-hidden"
@@ -265,14 +268,14 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> {% endcomment %}
 
     <section class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between mb-10">
           <div class="w-full text-center">
-            <h2 class="text-3xl font-bold text-surface-900">Upcoming Events</h2>
-            <p class="text-surface-500 mt-2">
+            <h2 class="text-3xl font-bold">Upcoming Events</h2>
+            <p class=" mt-2">
               Discover trending and upcoming events
             </p>
           </div>
@@ -321,7 +324,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
           <p
-            class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3"
+            class="text-sm text-[#ff4800] font-semibold uppercase tracking-wider mb-3"
           >
             Features
           </p>
@@ -551,7 +554,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
           <p
-            class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3"
+            class="text-sm font-semibold text-[#ff4800] uppercase tracking-wider mb-3"
           >
             How It Works
           </p>
@@ -562,7 +565,7 @@
         <div class="grid md:grid-cols-4 gap-8">
           <div class="text-center">
             <div
-              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+              class="w-14 h-14 rounded-2xl bg-[#001233] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
             >
               1
             </div>
@@ -573,7 +576,7 @@
           </div>
           <div class="text-center">
             <div
-              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+              class="w-14 h-14 rounded-2xl bg-[#001233] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
             >
               2
             </div>
@@ -585,7 +588,7 @@
           </div>
           <div class="text-center">
             <div
-              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+              class="w-14 h-14 rounded-2xl bg-[#001233] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
             >
               3
             </div>
@@ -597,7 +600,7 @@
           </div>
           <div class="text-center">
             <div
-              class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
+              class="w-14 h-14 rounded-2xl bg-[#001233] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4"
             >
               4
             </div>
@@ -611,18 +614,18 @@
     </section>
 
     <!-- CTA -->
-    <section class="py-24 bg-brand-600 relative overflow-hidden">
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-800"
+    <section class="h-[40vh] flex items-center">
+      {% comment %} <div
+        class="inset-0 bg-gradient-to-br from-brand-700 to-brand-800"
       ></div>
       <div
-        class="absolute top-0 right-0 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl"
-      ></div>
+        class="  w-96 h-96 bg-brand-500/20 rounded-full blur-3xl"
+      ></div> {% endcomment %}
       <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#001233]">
           Ready to transform your events?
         </h2>
-        <p class="mt-4 text-lg text-brand-100">
+        <p class="mt-4 text-lg text-[#001233]">
           Join thousands of organizers who trust EventFlow for professional
           event management.
         </p>
@@ -631,19 +634,19 @@
         >
           <a
             href="{% url 'register' %}"
-            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-brand-700 bg-white hover:bg-brand-50 rounded-xl transition-all shadow-lg hover:-translate-y-0.5"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white bg-[#001233] hover:bg-brand-50 rounded-xl transition-all shadow-lg hover:-translate-y-0.5"
           >
             Start Free Today
           </a>
           <a
             href="{% url 'vendor_register' %}"
-            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white border border-white/30 hover:bg-white/10 rounded-xl transition-all"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-[#001233] border border-[#001233] hover:bg-white/10 rounded-xl transition-all"
           >
             Become a Vendor
           </a>
           <a
             href="{% url 'vendor_marketplace' %}"
-            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-brand-300 border border-white/30 hover:bg-white/10 rounded-xl transition-all"
+            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-[#001233] border border-[#001233] hover:bg-white/10 rounded-xl transition-all"
           >
             Browse Vendors
           </a>
@@ -652,33 +655,118 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 bg-surface-900 text-surface-400">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          class="flex flex-col md:flex-row items-center justify-between gap-4"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center"
-            >
-              <svg
-                class="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
+    <footer class="bg-[#001233] text-white">
+      <div class="container mx-auto px-4 py-12 w-[80%]">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Brand Column -->
+          <div>
+            <img
+              src="/media/event_banners/whiteLogo.png"
+              alt="EventFlow Logo"
+              class="h-12 mb-4"
+            />
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Discover amazing events, connect with people, and create
+              unforgettable experiences.
+            </p>
+            <div class="flex gap-4 mt-4">
+              <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
             </div>
-            <span class="text-white font-semibold">EventFlow</span>
           </div>
-          <p class="text-sm">
-            2026 EventFlow. Smart event management platform.
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Find Events</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Create Event</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Pricing</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Become a Partner</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Support -->
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Support</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Help Center</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Contact Us</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Privacy Policy</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-red-400 transition"
+                  >Terms of Service</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Newsletter -->
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Stay Updated</h3>
+            <p class="text-gray-400 text-sm mb-3">
+              Get the latest events and offers
+            </p>
+            <div class="flex">
+              <input
+                type="email"
+                placeholder="Your email"
+                class="flex-1 px-3 py-2 rounded-l-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-[##ff4800] transition"
+              />
+              <button
+                class="bg-[#ff4800] px-6 py-2 rounded-r-lg hover:bg-yellow-500 transition"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div
+          class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm"
+        >
+          <p>
+            &copy; 2026 NexEvent. All rights reserved. | Crafted with
+            <i class="fas fa-heart text-red-500"></i> for amazing events
           </p>
         </div>
       </div>

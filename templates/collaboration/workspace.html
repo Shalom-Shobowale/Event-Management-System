@@ -1,0 +1,199 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Workspace - {{ event.name }}{% endblock %}
+{% block page_title %}Event Workspace{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h2 class="text-xl font-bold">Event Workspace</h2>
+            <p class="text-sm text-surface-500 mt-1">{{ event.name }}</p>
+        </div>
+        <a href="{% url 'event_dashboard' event.id %}" class="text-sm text-brand-600 hover:underline">Back to Event</a>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
+            <p class="text-xs font-semibold text-surface-500 uppercase">Tasks</p>
+            <p class="text-2xl font-bold mt-1">{{ task_stats.total }}</p>
+            <p class="text-xs text-surface-400">{{ task_stats.done }} completed</p>
+        </div>
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
+            <p class="text-xs font-semibold text-surface-500 uppercase">Progress</p>
+            <p class="text-2xl font-bold mt-1">{{ task_stats.progress }}%</p>
+        </div>
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
+            <p class="text-xs font-semibold text-surface-500 uppercase">Files</p>
+            <p class="text-2xl font-bold mt-1">{{ files.count }}</p>
+        </div>
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
+            <p class="text-xs font-semibold text-surface-500 uppercase">Members</p>
+            <p class="text-2xl font-bold mt-1">{{ members.count }}</p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Tasks & Activity -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Tasks -->
+            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
+                    <h3 class="font-semibold">Tasks</h3>
+                    <a href="{% url 'event_tasks' event.id %}" class="text-sm text-brand-600 hover:underline">View All</a>
+                </div>
+                {% if tasks %}
+                <div class="divide-y divide-surface-100 dark:divide-surface-700">
+                    {% for task in tasks|slice:":5" %}
+                    <div class="p-4 flex items-center gap-3">
+                        <div class="w-5 h-5 rounded-full border-2
+                            {% if task.status == 'done' %}border-success-500 bg-success-500
+                            {% elif task.priority == 'urgent' %}border-error-500
+                            {% elif task.priority == 'high' %}border-warning-500
+                            {% else %}border-surface-300{% endif %}
+                            flex items-center justify-center">
+                            {% if task.status == 'done' %}
+                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            {% endif %}
+                        </div>
+                        <span class="{% if task.status == 'done' %}line-through text-surface-400{% endif %} flex-1">{{ task.title }}</span>
+                        <a href="{% url 'update_task' task.id %}" class="p-1 rounded hover:bg-surface-100 dark:hover:bg-surface-700">
+                            <svg class="w-4 h-4 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-8 text-center">
+                    <p class="text-sm text-surface-500">No tasks yet</p>
+                    <a href="{% url 'create_task' event.id %}" class="text-sm text-brand-600 hover:underline">Create task</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Files -->
+            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
+                    <h3 class="font-semibold">Files</h3>
+                    <a href="{% url 'upload_file' event.id %}" class="text-sm text-brand-600 hover:underline">Upload</a>
+                </div>
+                {% if files %}
+                <div class="divide-y divide-surface-100 dark:divide-surface-700">
+                    {% for file in files %}
+                    <div class="p-4 flex items-center gap-3 hover:bg-surface-50 dark:hover:bg-surface-700/50">
+                        <div class="w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium truncate">{{ file.name }}</p>
+                            <p class="text-xs text-surface-500">{{ file.uploaded_by.username }} · {{ file.created_at|date:"M d" }}</p>
+                        </div>
+                        <a href="{{ file.file.url }}" target="_blank" class="text-sm text-brand-600 hover:underline">View</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-8 text-center">
+                    <p class="text-sm text-surface-500">No files uploaded yet</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Activity Log -->
+            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <div class="p-5 border-b border-surface-100 dark:border-surface-700">
+                    <h3 class="font-semibold">Recent Activity</h3>
+                </div>
+                {% if activity %}
+                <div class="divide-y divide-surface-100 dark:divide-surface-700">
+                    {% for log in activity %}
+                    <div class="p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 text-xs font-semibold">
+                            {{ log.user.username|make_list|first|upper }}
+                        </div>
+                        <div>
+                            <p class="text-sm">{{ log.description }}</p>
+                            <p class="text-xs text-surface-500 mt-1">{{ log.created_at|timesince }} ago</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-8 text-center">
+                    <p class="text-sm text-surface-500">No activity yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Team Members -->
+            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
+                    <h3 class="font-semibold">Team</h3>
+                    <a href="{% url 'add_member' event.id %}" class="text-xs text-brand-600 hover:underline">Add</a>
+                </div>
+                <div class="p-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-brand-600 text-xs font-semibold">
+                            {{ event.host.username|make_list|first|upper }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium truncate">{{ event.host.get_full_name|default:event.host.username }}</p>
+                            <p class="text-xs text-surface-500">Host</p>
+                        </div>
+                    </div>
+                    {% for member in members %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-surface-100 dark:bg-surface-700 flex items-center justify-center text-surface-600 text-xs font-semibold">
+                            {{ member.user.username|make_list|first|upper }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium truncate">{{ member.user.username }}</p>
+                            <p class="text-xs text-surface-500">{{ member.get_role_display }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
+                    <h3 class="font-semibold">Notes</h3>
+                    <a href="{% url 'add_note' event.id %}" class="text-xs text-brand-600 hover:underline">Add</a>
+                </div>
+                {% if notes %}
+                <div class="divide-y divide-surface-100 dark:divide-surface-700">
+                    {% for note in notes %}
+                    <div class="p-4">
+                        <p class="font-medium text-sm">{{ note.title }}</p>
+                        <p class="text-xs text-surface-500 mt-1">{{ note.content|truncatewords:20 }}</p>
+                        <p class="text-xs text-surface-400 mt-2">{{ note.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-6 text-center">
+                    <p class="text-sm text-surface-500">No notes yet</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-5 text-white">
+                <h3 class="font-semibold mb-3">Quick Actions</h3>
+                <div class="space-y-2">
+                    <a href="{% url 'create_task' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Add Task</a>
+                    <a href="{% url 'upload_file' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Upload File</a>
+                    <a href="{% url 'add_note' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Add Note</a>
+                    <a href="{% url 'start_conversation' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Start Chat</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

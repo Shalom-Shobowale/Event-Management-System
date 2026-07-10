@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from event.models import Event
 from vendors.models import Vendor, Service, VendorCategory
 from .models import QuoteRequest, Proposal, Booking
@@ -60,6 +60,36 @@ def my_quote_requests(request):
     return render(request, 'bookings/my_quote_requests.html', {'rfqs': rfqs})
 
 
+@login_required
+def browse_rfqs(request):
+    """Vendors browse all open RFQs they can respond to."""
+    if not hasattr(request.user, 'vendor_profile'):
+        messages.error(request, 'You need a vendor account to browse quote requests.')
+        return redirect('vendor_register')
+
+    vendor = request.user.vendor_profile
+
+    # Get open RFQs, excluding ones the vendor already submitted to
+    submitted_rfq_ids = Proposal.objects.filter(vendor=vendor).values_list('quote_request_id', flat=True)
+    rfqs = QuoteRequest.objects.filter(status='open').exclude(id__in=submitted_rfq_ids).select_related('event').order_by('-is_urgent', '-created_at')
+
+    # Filter by category matching vendor's categories
+    category = request.GET.get('category', '')
+    search = request.GET.get('search', '')
+    if category:
+        rfqs = rfqs.filter(category=category)
+    if search:
+        rfqs = rfqs.filter(Q(title__icontains=search) | Q(description__icontains=search))
+
+    return render(request, 'bookings/browse_rfqs.html', {
+        'rfqs': rfqs,
+        'vendor': vendor,
+        'categories': VendorCategory.choices,
+        'selected_category': category,
+        'search': search,
+    })
+
+
 # ========== Proposal Views ==========
 
 @login_required
@@ -67,10 +97,15 @@ def submit_proposal(request, rfq_id):
     rfq = get_object_or_404(QuoteRequest, id=rfq_id, status='open')
 
     if not hasattr(request.user, 'vendor_profile'):
-        messages.error(request, 'Only vendors can submit proposals.')
-        return redirect('vendor_profile', slug=request.user.vendor_profile.slug)
+        messages.error(request, 'Only vendors can submit proposals. Register as a vendor first.')
+        return redirect('vendor_register')
 
     vendor = request.user.vendor_profile
+
+    # Check vendor hasn't already submitted
+    if Proposal.objects.filter(quote_request=rfq, vendor=vendor).exists():
+        messages.info(request, 'You have already submitted a proposal for this quote request.')
+        return redirect('vendor_proposals')
 
     if request.method == 'POST':
         proposal = Proposal.objects.create(
@@ -83,10 +118,11 @@ def submit_proposal(request, rfq_id):
             terms=request.POST.get('terms', ''),
             estimated_duration_hours=int(request.POST.get('duration_hours', 4)),
         )
-        messages.success(request, 'Proposal submitted!')
+        messages.success(request, 'Proposal submitted! The event host will review it shortly.')
         return redirect('vendor_proposals')
 
-    services = vendor.services.filter(category=rfq.category, is_active=True)
+    # Show all vendor services, not just category-filtered (category may not match exactly)
+    services = vendor.services.filter(is_active=True)
     return render(request, 'bookings/submit_proposal.html', {
         'rfq': rfq,
         'vendor': vendor,
@@ -220,3 +256,4 @@ def vendor_bookings(request):
     vendor = request.user.vendor_profile
     bookings = Booking.objects.filter(vendor=vendor).select_related('event')
     return render(request, 'bookings/vendor_bookings.html', {'bookings': bookings})
+

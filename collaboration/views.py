@@ -181,7 +181,7 @@ def start_conversation(request, event_id):
         if booking.vendor.user not in participants:
             participants.append(booking.vendor.user)
 
-    return render(request, 'collaboration/start_conversation.html', {
+    return render(request, 'collaboration/add_conversation.html', {
         'event': event,
         'potential_participants': participants,
     })

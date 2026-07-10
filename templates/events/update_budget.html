@@ -1,0 +1,50 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Update Budget - {{ event.name }}{% endblock %}
+{% block page_title %}Update Budget{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">Update Budget</h2>
+        <p class="text-sm text-surface-500 mt-1">Set the total budget for {{ event.name }}</p>
+    </div>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Total Budget <span class="text-error-500">*</span></label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500">₦</span>
+                        <input type="number" name="total_budget" value="{{ budget.total_budget }}" step="0.01" required class="w-full pl-8 pr-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="0.00">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">
+                        Currency
+                    </label>
+                    <select name="currency" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm">
+                        <option value="USD" {% if budget.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                        <option value="EUR" {% if budget.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                        <option value="GBP" {% if budget.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                        <option value="CAD" {% if budget.currency == 'CAD' %}selected{% endif %}>CAD ($)</option>
+                        <option value="AUD" {% if budget.currency == 'AUD' %}selected{% endif %}>AUD ($)</option>
+                        <option value="NGN" {% if budget.currency == 'NGN' %}selected{% endif %}>NGN (₦)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Notes</label>
+                    <textarea name="notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none" placeholder="Budget notes or constraints...">{{ budget.notes }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+            <a href="{% url 'event_budget' event.id %}" class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
+            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Save Budget</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

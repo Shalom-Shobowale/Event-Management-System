@@ -1,52 +1,80 @@
-{% extends "base_dashboard.html" %}
-
-{% block title %}Vendor Bookings{% endblock %}
-{% block page_title %}My Bookings{% endblock %}
-
-{% block content %}
+{% extends "base_dashboard.html" %} 
+{% load humanize %}
+{% block title %}Vendor Bookings{% endblock%} 
+{% block page_title %}My Bookings{% endblock %} {% block content %}
 <div class="max-w-4xl mx-auto">
-    {% if bookings %}
-    <div class="space-y-4">
-        {% for booking in bookings %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-start justify-between">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold">
-                        {{ booking.event.name|make_list|first|upper }}
-                    </div>
-                    <div>
-                        <h3 class="font-semibold">{{ booking.service_name }}</h3>
-                        <p class="text-sm text-surface-500">{{ booking.event.name }} &middot; {{ booking.event.date|date:"M d, Y" }}</p>
-                        <div class="flex items-center gap-2 mt-2">
-                            <span class="px-2 py-0.5 text-xs font-medium rounded-full
-                                {% if booking.status == 'confirmed' %}bg-success-50 text-success-700
-                                {% elif booking.status == 'pending' %}bg-warning-50 text-warning-700
-                                {% elif booking.status == 'completed' %}bg-brand-50 text-brand-700
-                                {% else %}bg-surface-100 text-surface-600{% endif %}">
-                                {{ booking.get_status_display }}
-                            </span>
-                            <span class="text-sm font-medium">${{ booking.agreed_price|floatformat:0 }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    {% if booking.status == 'pending' %}
-                    <a href="{% url 'confirm_booking' booking.id %}" class="px-3 py-1.5 text-xs font-medium bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors">Confirm</a>
-                    {% endif %}
-                    <a href="{% url 'booking_detail' booking.id %}" class="px-3 py-1.5 text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">View</a>
-                </div>
+  {% if bookings %}
+  <div class="space-y-4">
+    {% for booking in bookings %}
+    <div
+      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+    >
+      <div class="flex items-start justify-between">
+        <div class="flex items-start gap-4">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold"
+          >
+            {{ booking.event.name|make_list|first|upper }}
+          </div>
+          <div>
+            <h3 class="font-semibold">{{ booking.service_name }}</h3>
+            <p class="text-sm text-surface-500">
+              {{ booking.event.name }} &middot; {{ booking.event.date|date:"M d, Y" }}
+            </p>
+            <div class="flex items-center gap-2 mt-2">
+              <span
+                class="px-2 py-0.5 text-xs font-medium rounded-full text-blue-800 {% if booking.status == 'confirmed' %}bg-success-50 text-success-700 {% elif booking.status == 'pending' %}bg-warning-50 text-warning-700 {% elif booking.status == 'completed' %}bg-brand-50 text-brand-700 {% else %}bg-surface-100 text-surface-600{% endif %}"
+              >
+                {{ booking.get_status_display }}
+              </span>
+              <span class="text-sm font-medium"
+                >₦{{ booking.agreed_price|floatformat:0|intcomma }}</span
+              >
             </div>
+          </div>
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-12 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <div class="flex items-center gap-2">
+          {% if booking.status == 'pending' %}
+          <a
+            href="{% url 'confirm_booking' booking.id %}"
+            class="px-3 py-1.5 text-xs font-medium bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors"
+            >Confirm</a
+          >
+          {% endif %}
+          <a
+            href="{% url 'booking_detail' booking.id %}"
+            class="px-3 py-1.5 text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
+            >View</a
+          >
         </div>
-        <h3 class="font-semibold mb-1">No bookings yet</h3>
-        <p class="text-sm text-surface-500">Your bookings will appear here</p>
+      </div>
     </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div
+    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-12 text-center"
+  >
+    <div
+      class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4"
+    >
+      <svg
+        class="w-8 h-8 text-surface-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        />
+      </svg>
+    </div>
+    <h3 class="font-semibold mb-1">No bookings yet</h3>
+    <p class="text-sm text-surface-500">Your bookings will appear here</p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

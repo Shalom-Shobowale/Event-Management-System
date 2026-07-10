@@ -1,0 +1,50 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Upload File{% endblock %}
+{% block page_title %}Upload File{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">Upload File</h2>
+        <p class="text-sm text-surface-500 mt-1">Share documents for {{ event.name }}</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">File <span class="text-error-500">*</span></label>
+                    <div class="border-2 border-dashed border-surface-200 dark:border-surface-600 rounded-xl p-8 text-center hover:border-brand-500 transition-colors cursor-pointer">
+                        <input type="file" name="file" id="file-input" required class="hidden" onchange="updateFileName(this)">
+                        <label for="file-input" class="cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            </div>
+                            <p id="file-name" class="text-sm text-surface-600 dark:text-surface-400">Click to select or drag and drop</p>
+                            <p class="text-xs text-surface-400 mt-1">PDF, DOC, XLS, JPG, PNG up to 10MB</p>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Description</label>
+                    <textarea name="description" rows="2" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none" placeholder="Optional description..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+            <a href="{% url 'event_workspace' event.id %}" class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
+            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Upload File</button>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateFileName(input) {
+    const fileName = input.files[0]?.name || 'Click to select or drag and drop';
+    document.getElementById('file-name').textContent = fileName;
+}
+</script>
+{% endblock %}

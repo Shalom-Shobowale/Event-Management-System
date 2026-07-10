@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.db.models import Avg, Count, Min, Q
+from django.db.models import Avg, Count, Q, Min, Sum
 from .models import Vendor, Service, PortfolioItem, VendorReview, SavedVendor, VendorCategory
+from event.models import Event
+from bookings.models import QuoteRequest
 
 
 def marketplace(request):
-    vendors = Vendor.objects.filter(is_active=True, verification_status='verified')
+    # Show all active vendors; verification badge displayed in template
+    vendors = Vendor.objects.filter(is_active=True)
 
     # Filters
     category = request.GET.get('category', '')
@@ -65,8 +68,10 @@ def vendor_profile(request, slug):
     reviews = vendor.reviews.all()[:10]
 
     is_saved = False
+    has_vendor_profile = False
     if request.user.is_authenticated:
         is_saved = SavedVendor.objects.filter(user=request.user, vendor=vendor).exists()
+        has_vendor_profile = hasattr(request.user, 'vendor_profile')
 
     context = {
         'vendor': vendor,
@@ -74,6 +79,7 @@ def vendor_profile(request, slug):
         'portfolio': portfolio,
         'reviews': reviews,
         'is_saved': is_saved,
+        'has_vendor_profile': has_vendor_profile,
     }
     return render(request, 'vendors/profile.html', context)
 
@@ -136,19 +142,62 @@ def vendor_dashboard(request):
     services = vendor.services.all()
     recent_reviews = vendor.reviews.all()[:5]
 
-    # Stats
-    total_services = services.count()
-    total_portfolio = vendor.portfolio.count()
-    total_views = 0  # Track in future
+    # Open RFQs this vendor hasn't responded to yet
+    submitted_rfq_ids = QuoteRequest.objects.filter(
+        proposals__vendor=vendor
+    ).values_list('id', flat=True)
+    open_rfqs = QuoteRequest.objects.filter(
+        status='open'
+    ).exclude(id__in=submitted_rfq_ids).order_by('-is_urgent', '-created_at')[:5]
 
     context = {
         'vendor': vendor,
         'services': services,
         'recent_reviews': recent_reviews,
-        'total_services': total_services,
-        'total_portfolio': total_portfolio,
+        'total_services': services.count(),
+        'total_portfolio': vendor.portfolio.count(),
+        'open_rfqs': open_rfqs,
+        'open_rfqs_count': open_rfqs.count(),
     }
     return render(request, 'vendors/dashboard.html', context)
+
+
+@login_required
+def edit_vendor_profile(request):
+    """Edit vendor profile information."""
+    if not hasattr(request.user, 'vendor_profile'):
+        return redirect('vendor_register')
+
+    vendor = request.user.vendor_profile
+
+    if request.method == 'POST':
+        vendor.business_name = request.POST.get('business_name', vendor.business_name).strip()
+        vendor.description = request.POST.get('description', vendor.description).strip()
+        vendor.categories = request.POST.get('categories', vendor.categories)
+        vendor.phone = request.POST.get('phone', vendor.phone).strip()
+        vendor.email = request.POST.get('email', vendor.email).strip()
+        vendor.city = request.POST.get('city', vendor.city).strip()
+        vendor.state = request.POST.get('state', vendor.state).strip()
+        vendor.country = request.POST.get('country', vendor.country).strip()
+        vendor.website = request.POST.get('website', vendor.website).strip()
+        vendor.instagram = request.POST.get('instagram', vendor.instagram).strip()
+        vendor.facebook = request.POST.get('facebook', vendor.facebook).strip()
+        vendor.years_in_business = int(request.POST.get('years_in_business', vendor.years_in_business))
+        vendor.team_size = int(request.POST.get('team_size', vendor.team_size))
+
+        if request.FILES.get('logo'):
+            vendor.logo = request.FILES['logo']
+        if request.FILES.get('cover_image'):
+            vendor.cover_image = request.FILES['cover_image']
+
+        vendor.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('vendor_dashboard')
+
+    return render(request, 'vendors/edit_profile.html', {
+        'vendor': vendor,
+        'categories': VendorCategory.choices,
+    })
 
 
 @login_required
@@ -222,3 +271,31 @@ def submit_review(request, vendor_id):
         return redirect('vendor_profile', slug=vendor.slug)
 
     return render(request, 'vendors/review_form.html', {'vendor': vendor})
+
+
+@login_required
+def request_quote_vendor(request, vendor_id):
+    """Request a quote from a specific vendor - redirects to event selection or RFQ creation."""
+    vendor = get_object_or_404(Vendor, id=vendor_id, is_active=True)
+
+    # Prevent vendors from requesting quotes from other vendors
+    if hasattr(request.user, 'vendor_profile'):
+        messages.error(request, 'Vendors cannot request quotes from other vendors.')
+        return redirect('vendor_profile', slug=vendor.slug)
+
+    # Get user's events
+    events = Event.objects.filter(host=request.user).order_by('-date')
+
+    if not events.exists():
+        messages.warning(request, 'You need to create an event first before requesting quotes.')
+        return redirect('create_event')
+
+    # If only one event, use it directly
+    if events.count() == 1:
+        return redirect('create_quote_request', event_id=events.first().id)
+
+    # Show event selection page
+    return render(request, 'vendors/select_event_for_quote.html', {
+        'vendor': vendor,
+        'events': events,
+    })

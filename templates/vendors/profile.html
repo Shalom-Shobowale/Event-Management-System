@@ -3,7 +3,7 @@
 
 {% block title %}{{ vendor.business_name }}{% endblock %}
 {% block page_title %}{{ vendor.business_name }}{% endblock %}
-
+{% load humanize %}
 {% block content %}
 <div class="max-w-5xl mx-auto">
     <!-- Cover & Profile Header -->
@@ -65,8 +65,12 @@
                                     {% if is_saved %}Saved{% else %}Save{% endif %}
                                 </button>
                             </form>
+                            {% if not has_vendor_profile %}
+                            <a href="{% url 'request_quote_vendor' vendor.id %}" class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Request Quote</a>
                             {% endif %}
-                            <a href="#" class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Request Quote</a>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Login to Request Quote</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -126,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-lg font-bold text-brand-600">${{ service.price|floatformat:0 }}</p>
+                                <p class="text-lg font-bold text-brand-600"> ₦{{ service.price|default:0|floatformat:0|intcomma }}</p>
                                 <p class="text-xs text-surface-500">{{ service.price_unit }}</p>
                             </div>
                         </div>

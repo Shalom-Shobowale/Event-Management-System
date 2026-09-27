@@ -1,0 +1,88 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment failed · {{ guest.event.name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+  <style>
+    html.dark, html.dark body { background: #05050d !important; color: #f6f6f8 !important; }
+  </style>
+</head>
+<body class="min-h-screen bg-ink-950 text-ink-50 antialiased font-sans flex items-center justify-center p-4 sm:p-6">
+
+  <main class="relative w-full max-w-md fade-up">
+
+    <!-- Icon -->
+    <div class="relative flex justify-center mb-8">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-flame-600/20 blur-2xl"></div>
+      <div class="relative w-24 h-24 rounded-3xl bg-flame-600/15 border border-flame-600/30 grid place-items-center text-flame-400">
+        <svg class="w-11 h-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01M4.075 20h15.85c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 17.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <div class="text-center mb-8">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-3">Payment failed</p>
+      <h1 class="font-display text-4xl leading-[1.05] tracking-tight text-ink-50">
+        Something<br />
+        <span class="italic text-flame-500">went wrong.</span>
+      </h1>
+      <p class="mt-4 text-sm text-ink-400 max-w-sm mx-auto">
+        Your payment wasn't completed. You haven't been charged. You can try again below.
+      </p>
+    </div>
+
+    <!-- Event card -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden mb-6">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <div class="p-5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Event</p>
+        <p class="font-display text-xl leading-tight text-ink-50">{{ guest.event.name }}</p>
+        <div class="flex items-center gap-3 mt-3 text-xs text-ink-400">
+          <span>{{ guest.event.venue }}</span>
+          <span class="text-ink-600">·</span>
+          <span>{{ guest.event.date|date:"M d, Y" }}</span>
+        </div>
+        {% if guest.event.price %}
+          <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Amount due</span>
+            <span class="font-display text-2xl leading-none text-flame-500">
+              ₦{{ guest.event.price|floatformat:0 }}
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="space-y-2.5">
+      <a href="{% url 'event_register' guest.event.id %}"
+         class="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition">
+        Try payment again
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+
+      <a href="/"
+         class="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+        Back to home
+      </a>
+    </div>
+
+    <p class="mt-8 text-center font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      Powered by <span class="text-flame-500">EventFlow</span>
+    </p>
+
+  </main>
+</body>
+</html>

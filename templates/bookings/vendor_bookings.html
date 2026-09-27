@@ -1,80 +1,184 @@
-{% extends "base_dashboard.html" %} 
+{% extends "base_dashboard.html" %}
 {% load humanize %}
-{% block title %}Vendor Bookings{% endblock%} 
-{% block page_title %}My Bookings{% endblock %} {% block content %}
+
+{% block title %}Vendor bookings{% endblock %}
+{% block page_eyebrow %}Vendor{% endblock %}
+{% block page_title %}My bookings{% endblock %}
+{% block nav_vendor_bookings %}nav-active{% endblock %}
+
+{% block content %}
 <div class="max-w-4xl mx-auto">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Confirmed work</p>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+          Jobs you've<br />
+          <span class="italic text-ink-400">locked in.</span>
+        </h2>
+        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+          Every booking a host has awarded to you. Confirm the ones still pending
+          and open any booking for the full brief.
+        </p>
+      </div>
+
+      <a href="{% url 'vendor_proposals' %}"
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-sm font-medium text-ink-100 transition self-start">
+        My proposals
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
   {% if bookings %}
-  <div class="space-y-4">
-    {% for booking in bookings %}
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-    >
-      <div class="flex items-start justify-between">
-        <div class="flex items-start gap-4">
-          <div
-            class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold"
-          >
-            {{ booking.event.name|make_list|first|upper }}
-          </div>
-          <div>
-            <h3 class="font-semibold">{{ booking.service_name }}</h3>
-            <p class="text-sm text-surface-500">
-              {{ booking.event.name }} &middot; {{ booking.event.date|date:"M d, Y" }}
-            </p>
-            <div class="flex items-center gap-2 mt-2">
-              <span
-                class="px-2 py-0.5 text-xs font-medium rounded-full text-blue-800 {% if booking.status == 'confirmed' %}bg-success-50 text-success-700 {% elif booking.status == 'pending' %}bg-warning-50 text-warning-700 {% elif booking.status == 'completed' %}bg-brand-50 text-brand-700 {% else %}bg-surface-100 text-surface-600{% endif %}"
-              >
-                {{ booking.get_status_display }}
-              </span>
-              <span class="text-sm font-medium"
-                >₦{{ booking.agreed_price|floatformat:0|intcomma }}</span
-              >
+
+    <div class="space-y-4 fade-up d2">
+      {% for booking in bookings %}
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden hover:border-white/20 transition-colors">
+
+        <!-- colored top edge color-coded by status -->
+        <div class="absolute top-0 left-0 right-0 h-0.5
+          {% if booking.status == 'confirmed' %}bg-lime2-500
+          {% elif booking.status == 'pending' %}bg-flame-500
+          {% elif booking.status == 'completed' %}bg-violet2-500
+          {% else %}bg-ink-600{% endif %}"></div>
+
+        <div class="p-5 sm:p-6">
+
+          <!-- top row -->
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+            <div class="flex items-start gap-4 min-w-0 flex-1">
+              <!-- avatar -->
+              <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-xl flex-shrink-0">
+                {{ booking.event.name|make_list|first|upper }}
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h3 class="font-display text-xl leading-tight text-ink-50 truncate">
+                  {{ booking.service_name }}
+                </h3>
+
+                <p class="text-sm text-ink-300 mt-1 truncate">
+                  {{ booking.event.name }}
+                </p>
+
+                <!-- meta row -->
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs">
+                  <span class="inline-flex items-center gap-1.5 text-ink-400">
+                    <svg class="w-3 h-3 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ booking.event.date|date:"M d, Y" }}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            <!-- price -->
+            <div class="text-right flex-shrink-0 sm:min-w-[130px]">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Agreed</p>
+              <p class="font-display text-3xl leading-none text-flame-500">
+                ₦{{ booking.agreed_price|default:0|floatformat:0|intcomma }}
+              </p>
+            </div>
+
           </div>
-        </div>
-        <div class="flex items-center gap-2">
-          {% if booking.status == 'pending' %}
-          <a
-            href="{% url 'confirm_booking' booking.id %}"
-            class="px-3 py-1.5 text-xs font-medium bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors"
-            >Confirm</a
-          >
-          {% endif %}
-          <a
-            href="{% url 'booking_detail' booking.id %}"
-            class="px-3 py-1.5 text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
-            >View</a
-          >
+
+          <!-- footer row: status + actions -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-5 pt-4 border-t border-white/5">
+
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase tracking-widest
+              {% if booking.status == 'confirmed' %}
+                bg-lime2-500/15 border border-lime2-500/30 text-lime2-500
+              {% elif booking.status == 'pending' %}
+                bg-flame-500/15 border border-flame-500/30 text-flame-400
+              {% elif booking.status == 'completed' %}
+                bg-violet2-500/15 border border-violet2-500/30 text-violet2-400
+              {% else %}
+                bg-white/5 border border-white/10 text-ink-400
+              {% endif %}">
+              {% if booking.status == 'confirmed' %}
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+              {% elif booking.status == 'pending' %}
+                <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+              {% elif booking.status == 'completed' %}
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+              {% endif %}
+              {{ booking.get_status_display }}
+            </span>
+
+            <div class="flex items-center gap-2">
+
+              {% if booking.status == 'pending' %}
+                <a href="{% url 'confirm_booking' booking.id %}"
+                   class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-xs font-semibold transition">
+                  Confirm booking
+                  <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+                       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </a>
+              {% endif %}
+
+              <a href="{% url 'booking_detail' booking.id %}"
+                 class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 hover:border-white/25 hover:bg-white/5 text-xs font-medium text-ink-100 transition">
+                View
+                <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+
+            </div>
+
+          </div>
+
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
+
   {% else %}
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-12 text-center"
-  >
-    <div
-      class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4"
-    >
-      <svg
-        class="w-8 h-8 text-surface-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-      </svg>
+
+    <!-- empty state -->
+    <div class="relative rounded-2xl border border-dashed border-white/10 bg-ink-900/50 p-12 text-center fade-up d2">
+      <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-3xl">No bookings yet</h3>
+      <p class="mt-3 text-sm text-ink-400 max-w-sm mx-auto">
+        Once a host awards you a job, the confirmed booking will appear here for
+        you to manage.
+      </p>
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="{% url 'browse_rfqs' %}"
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+          Browse open RFQs
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="{% url 'vendor_proposals' %}"
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+          View my proposals
+        </a>
+      </div>
     </div>
-    <h3 class="font-semibold mb-1">No bookings yet</h3>
-    <p class="text-sm text-surface-500">Your bookings will appear here</p>
-  </div>
+
   {% endif %}
+
 </div>
 {% endblock %}

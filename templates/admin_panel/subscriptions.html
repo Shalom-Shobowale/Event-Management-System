@@ -1,0 +1,298 @@
+{% extends 'admin_panel/base.html' %}
+{% load humanize %}
+
+{% block title %}Vendor subscriptions{% endblock %}
+{% block page_eyebrow %}Finance{% endblock %}
+{% block page_title %}Vendor subscriptions{% endblock %}
+{% block nav_subscriptions %}nav-active{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-2">Recurring revenue</p>
+      <h2 class="font-display text-4xl leading-[1.05] tracking-tight">
+        Who's paying,<br />
+        <span class="italic text-ink-400">who's drifting.</span>
+      </h2>
+    </div>
+    <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      {{ total_count }} subscription{{ total_count|pluralize }}
+    </p>
+  </div>
+
+  <!-- ===================== STAT STRIP ===================== -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <!-- MRR -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">MRR</p>
+      <p class="font-display text-4xl leading-none text-lime2-600 dark:text-lime2-500">
+        ₦{{ mrr|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">
+        ARR ₦{{ arr|floatformat:0|intcomma }}
+      </p>
+    </div>
+
+    <!-- Active -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Active</p>
+      <p class="font-display text-4xl leading-none text-ink-900 dark:text-ink-50">{{ active_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500 mt-2 inline-flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+        Paying now
+      </p>
+    </div>
+
+    <!-- Trialing -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Trialing</p>
+      <p class="font-display text-4xl leading-none text-ink-900 dark:text-ink-50">{{ trialing_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-violet2-500 mt-2">Conversion window</p>
+    </div>
+
+    <!-- Past due -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Past due</p>
+      <p class="font-display text-4xl leading-none {% if past_due_count > 0 %}text-flame-500{% else %}text-ink-900 dark:text-ink-50{% endif %}">
+        {{ past_due_count }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mt-2 inline-flex items-center gap-1.5">
+        {% if past_due_count > 0 %}
+          <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+        {% endif %}
+        Chase these
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== PLAN DISTRIBUTION ===================== -->
+  {% if plan_distribution %}
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="p-5 border-b border-ink-100 dark:border-white/5">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Breakdown</p>
+      <h3 class="font-display text-2xl leading-none">Vendors per plan</h3>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-ink-100 dark:divide-white/5">
+      {% for row in plan_distribution %}
+      <div class="p-5 flex items-center justify-between">
+        <div>
+          <p class="font-medium text-ink-900 dark:text-ink-50">{{ row.plan__name }}</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1">
+            ₦{{ row.plan__monthly_price|floatformat:0|intcomma }}/mo
+          </p>
+        </div>
+        <span class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ row.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ===================== FILTERS ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+    <form method="get" class="p-5">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+
+        <div class="md:col-span-6 relative">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500 pointer-events-none"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" name="search" value="{{ search }}"
+                 placeholder="Search by business name or email…"
+                 class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/50 text-sm text-ink-900 dark:text-ink-100 placeholder-ink-500 focus:border-flame-600 focus:bg-flame-600/5 focus:ring-4 focus:ring-flame-600/12 outline-none transition" />
+        </div>
+
+        <select name="status"
+                class="md:col-span-2 px-3 py-2.5 rounded-lg border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/50 text-sm text-ink-900 dark:text-ink-100 focus:border-flame-600 outline-none transition">
+          <option value=""         {% if not status_filter %}selected{% endif %}>Any status</option>
+          <option value="active"   {% if status_filter == 'active'   %}selected{% endif %}>Active</option>
+          <option value="trialing" {% if status_filter == 'trialing' %}selected{% endif %}>Trialing</option>
+          <option value="past_due" {% if status_filter == 'past_due' %}selected{% endif %}>Past due</option>
+          <option value="cancelled"{% if status_filter == 'cancelled'%}selected{% endif %}>Cancelled</option>
+          <option value="free"     {% if status_filter == 'free'     %}selected{% endif %}>Free</option>
+        </select>
+
+        <select name="plan"
+                class="md:col-span-3 px-3 py-2.5 rounded-lg border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/50 text-sm text-ink-900 dark:text-ink-100 focus:border-flame-600 outline-none transition">
+          <option value="">All plans</option>
+          {% for p in plans %}
+            <option value="{{ p.id }}" {% if plan_filter == p.id|stringformat:"s" %}selected{% endif %}>{{ p.name }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit"
+                class="md:col-span-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </button>
+      </div>
+
+      {% if search or status_filter or plan_filter %}
+        <div class="flex items-center justify-between mt-4 pt-4 border-t border-ink-100 dark:border-white/5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Filters active</p>
+          <a href="{% url 'admin_subscriptions' %}"
+             class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-flame-500 transition">
+            Clear →
+          </a>
+        </div>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- ===================== TABLE ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-ink-100 dark:border-white/5 text-left">
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Vendor</th>
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Plan</th>
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Status</th>
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Trial ends</th>
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Period ends</th>
+            <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal text-right"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-100 dark:divide-white/5">
+          {% for sub in subscriptions %}
+          <tr class="group hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
+
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-full bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-500 font-medium text-sm flex-shrink-0">
+                  {{ sub.vendor.business_name|make_list|first|upper }}
+                </div>
+                <div class="min-w-0">
+                  <p class="font-medium text-ink-900 dark:text-ink-50 truncate">{{ sub.vendor.business_name }}</p>
+                  <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ sub.vendor.user.email }}</p>
+                </div>
+              </div>
+            </td>
+
+            <td class="px-5 py-4">
+              <p class="font-medium text-ink-900 dark:text-ink-50">{{ sub.plan.name }}</p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-0.5">
+                ₦{{ sub.plan.monthly_price|floatformat:0|intcomma }}/mo
+              </p>
+            </td>
+
+            <td class="px-5 py-4">
+              {% if sub.status == 'active' %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
+                  <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+                  Active
+                </span>
+              {% elif sub.status == 'trialing' %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet2-500/15 border border-violet2-500/30 font-mono text-[10px] uppercase tracking-widest text-violet2-500">
+                  <span class="w-1.5 h-1.5 rounded-full bg-violet2-500"></span>
+                  Trialing
+                </span>
+              {% elif sub.status == 'past_due' %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-400">
+                  <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+                  Past due
+                </span>
+              {% elif sub.status == 'cancelled' %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500">
+                  Cancelled
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500">
+                  {{ sub.status|title }}
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="px-5 py-4">
+              {% if sub.trial_end_at %}
+                <span class="font-mono text-[10px] uppercase tracking-widest text-ink-400">
+                  {{ sub.trial_end_at|date:"M j, Y" }}
+                </span>
+              {% else %}
+                <span class="font-mono text-[10px] text-ink-600">—</span>
+              {% endif %}
+            </td>
+
+            <td class="px-5 py-4">
+              {% if sub.current_period_end %}
+                <span class="font-mono text-[10px] uppercase tracking-widest text-ink-400">
+                  {{ sub.current_period_end|date:"M j, Y" }}
+                </span>
+              {% else %}
+                <span class="font-mono text-[10px] text-ink-600">—</span>
+              {% endif %}
+            </td>
+
+            <td class="px-5 py-4 text-right">
+              <a href="{% url 'admin_vendor_detail' sub.vendor.id %}"
+                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-xs font-medium text-ink-700 dark:text-ink-200 hover:text-flame-600 dark:hover:text-flame-400 transition">
+                Vendor
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-16 text-center">
+              <div class="inline-flex flex-col items-center gap-3">
+                <div class="w-14 h-14 rounded-2xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-500">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                </div>
+                <h3 class="font-display text-2xl">No subscriptions yet</h3>
+                <p class="text-sm text-ink-400 max-w-xs">
+                  Once vendors subscribe to a plan, every record shows up here.
+                </p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===================== PAGINATION ===================== -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex items-center justify-between px-5 py-4 border-t border-ink-100 dark:border-white/5">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+        Page {{ page_obj.number }} of {{ paginator.num_pages }}
+      </p>
+      <div class="flex items-center gap-2">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if plan_filter %}&plan={{ plan_filter }}{% endif %}"
+             class="px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/40 text-xs font-medium text-ink-700 dark:text-ink-200 transition">
+            ← Prev
+          </a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if plan_filter %}&plan={{ plan_filter }}{% endif %}"
+             class="px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/40 text-xs font-medium text-ink-700 dark:text-ink-200 transition">
+            Next →
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

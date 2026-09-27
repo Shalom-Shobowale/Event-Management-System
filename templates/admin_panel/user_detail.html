@@ -1,0 +1,144 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}User Details{% endblock %}
+{% block page_title %}{{ target_user.get_full_name|default:target_user.username }}{% endblock %}
+{% block nav_users %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- User Header -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                {{ target_user.first_name|default:target_user.username|make_list|first|upper }}
+            </div>
+            <div class="flex-1">
+                <h2 class="text-xl font-bold">{{ target_user.get_full_name|default:target_user.username }}</h2>
+                <p class="text-sm text-surface-500">{{ target_user.email }}</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% if target_user.is_superuser %}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400">Super Admin</span>
+                    {% elif target_user.is_vendor %}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">Vendor</span>
+                    {% else %}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400">Host</span>
+                    {% endif %}
+                    {% if target_user.is_suspended %}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400">Suspended</span>
+                    {% else %}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-success-400">Active</span>
+                    {% endif %}
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">{{ target_user.verification_label }}</span>
+                </div>
+                {% if target_user.organization %}
+                <p class="text-sm text-surface-500 mt-2">Organization: {{ target_user.organization }}</p>
+                {% endif %}
+                {% if target_user.phone %}
+                <p class="text-sm text-surface-500">Phone: {{ target_user.phone }}</p>
+                {% endif %}
+                <p class="text-xs text-surface-400 mt-2">Joined {{ target_user.created_at|date:"M j, Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Actions -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Admin Actions</h3>
+            <div class="space-y-3">
+                {% if target_user.is_suspended %}
+                <form method="post" action="{% url 'admin_user_action' target_user.id %}" class="space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="activate">
+                    <button type="submit" class="w-full px-4 py-2 bg-success-600 text-white rounded-lg text-sm font-medium hover:bg-success-700 transition-colors">Activate User</button>
+                </form>
+                {% else %}
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-error-100 dark:hover:bg-error-500/20 transition-colors list-none">
+                        Suspend User
+                    </summary>
+                    <form method="post" action="{% url 'admin_user_action' target_user.id %}" class="mt-2 space-y-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="suspend">
+                        <textarea name="reason" placeholder="Reason for suspension..." class="w-full px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none focus:border-error-500" rows="2"></textarea>
+                        <button type="submit" class="w-full px-4 py-2 bg-error-600 text-white rounded-lg text-sm font-medium hover:bg-error-700 transition-colors">Confirm Suspend</button>
+                    </form>
+                </details>
+                {% endif %}
+
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-brand-100 dark:hover:bg-brand-500/20 transition-colors list-none">
+                        Set Verification Level
+                    </summary>
+                    <form method="post" action="{% url 'admin_user_action' target_user.id %}" class="mt-2 space-y-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="verify">
+                        <select name="level" class="w-full px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none">
+                            <option value="0">Level 0 - Unverified</option>
+                            <option value="1" {% if target_user.verification_level == 1 %}selected{% endif %}>Level 1 - Email Verified</option>
+                            <option value="2" {% if target_user.verification_level == 2 %}selected{% endif %}>Level 2 - Phone Verified</option>
+                            <option value="3" {% if target_user.verification_level == 3 %}selected{% endif %}>Level 3 - Trusted Host</option>
+                        </select>
+                        <button type="submit" class="w-full px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">Update Level</button>
+                    </form>
+                </details>
+
+                {% if target_user.id != request.user.id %}
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors list-none">
+                        Delete User
+                    </summary>
+                    <form method="post" action="{% url 'admin_user_action' target_user.id %}" class="mt-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <p class="text-xs text-error-500 mb-2">This action cannot be undone.</p>
+                        <button type="submit" class="w-full px-4 py-2 bg-error-600 text-white rounded-lg text-sm font-medium hover:bg-error-700 transition-colors">Confirm Delete</button>
+                    </form>
+                </details>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Event History -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Event History ({{ user_events|length }})</h3>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+                {% for event in user_events %}
+                <div class="flex items-center gap-3 py-2 border-b border-surface-100 dark:border-surface-800 last:border-0">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium truncate">{{ event.name }}</p>
+                        <p class="text-xs text-surface-500">{{ event.venue }} - {{ event.date|date:"M j, Y" }}</p>
+                    </div>
+                    <span class="text-xs text-surface-400">{{ event.registered_guests }} guests</span>
+                </div>
+                {% empty %}
+                <p class="text-sm text-surface-400 py-4">No events created.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Reports & Activity -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Reports & Audit ({{ user_reports|length }})</h3>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+                {% for report in user_reports %}
+                <div class="py-2 border-b border-surface-100 dark:border-surface-800 last:border-0">
+                    <p class="text-sm font-medium">{{ report.get_category_display }}</p>
+                    <p class="text-xs text-surface-500">{{ report.reason|truncatewords:10 }}</p>
+                    <span class="text-xs text-surface-400">{{ report.created_at|timesince }} ago</span>
+                </div>
+                {% empty %}
+                <p class="text-sm text-surface-400 py-4">No reports filed.</p>
+                {% endfor %}
+            </div>
+            {% if user_audit %}
+            <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-800">
+                <h4 class="text-xs font-semibold text-surface-500 uppercase mb-2">Recent Actions</h4>
+                {% for log in user_audit %}
+                <p class="text-xs text-surface-500 py-1">{{ log.get_action_display }} - {{ log.created_at|timesince }} ago</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

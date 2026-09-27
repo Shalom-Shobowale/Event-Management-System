@@ -1,0 +1,156 @@
+{% extends "base_public.html" %}
+{% load humanize %}
+
+{% block title %}All events{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-14">
+
+  <!-- header -->
+  <div class="mb-10">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Browse</p>
+    <h1 class="font-display text-5xl leading-[1.05] tracking-tight">
+      All events<br />
+      <span class="italic text-ink-400">happening soon.</span>
+    </h1>
+    <p class="mt-4 text-sm text-ink-400">
+      {{ total_count }} event{{ total_count|pluralize }} coming up
+    </p>
+  </div>
+
+  <!-- filters -->
+  <form method="get" class="mb-8 flex flex-wrap items-center gap-3 mt-4">
+    <input type="text" name="q" value="{{ search }}"
+           placeholder="Search events..."
+           class="px-4 py-2.5 rounded-lg border border-white/10 bg-ink-900 text-sm text-ink-100 placeholder-ink-600 focus:border-flame-600 focus:bg-flame-600/5 outline-none transition w-full sm:w-64" />
+
+    <select name="category"
+            class="px-4 py-2.5 rounded-lg border border-white/10 bg-ink-900 text-sm text-ink-100 focus:border-flame-600 outline-none transition">
+      <option value="">All categories</option>
+      {% for value, label in categories %}
+        <option value="{{ value }}" {% if category == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit"
+            class="px-5 py-2.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+      Filter
+    </button>
+
+    {% if search or category %}
+      <a href="{% url 'event_browse' %}"
+         class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-flame-500 transition">
+        Clear →
+      </a>
+    {% endif %}
+  </form>
+
+  <!-- grid -->
+  {% if page_obj %}
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for event in page_obj %}
+    <article class="reveal group relative rounded-3xl overflow-hidden border border-white/10 bg-ink-900 hover:border-white/20 transition-all duration-500 hover:-translate-y-1">
+      <a href="{% url 'event_public' event.id %}" class="absolute inset-0 z-10"
+         aria-label="View {{ event.name }}"></a>
+
+      <div class="relative p-3">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-ink-800">
+          {% if event.banner %}
+            <img src="{{ event.banner.url }}" alt="{{ event.name }}"
+                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]" />
+          {% else %}
+            <div class="w-full h-full grid place-items-center text-ink-600">
+              <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                <path d="M3 10h18M8 3v4M16 3v4"/>
+              </svg>
+            </div>
+          {% endif %}
+          <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent opacity-90"></div>
+
+          <div class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-950/80 backdrop-blur border border-white/10">
+            <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-ink-200">
+              {{ event.get_category_display }}
+            </span>
+          </div>
+
+          <div class="absolute top-3 right-3">
+            <div class="px-2.5 py-1 rounded-lg bg-white/95 text-ink-950 shadow-lg shadow-black/30">
+              <p class="font-mono text-[9px] uppercase tracking-widest leading-none" style="color:#05050d;">{{ event.date|date:"M" }}</p>
+              <p class="font-display text-xl leading-none mt-0.5" style="color:#05050d;">{{ event.date|date:"d" }}</p>
+            </div>
+          </div>
+
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-100">
+            <span>{{ event.date|date:"g:i A" }}</span>
+            <span class="truncate max-w-[60%]">{{ event.venue }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 pb-6 pt-2">
+        <h3 class="font-display text-2xl leading-tight tracking-tight group-hover:text-white transition truncate">
+          {{ event.name }}
+        </h3>
+        <p class="mt-2 text-sm text-ink-400 line-clamp-2 min-h-[2.5rem]">
+          {{ event.description|truncatechars:110 }}
+        </p>
+
+        <div class="mt-6 flex items-center justify-between">
+          {% if event.is_paid %}
+            <span class="text-sm font-medium text-flame-500">₦{{ event.price|floatformat:0 }}</span>
+          {% else %}
+            <span class="text-sm font-medium text-lime2-500">Free</span>
+          {% endif %}
+          <span class="inline-flex items-center gap-1.5 text-sm font-medium text-flame-500 group-hover:text-flame-400 transition">
+            Reserve
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <!-- pagination -->
+  {% if page_obj.has_other_pages %}
+  <div class="mt-12 flex items-center justify-center gap-3">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+         class="px-4 py-2 rounded-lg border border-white/10 hover:border-flame-600/40 text-sm text-ink-200 transition">
+        ← Prev
+      </a>
+    {% endif %}
+
+    <span class="font-mono text-[11px] uppercase tracking-widest text-ink-500">
+      Page {{ page_obj.number }} / {{ paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+         class="px-4 py-2 rounded-lg border border-white/10 hover:border-flame-600/40 text-sm text-ink-200 transition">
+        Next →
+      </a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="text-center py-20 rounded-3xl border border-dashed border-white/10 bg-ink-900/50">
+    <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-4 text-flame-400">
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="5" width="18" height="16" rx="2"/>
+        <path d="M3 10h18M8 3v4M16 3v4"/>
+      </svg>
+    </div>
+    <h3 class="font-display text-3xl">Nothing found</h3>
+    <p class="mt-2 text-sm text-ink-400 max-w-sm mx-auto">
+      {% if search or category %}No events match your filters.{% else %}No public events yet.{% endif %}
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

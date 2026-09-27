@@ -1,0 +1,54 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Audit Log{% endblock %}
+{% block page_title %}Audit Log{% endblock %}
+{% block nav_audit %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Filters -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-4">
+        <form method="get" class="flex flex-wrap gap-3">
+            <input type="text" name="search" value="{{ search }}" placeholder="Search logs..." class="flex-1 min-w-[200px] px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+            <select name="action" class="px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                <option value="" {% if not action_filter %}selected{% endif %}>All Actions</option>
+                {% for value, label in action_choices %}
+                <option value="{{ value }}" {% if action_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">Filter</button>
+        </form>
+    </div>
+
+    <!-- Log Table -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-surface-200 dark:border-surface-800 text-left text-xs text-surface-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 font-semibold">Action</th>
+                        <th class="px-6 py-3 font-semibold">Actor</th>
+                        <th class="px-6 py-3 font-semibold">Entity</th>
+                        <th class="px-6 py-3 font-semibold">Description</th>
+                        <th class="px-6 py-3 font-semibold">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-100 dark:divide-surface-800">
+                    {% for log in logs %}
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">{{ log.get_action_display }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm">{{ log.actor|default:'System' }}</td>
+                        <td class="px-6 py-4 text-sm text-surface-500">{{ log.entity_type }} {% if log.entity_id %}({{ log.entity_id|truncatechars:10 }}){% endif %}</td>
+                        <td class="px-6 py-4 text-sm text-surface-500 max-w-xs truncate">{{ log.description }}</td>
+                        <td class="px-6 py-4 text-xs text-surface-400">{{ log.created_at|date:"M j, Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="px-6 py-12 text-center text-surface-400"><p class="text-sm">No audit logs found.</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

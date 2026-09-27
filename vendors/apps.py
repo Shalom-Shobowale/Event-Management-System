@@ -5,3 +5,5 @@ class VendorsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'vendors'
     verbose_name = 'Vendor Marketplace'
+    def ready(self):
+        import vendors.signals  # noqa

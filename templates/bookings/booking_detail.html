@@ -1,110 +1,274 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}Booking Details{% endblock %}
-{% block page_title %}Booking Details{% endblock %}
+{% block title %}Booking · {{ booking.service_name }}{% endblock %}
+{% block page_eyebrow %}Bookings{% endblock %}
+{% block page_title %}Booking details{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto">
-    <!-- Status Card -->
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden mb-6">
-        <div class="p-6 border-b border-surface-100 dark:border-surface-700">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-surface-500 uppercase tracking-wider">Booking Status</p>
-                    <span class="px-3 py-1.5 text-sm font-medium rounded-full mt-2 inline-block
-                        {% if booking.status == 'confirmed' %}bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400
-                        {% elif booking.status == 'pending' %}bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400
-                        {% elif booking.status == 'completed' %}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400
-                        {% elif booking.status == 'cancelled' %}bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400
-                        {% else %}bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-400{% endif %}">
-                        {{ booking.get_status_display }}
-                    </span>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs text-surface-500">Booking ID</p>
-                    <p class="text-sm font-mono">{{ booking.id|slice:":8" }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="p-5">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-xs text-surface-500">Service</p>
-                    <p class="font-semibold">{{ booking.service_name }}</p>
-                </div>
-                <div>
-                    <p class="text-xs text-surface-500">Price</p>
-                    <p class="font-bold text-brand-600 text-lg">${{ booking.agreed_price|floatformat:0 }}</p>
-                </div>
-                <div>
-                    <p class="text-xs text-surface-500">Event</p>
-                    <a href="{% url 'event_dashboard' booking.event.id %}" class="font-medium text-brand-600 hover:underline">{{ booking.event.name }}</a>
-                </div>
-                <div>
-                    <p class="text-xs text-surface-500">Event Date</p>
-                    <p class="font-medium">{{ booking.event.date|date:"M d, Y \a\t H:i" }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Vendor Info -->
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
-        <h2 class="font-semibold mb-4">Vendor</h2>
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold">
-                {{ booking.vendor.business_name|make_list|first|upper }}
-            </div>
-            <div class="flex-1">
-                <p class="font-semibold">{{ booking.vendor.business_name }}</p>
-                <p class="text-sm text-surface-500">{{ booking.vendor.city }}{% if booking.vendor.country %} &middot; {{ booking.vendor.country }}{% endif %}</p>
-            </div>
-            <a href="{% url 'vendor_profile' slug=booking.vendor.slug %}" class="px-4 py-2 text-sm font-medium border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">View Profile</a>
-        </div>
-    </div>
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      {{ booking.event.name }}
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      {{ booking.service_name }}
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Everything about this booking — status, vendor, event details, and timeline.
+    </p>
+  </div>
 
-    <!-- Description -->
-    {% if booking.description %}
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
-        <h2 class="font-semibold mb-4">Details</h2>
-        <p class="text-surface-600 dark:text-surface-400">{{ booking.description }}</p>
-    </div>
-    {% endif %}
+  <!-- ===================== STATUS CARD ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden mb-6 fade-up d2">
 
-    <!-- Timeline -->
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
-        <h2 class="font-semibold mb-4">Timeline</h2>
-        <div class="space-y-3">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-brand-600"></div>
-                <span class="text-sm">Created {{ booking.created_at|date:"M d, Y \a\t H:i" }}</span>
-            </div>
-            {% if booking.started_at %}
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-success-500"></div>
-                <span class="text-sm">Started {{ booking.started_at|date:"M d, Y \a\t H:i" }}</span>
-            </div>
+    <!-- status color-coded top edge -->
+    <div class="absolute top-0 left-0 right-0 h-0.5
+      {% if booking.status == 'confirmed' %}bg-lime2-500
+      {% elif booking.status == 'pending' %}bg-flame-500
+      {% elif booking.status == 'completed' %}bg-violet2-500
+      {% elif booking.status == 'cancelled' %}bg-flame-600
+      {% else %}bg-ink-600{% endif %}"></div>
+
+    <div class="p-6 border-b border-white/5">
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Booking status</p>
+
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[10px] uppercase tracking-widest
+            {% if booking.status == 'confirmed' %}
+              bg-lime2-500/15 border border-lime2-500/30 text-lime2-500
+            {% elif booking.status == 'pending' %}
+              bg-flame-500/15 border border-flame-500/30 text-flame-400
+            {% elif booking.status == 'completed' %}
+              bg-violet2-500/15 border border-violet2-500/30 text-violet2-400
+            {% elif booking.status == 'cancelled' %}
+              bg-flame-600/15 border border-flame-600/30 text-flame-400
+            {% else %}
+              bg-white/5 border border-white/10 text-ink-400
+            {% endif %}">
+
+            {% if booking.status == 'confirmed' %}
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+              </svg>
+            {% elif booking.status == 'pending' %}
+              <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+            {% elif booking.status == 'completed' %}
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+              </svg>
             {% endif %}
+
+            {{ booking.get_status_display }}
+          </span>
+        </div>
+
+        <div class="text-left sm:text-right">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Booking ID</p>
+          <p class="font-mono text-sm text-ink-200">{{ booking.id|slice:":8" }}</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- summary grid -->
+    <div class="grid grid-cols-2 divide-x divide-white/5">
+
+      <div class="p-5 border-b border-white/5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Service</p>
+        <p class="font-display text-xl leading-tight text-ink-50">{{ booking.service_name }}</p>
+      </div>
+
+      <div class="p-5 border-b border-white/5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Agreed price</p>
+        <p class="font-display text-3xl leading-none text-flame-500">
+          ${{ booking.agreed_price|floatformat:0 }}
+        </p>
+      </div>
+
+      <div class="p-5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Event</p>
+        <a href="{% url 'event_dashboard' booking.event.id %}"
+           class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-100 hover:text-flame-400 transition">
+          {{ booking.event.name }}
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="p-5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Event date</p>
+        <p class="text-sm text-ink-200 inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          {{ booking.event.date|date:"M d, Y \a\t H:i" }}
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ===================== VENDOR ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden mb-6 fade-up d3">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+    <div class="p-6">
+
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-4">Vendor</p>
+
+      <div class="flex items-center gap-4">
+
+        <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-2xl flex-shrink-0">
+          {{ booking.vendor.business_name|make_list|first|upper }}
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="font-display text-xl leading-tight text-ink-50 truncate">
+            {{ booking.vendor.business_name }}
+          </p>
+          <p class="text-sm text-ink-400 mt-0.5 inline-flex items-center gap-1.5">
+            {% if booking.vendor.city %}
+              <svg class="w-3 h-3 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/>
+                <circle cx="12" cy="10" r="2.5"/>
+              </svg>
+              {{ booking.vendor.city }}{% if booking.vendor.country %}, {{ booking.vendor.country }}{% endif %}
+            {% endif %}
+          </p>
+        </div>
+
+        <a href="{% url 'vendor_profile' slug=booking.vendor.slug %}"
+           class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-sm font-medium text-ink-100 transition flex-shrink-0">
+          View profile
+          <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== DESCRIPTION ===================== -->
+  {% if booking.description %}
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden mb-6 fade-up d3">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="p-6">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Details</p>
+      <p class="text-sm text-ink-300 leading-relaxed whitespace-pre-wrap">{{ booking.description }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ===================== TIMELINE ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden mb-6 fade-up d4">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+    <div class="p-6">
+
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-5">Timeline</p>
+
+      <div class="space-y-5">
+
+        <!-- created -->
+        <div class="flex items-start gap-4">
+          <div class="flex flex-col items-center flex-shrink-0 pt-1">
+            <div class="w-2.5 h-2.5 rounded-full bg-flame-600 ring-4 ring-flame-600/15"></div>
+            {% if booking.started_at or booking.completed_at %}
+              <div class="w-px h-full mt-2 bg-white/10 min-h-[32px]"></div>
+            {% endif %}
+          </div>
+          <div class="pb-1">
+            <p class="text-sm text-ink-100">Booking created</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1">
+              {{ booking.created_at|date:"M d, Y \a\t H:i" }}
+            </p>
+          </div>
+        </div>
+
+        {% if booking.started_at %}
+        <div class="flex items-start gap-4">
+          <div class="flex flex-col items-center flex-shrink-0 pt-1">
+            <div class="w-2.5 h-2.5 rounded-full bg-flame-500 ring-4 ring-flame-500/15"></div>
             {% if booking.completed_at %}
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-success-600"></div>
-                <span class="text-sm">Completed {{ booking.completed_at|date:"M d, Y \a\t H:i" }}</span>
-            </div>
+              <div class="w-px h-full mt-2 bg-white/10 min-h-[32px]"></div>
             {% endif %}
+          </div>
+          <div class="pb-1">
+            <p class="text-sm text-ink-100">Work started</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1">
+              {{ booking.started_at|date:"M d, Y \a\t H:i" }}
+            </p>
+          </div>
         </div>
+        {% endif %}
+
+        {% if booking.completed_at %}
+        <div class="flex items-start gap-4">
+          <div class="flex flex-col items-center flex-shrink-0 pt-1">
+            <div class="w-2.5 h-2.5 rounded-full bg-lime2-500 ring-4 ring-lime2-500/15"></div>
+          </div>
+          <div>
+            <p class="text-sm text-ink-100">Booking completed</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1">
+              {{ booking.completed_at|date:"M d, Y \a\t H:i" }}
+            </p>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== ACTIONS ===================== -->
+  <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-between gap-3 fade-up d4">
+
+    <a href="javascript:history.back()"
+       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+      </svg>
+      Back
+    </a>
+
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
+
+      {% if is_vendor and booking.status == 'pending' %}
+        <a href="{% url 'confirm_booking' booking.id %}"
+           class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+          <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Accept booking
+        </a>
+      {% endif %}
+
+      {% if is_host and booking.status == 'confirmed' %}
+        <a href="{% url 'complete_booking' booking.id %}"
+           class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-lime2-500 hover:bg-lime2-400 text-ink-950 text-sm font-semibold transition">
+          <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          Mark complete
+        </a>
+      {% endif %}
+
     </div>
 
-    <!-- Actions -->
-    <div class="flex items-center justify-between">
-        <a href="javascript:history.back()" class="text-sm text-surface-500 hover:text-surface-700">Back</a>
-        <div class="flex items-center gap-3">
-            {% if is_vendor and booking.status == 'pending' %}
-            <a href="{% url 'confirm_booking' booking.id %}" class="px-4 py-2 text-sm font-medium bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors">Accept Booking</a>
-            {% endif %}
-            {% if is_host and booking.status == 'confirmed' %}
-            <a href="{% url 'complete_booking' booking.id %}" class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Mark Complete</a>
-            {% endif %}
-        </div>
-    </div>
+  </div>
+
 </div>
 {% endblock %}

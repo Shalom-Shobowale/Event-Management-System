@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}EventFlow{% endblock %}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#05050d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;">
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#05050d;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;background-color:#0a0a18;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
+
+          <tr>
+            <td style="height:3px;background:linear-gradient(90deg,#ff4800 0%,#ff5a1f 50%,#7c5cff 100%);"></td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px 32px 16px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="vertical-align:middle;">
+                    <div style="display:inline-block;width:32px;height:32px;background:#ff4800;border-radius:8px;color:#05050d;font-family:Georgia,serif;font-size:20px;font-weight:bold;text-align:center;line-height:32px;">
+                      E
+                    </div>
+                  </td>
+                  <td style="padding-left:10px;color:#f6f6f8;font-family:Georgia,serif;font-size:22px;letter-spacing:-0.01em;">
+                    EventFlow
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:8px 32px 32px;color:#cbcbd6;font-size:15px;line-height:1.6;">
+              {% block content %}{% endblock %}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 32px;">
+              <div style="border-top:1px solid rgba(255,255,255,0.06);"></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:20px 32px 28px;color:#71718a;font-size:12px;line-height:1.5;">
+              <p style="margin:0 0 8px 0;">
+                {% block footer %}{% endblock %}
+              </p>
+              <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4d4d66;">
+                Sent by EventFlow
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;margin-top:20px;">
+          <tr>
+            <td align="center" style="color:#4d4d66;font-size:11px;line-height:1.5;">
+              © {% now "Y" %} EventFlow. All rights reserved.
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

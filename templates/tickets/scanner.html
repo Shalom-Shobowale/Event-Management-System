@@ -1,196 +1,435 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}QR Scanner{% endblock %}
-{% block page_title %}QR Scanner{% endblock %}
-{% block nav_scanner %}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400{% endblock %}
+{% block title %}QR scanner{% endblock %}
+{% block page_eyebrow %}Check-in{% endblock %}
+{% block page_title %}QR scanner{% endblock %}
+{% block nav_scanner %}nav-active{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto">
-    <!-- Scanner Area -->
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden">
-        <div class="p-6 border-b border-surface-100 dark:border-surface-700">
-            <h2 class="font-semibold">Live QR Scanner</h2>
-            <p class="text-sm text-surface-500 mt-1">Point your camera at a guest's QR code to validate their ticket</p>
-        </div>
 
-        <!-- Camera View -->
-        <div class="relative bg-surface-900 aspect-video flex items-center justify-center">
-            <video id="scanner-video" class="w-full h-full object-cover" autoplay playsinline></video>
-            <div id="scanner-overlay" class="absolute inset-0 flex items-center justify-center">
-                <div class="w-64 h-64 border-2 border-white/50 rounded-2xl relative">
-                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-brand-400 rounded-tl-xl"></div>
-                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-brand-400 rounded-tr-xl"></div>
-                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-brand-400 rounded-bl-xl"></div>
-                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-brand-400 rounded-br-xl"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <p id="scanner-status" class="text-white/70 text-sm font-medium">Initializing camera...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-6 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Live door</p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Scan to<br />
+      <span class="italic text-ink-400">let them in.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Point the camera at a guest's QR ticket — or type the code by hand if the camera
+      isn't cooperating.
+    </p>
+  </div>
 
-        <!-- Manual Entry -->
-        <div class="p-6">
-            <p class="text-sm text-surface-500 mb-3">Or enter ticket code manually:</p>
-            <form id="manual-form" class="flex gap-3">
-                <input type="text" id="ticket-code-input" placeholder="EF-XXXXXXXX-XXXXXXXX" class="flex-1 px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm font-mono">
-                <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Validate</button>
-            </form>
+  <!-- ===================== STATUS STRIP ===================== -->
+  <div class="flex items-center gap-3 mb-6 fade-up d2">
+    <span id="status-dot"
+          class="relative flex h-2 w-2">
+      <span class="absolute inset-0 rounded-full bg-flame-500 animate-pulse-ring"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-flame-500"></span>
+    </span>
+    <span id="status-label"
+          class="font-mono text-[11px] uppercase tracking-widest text-ink-400">
+      Initializing camera…
+    </span>
+  </div>
+
+  <!-- ===================== SCANNER CARD ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d2">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+    <!-- camera view -->
+    <div class="relative aspect-video bg-ink-950 overflow-hidden">
+      <video id="scanner-video"
+             class="w-full h-full object-cover"
+             autoplay playsinline muted></video>
+
+      <!-- corner frame overlay -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="relative w-56 h-56 sm:w-64 sm:h-64">
+          <!-- corner brackets -->
+          <div class="absolute top-0 left-0 w-10 h-10 border-t-[3px] border-l-[3px] border-flame-500 rounded-tl-2xl"></div>
+          <div class="absolute top-0 right-0 w-10 h-10 border-t-[3px] border-r-[3px] border-flame-500 rounded-tr-2xl"></div>
+          <div class="absolute bottom-0 left-0 w-10 h-10 border-b-[3px] border-l-[3px] border-flame-500 rounded-bl-2xl"></div>
+          <div class="absolute bottom-0 right-0 w-10 h-10 border-b-[3px] border-r-[3px] border-flame-500 rounded-br-2xl"></div>
+
+          <!-- horizontal scan line -->
+          <div class="absolute left-4 right-4 h-[2px] bg-flame-500 animate-scan"
+               style="box-shadow:0 0 20px 2px rgba(255,72,0,.9);"></div>
+
+          <!-- center hint -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <p id="scanner-status"
+               class="font-mono text-[10px] uppercase tracking-widest text-white/60 text-center px-4">
+              Initializing camera…
+            </p>
+          </div>
         </div>
+      </div>
+
+      <!-- dark corners to focus the eye -->
+      <div class="absolute inset-0 pointer-events-none"
+           style="background: radial-gradient(circle at center, transparent 30%, rgba(5,5,13,.35) 60%, rgba(5,5,13,.65) 100%);"></div>
     </div>
 
-    <!-- Result Display -->
-    <div id="scan-result" class="mt-4 hidden">
-        <div id="result-valid" class="hidden bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20 rounded-xl p-6">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-full bg-success-100 dark:bg-success-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                </div>
-                <h3 class="text-lg font-bold text-success-700 dark:text-success-400">Check-in Successful</h3>
-            </div>
-            <div class="grid grid-cols-3 gap-4 text-sm">
-                <div><p class="text-success-600 dark:text-success-500 text-xs">Guest</p><p id="result-name" class="font-semibold text-success-800 dark:text-success-300"></p></div>
-                <div><p class="text-success-600 dark:text-success-500 text-xs">Event</p><p id="result-event" class="font-semibold text-success-800 dark:text-success-300"></p></div>
-                <div><p class="text-success-600 dark:text-success-500 text-xs">Seat</p><p id="result-seat" class="font-semibold text-success-800 dark:text-success-300"></p></div>
-            </div>
-        </div>
-        <div id="result-duplicate" class="hidden bg-warning-50 dark:bg-warning-500/10 border border-warning-200 dark:border-warning-500/20 rounded-xl p-6">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-warning-100 dark:bg-warning-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-warning-700 dark:text-warning-400">Already Checked In</h3>
-                    <p id="result-dup-info" class="text-sm text-warning-600 dark:text-warning-500"></p>
-                </div>
-            </div>
-        </div>
-        <div id="result-invalid" class="hidden bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20 rounded-xl p-6">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-error-100 dark:bg-error-500/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-error-700 dark:text-error-400">Invalid Ticket</h3>
-                    <p class="text-sm text-error-600 dark:text-error-500">Ticket code not found in the system</p>
-                </div>
-            </div>
-        </div>
+    <!-- manual entry -->
+    <div class="p-5 sm:p-6 border-t border-white/5">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">
+        Or enter ticket code manually
+      </p>
+      <form id="manual-form" class="flex flex-col sm:flex-row gap-3">
+        <input type="text"
+               id="ticket-code-input"
+               placeholder="EF-XXXXXXXX-XXXXXXXX"
+               autocomplete="off"
+               autocapitalize="characters"
+               spellcheck="false"
+               class="ef-input flex-1 font-mono tracking-wider" />
+        <button type="submit"
+                class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+          Validate
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </button>
+      </form>
     </div>
+  </div>
+
+  <!-- ===================== RESULT PANEL ===================== -->
+  <div id="scan-result" class="mt-5 hidden">
+
+    <!-- VALID -->
+    <div id="result-valid"
+         class="relative rounded-2xl border border-lime2-500/30 bg-lime2-500/[.06] overflow-hidden p-6"
+         style="animation: ef-result-pop .35s cubic-bezier(.2,.7,.2,1);">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-500">Access granted</p>
+          <h3 class="font-display text-3xl leading-none mt-1 text-ink-50">Check-in successful</h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-white/5">
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Guest</p>
+              <p id="result-name" class="font-display text-xl text-ink-100 leading-tight"></p>
+            </div>
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Event</p>
+              <p id="result-event" class="text-sm text-ink-200 leading-snug"></p>
+            </div>
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Seat</p>
+              <p id="result-seat" class="font-display text-xl text-lime2-500 leading-none"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DUPLICATE -->
+    <div id="result-duplicate"
+         class="relative rounded-2xl border border-flame-600/30 bg-flame-600/[.06] overflow-hidden p-6"
+         style="animation: ef-result-pop .35s cubic-bezier(.2,.7,.2,1);">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-flame-600/15 border border-flame-600/30 grid place-items-center text-flame-400 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01M4.075 20h15.85c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 17.5c-.77.833.192 2.5 1.732 2.5z"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Duplicate scan</p>
+          <h3 class="font-display text-3xl leading-none mt-1 text-ink-50">Already checked in</h3>
+          <p id="result-dup-info" class="mt-3 text-sm text-ink-300"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVALID -->
+    <div id="result-invalid"
+         class="relative rounded-2xl border border-flame-600/40 bg-flame-600/[.08] overflow-hidden p-6"
+         style="animation: ef-result-pop .35s cubic-bezier(.2,.7,.2,1);">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-500 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500">Access denied</p>
+          <h3 class="font-display text-3xl leading-none mt-1 text-ink-50">Invalid ticket</h3>
+          <p class="mt-3 text-sm text-ink-300">This code isn't in the system. Double-check the ticket and try again.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
-<script>
-const video = document.getElementById('scanner-video');
-const statusEl = document.getElementById('scanner-status');
+<!-- page-scoped styles -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
 
-// Start camera
-async function startCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
-        video.srcObject = stream;
-        statusEl.textContent = 'Scanning...';
-        startQRScanning();
-    } catch (err) {
-        statusEl.textContent = 'Camera not available. Use manual entry.';
-        console.error('Camera error:', err);
-    }
+  @keyframes ef-scan {
+    0%   { top: 12%; }
+    50%  { top: 88%; }
+    100% { top: 12%; }
+  }
+  .animate-scan { animation: ef-scan 2.4s ease-in-out infinite; }
+
+  @keyframes ef-pulse-ring {
+    0%   { transform: scale(.8); opacity:.7; }
+    100% { transform: scale(2.4); opacity:0; }
+  }
+  .animate-pulse-ring { animation: ef-pulse-ring 2.2s cubic-bezier(.4,0,.6,1) infinite; }
+
+  @keyframes ef-result-pop {
+    0%   { opacity:0; transform: translateY(8px) scale(.98); }
+    100% { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  html:not(.dark) .ef-input {
+    background:#fff;
+    border-color: rgba(0,0,0,.08);
+    color:#0a0a18;
+  }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+</style>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+/* ------------------------------------------------------------------
+   EventFlow QR Scanner
+   Preserved behavior:
+     - getUserMedia camera startup
+     - canvas-based frame loop (ready for a real QR library)
+     - manual ticket code entry -> /api/validate/<code>/
+     - showResult(data) contract: { status, guest: { name, event, seat } }
+     - playSound(success|warning|error)
+   Added:
+     - live status strip in header
+     - auto-focus on the manual input
+     - Escape key clears the input
+     - result panel auto-hides after 6s
+------------------------------------------------------------------ */
+
+const video     = document.getElementById('scanner-video');
+const statusEl  = document.getElementById('scanner-status');
+const statusDot = document.getElementById('status-dot');
+const statusLbl = document.getElementById('status-label');
+const codeInput = document.getElementById('ticket-code-input');
+const form      = document.getElementById('manual-form');
+
+/* ---------- status helpers ---------- */
+function setStatus(state, message) {
+  if (statusLbl) statusLbl.textContent = message;
+  if (statusEl)  statusEl.textContent  = message;
+
+  if (!statusDot) return;
+  const dot = statusDot.querySelectorAll('span');
+  const color =
+    state === 'live'    ? '#c6f24e' :   // lime
+    state === 'error'   ? '#ff4800' :   // flame
+    state === 'manual'  ? '#7c5cff' :   // violet
+                          '#ff5a1f';    // flame (initializing)
+  dot.forEach(s => { s.style.background = color; });
 }
 
-// QR Code scanning using canvas
+/* ---------- camera ---------- */
 let scanning = true;
-function startQRScanning() {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
 
-    function scanFrame() {
-        if (!scanning) return;
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            // In production, use a QR detection library like jsQR
-            // For now, we rely on manual entry
-        }
-        requestAnimationFrame(scanFrame);
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    video.srcObject = stream;
+    setStatus('live', 'Scanning · ready');
+    startQRScanning();
+  } catch (err) {
+    console.error('Camera error:', err);
+    setStatus('error', 'Camera unavailable · use manual entry');
+    if (codeInput) codeInput.focus();
+  }
+}
+
+function startQRScanning() {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  function scanFrame() {
+    if (!scanning) return;
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width  = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Production: run jsQR / BarcodeDetector here on canvas pixels.
+      // When a code is detected, call: validateTicket(code)
     }
-    scanFrame();
+    requestAnimationFrame(scanFrame);
+  }
+  scanFrame();
 }
 
 startCamera();
 
-// Manual form
-document.getElementById('manual-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const code = document.getElementById('ticket-code-input').value.trim();
-    if (!code) return;
-    await validateTicket(code);
-    document.getElementById('ticket-code-input').value = '';
+/* ---------- manual entry ---------- */
+form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const code = codeInput.value.trim();
+  if (!code) return;
+  await validateTicket(code);
+  codeInput.value = '';
+  codeInput.focus();
 });
 
+codeInput?.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') codeInput.value = '';
+});
+
+/* ---------- API call (unchanged) ---------- */
 async function validateTicket(code) {
-    try {
-        const resp = await fetch(`/api/validate/${code}/`, {
-            headers: { 'Authorization': 'Bearer {{ user.host.auth_token|default:"" }}' }
-        });
-        const data = await resp.json();
-        showResult(data);
-    } catch (err) {
-        showResult({ status: 'invalid', message: 'Network error' });
-    }
+  try {
+    const resp = await fetch(`/api/validate/${code}/`, {
+      headers: { 'Authorization': 'Bearer {{ user.host.auth_token|default:"" }}' }
+    });
+    const data = await resp.json();
+    showResult(data);
+  } catch (err) {
+    showResult({ status: 'invalid', message: 'Network error' });
+  }
 }
+
+/* ---------- render (IDs unchanged) ---------- */
+let hideTimer = null;
 
 function showResult(data) {
-    const container = document.getElementById('scan-result');
-    container.classList.remove('hidden');
-    document.getElementById('result-valid').classList.add('hidden');
-    document.getElementById('result-duplicate').classList.add('hidden');
-    document.getElementById('result-invalid').classList.add('hidden');
+  const container = document.getElementById('scan-result');
+  container.classList.remove('hidden');
 
-    if (data.status === 'valid') {
-        document.getElementById('result-valid').classList.remove('hidden');
-        document.getElementById('result-name').textContent = data.guest.name;
-        document.getElementById('result-event').textContent = data.guest.event;
-        document.getElementById('result-seat').textContent = data.guest.seat;
-        playSound('success');
-    } else if (data.status === 'duplicate') {
-        document.getElementById('result-duplicate').classList.remove('hidden');
-        document.getElementById('result-dup-info').textContent = `${data.guest.name} - Seat ${data.guest.seat}`;
-        playSound('warning');
-    } else {
-        document.getElementById('result-invalid').classList.remove('hidden');
-        playSound('error');
-    }
+  document.getElementById('result-valid').classList.add('hidden');
+  document.getElementById('result-duplicate').classList.add('hidden');
+  document.getElementById('result-invalid').classList.add('hidden');
 
-    // Auto-hide after 5s
-    setTimeout(() => {
-        container.classList.add('hidden');
-    }, 5000);
+  const valid = document.getElementById('result-valid');
+  const dup   = document.getElementById('result-duplicate');
+  const inv   = document.getElementById('result-invalid');
+
+  if (data.status === 'valid') {
+    document.getElementById('result-name').textContent  = data.guest?.name  || '';
+    document.getElementById('result-event').textContent = data.guest?.event || '';
+    document.getElementById('result-seat').textContent  = data.guest?.seat  || '';
+
+    valid.classList.remove('hidden');
+    // re-trigger the pop animation
+    valid.style.animation = 'none';
+    void valid.offsetWidth;
+    valid.style.animation = '';
+
+    playSound('success');
+    setStatus('live', `✓ ${data.guest?.name || 'Guest'} checked in`);
+
+  } else if (data.status === 'duplicate') {
+    document.getElementById('result-dup-info').textContent =
+      `${data.guest?.name || 'Guest'} · Seat ${data.guest?.seat || '—'}`;
+
+    dup.classList.remove('hidden');
+    dup.style.animation = 'none';
+    void dup.offsetWidth;
+    dup.style.animation = '';
+
+    playSound('warning');
+    setStatus('error', `⚠ Already scanned · ${data.guest?.name || ''}`);
+
+  } else {
+    inv.classList.remove('hidden');
+    inv.style.animation = 'none';
+    void inv.offsetWidth;
+    inv.style.animation = '';
+
+    playSound('error');
+    setStatus('error', '✗ Invalid ticket');
+  }
+
+  // auto-hide (was 5s, now 6s so door staff have time to glance)
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    container.classList.add('hidden');
+    setStatus('live', 'Scanning · ready');
+  }, 6000);
 }
 
+/* ---------- sound (unchanged logic, tuned envelope) ---------- */
 function playSound(type) {
+  try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
-    gain.gain.value = 0.3;
+
+    // softer attack + release so it doesn't click
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 0.01);
 
     if (type === 'success') {
-        osc.frequency.value = 800;
-        osc.start();
-        setTimeout(() => { osc.frequency.value = 1200; }, 100);
-        setTimeout(() => { osc.stop(); }, 200);
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.stop(ctx.currentTime + 0.24);
     } else if (type === 'warning') {
-        osc.frequency.value = 400;
-        osc.start();
-        setTimeout(() => { osc.stop(); }, 300);
+      osc.frequency.setValueAtTime(500, ctx.currentTime);
+      osc.frequency.setValueAtTime(500, ctx.currentTime + 0.12);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+      osc.stop(ctx.currentTime + 0.34);
     } else {
-        osc.frequency.value = 200;
-        osc.start();
-        setTimeout(() => { osc.stop(); }, 400);
+      osc.frequency.setValueAtTime(180, ctx.currentTime);
+      osc.type = 'sawtooth';
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.38);
+      osc.stop(ctx.currentTime + 0.4);
     }
+  } catch (err) {
+    // Audio blocked by browser — silent fail
+  }
 }
+
+/* auto-focus manual input if camera never comes up */
+setTimeout(() => {
+  if (video.readyState === 0 && document.activeElement !== codeInput) {
+    codeInput?.focus();
+  }
+}, 2500);
 </script>
 {% endblock %}

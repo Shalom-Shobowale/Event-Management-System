@@ -1,50 +1,197 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}Update Budget - {{ event.name }}{% endblock %}
-{% block page_title %}Update Budget{% endblock %}
+{% block title %}Update budget · {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Budget{% endblock %}
+{% block page_title %}Update budget{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">Update Budget</h2>
-        <p class="text-sm text-surface-500 mt-1">Set the total budget for {{ event.name }}</p>
+
+  <!-- header -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      {{ event.name }}
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Set the<br />
+      <span class="italic text-ink-400">total budget.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      This is the ceiling every expense is tracked against. Change the currency if you spend across borders.
+    </p>
+  </div>
+
+  <form method="post" class="space-y-6 fade-up d2">
+    {% csrf_token %}
+
+    <!-- ===================== BUDGET ===================== -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs">01</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The numbers</p>
+          <h3 class="font-display text-2xl leading-none">Budget</h3>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+
+        <!-- total budget -->
+        <div>
+          <label for="id_total_budget" class="ef-label">Total budget <span class="req">*</span></label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-display text-lg text-flame-500 pointer-events-none select-none">₦</span>
+            <input id="id_total_budget" type="number" name="total_budget"
+                   value="{{ budget.total_budget }}" step="0.01" required
+                   class="ef-input pl-10 font-display text-lg tracking-tight"
+                   placeholder="0.00" />
+          </div>
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Every expense counts against this amount
+          </p>
+        </div>
+
+        <!-- currency -->
+        <div>
+          <label for="id_currency" class="ef-label">Currency</label>
+          <select id="id_currency" name="currency" class="ef-input ef-select">
+            <option value="USD" {% if budget.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+            <option value="EUR" {% if budget.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+            <option value="GBP" {% if budget.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
+            <option value="CAD" {% if budget.currency == 'CAD' %}selected{% endif %}>CAD ($)</option>
+            <option value="AUD" {% if budget.currency == 'AUD' %}selected{% endif %}>AUD ($)</option>
+            <option value="NGN" {% if budget.currency == 'NGN' %}selected{% endif %}>NGN (₦)</option>
+          </select>
+        </div>
+
+        <!-- notes -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="id_notes" class="ef-label" style="margin-bottom:0;">Notes</label>
+            <span id="notes-count" class="font-mono text-[10px] uppercase tracking-widest text-ink-500">0 / 300</span>
+          </div>
+          <textarea id="id_notes" name="notes" rows="3" maxlength="300"
+                    class="ef-input ef-textarea resize-none"
+                    placeholder="Budget constraints, reminders, anything to remember…">{{ budget.notes }}</textarea>
+        </div>
+
+      </div>
     </div>
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Total Budget <span class="text-error-500">*</span></label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500">₦</span>
-                        <input type="number" name="total_budget" value="{{ budget.total_budget }}" step="0.01" required class="w-full pl-8 pr-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="0.00">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">
-                        Currency
-                    </label>
-                    <select name="currency" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm">
-                        <option value="USD" {% if budget.currency == 'USD' %}selected{% endif %}>USD ($)</option>
-                        <option value="EUR" {% if budget.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
-                        <option value="GBP" {% if budget.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
-                        <option value="CAD" {% if budget.currency == 'CAD' %}selected{% endif %}>CAD ($)</option>
-                        <option value="AUD" {% if budget.currency == 'AUD' %}selected{% endif %}>AUD ($)</option>
-                        <option value="NGN" {% if budget.currency == 'NGN' %}selected{% endif %}>NGN (₦)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Notes</label>
-                    <textarea name="notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none" placeholder="Budget notes or constraints...">{{ budget.notes }}</textarea>
-                </div>
-            </div>
+    <!-- ===================== TIP ===================== -->
+    <div class="relative rounded-2xl border border-flame-600/25 bg-flame-600/[.04] p-4 overflow-hidden fade-up d3">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
         </div>
+        <div class="text-xs text-ink-300 leading-relaxed">
+          <span class="font-mono text-[10px] uppercase tracking-widest text-flame-400 block mb-1">Tip</span>
+          Set a slightly generous budget. You can always reduce it later — but a maxed-out ceiling the moment you start is harder to fix.
+        </div>
+      </div>
+    </div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{% url 'event_budget' event.id %}" class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
-            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Save Budget</button>
-        </div>
-    </form>
+    <!-- ===================== ACTIONS ===================== -->
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
+      <a href="{% url 'event_budget' event.id %}"
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+        Cancel
+      </a>
+      <button type="submit"
+              class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        Save budget
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+    </div>
+
+  </form>
 </div>
+
+<!-- ===================== STYLES (scoped to this page) ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
+  .ef-textarea { min-height: 90px; line-height: 1.55; resize: none; }
+
+  .ef-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+  .ef-select option { background:#0a0a18; color:#f6f6f8; }
+
+  .ef-label {
+    display: block;
+    font-size: .75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #71718a;
+    margin-bottom: .5rem;
+  }
+  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
+
+  /* autofill */
+  input:-webkit-autofill, input:-webkit-autofill:focus,
+  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
+  html:not(.dark) input:-webkit-autofill,
+  html:not(.dark) textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+  (function () {
+    const notes = document.getElementById('id_notes');
+    const counter = document.getElementById('notes-count');
+    if (!notes || !counter) return;
+    const max = parseInt(notes.getAttribute('maxlength'), 10) || 300;
+    const update = () => {
+      counter.textContent = `${notes.value.length} / ${max}`;
+      counter.style.color = notes.value.length > max * 0.9 ? '#ff4800' : '';
+    };
+    update();
+    notes.addEventListener('input', update);
+  })();
+</script>
+
 {% endblock %}

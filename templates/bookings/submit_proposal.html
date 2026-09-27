@@ -1,86 +1,301 @@
 {% extends "base_dashboard.html" %}
-
-{% block title %}Submit Proposal{% endblock %}
-{% block page_title %}Submit Your Proposal{% endblock %}
 {% load humanize %}
+
+{% block title %}Submit proposal · {{ rfq.title }}{% endblock %}
+{% block page_eyebrow %}Vendors{% endblock %}
+{% block page_title %}Submit proposal{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
-        <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
-                <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <div>
-                <h2 class="font-semibold">{{ rfq.title }}</h2>
-                <p class="text-sm text-surface-500">{{ rfq.event.name }} | {{ rfq.category }}</p>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-3 gap-4 text-sm">
-            <div>
-                <p class="text-xs text-surface-500">Required Date</p>
-                <p class="font-medium">{{ rfq.required_date|date:"M d, Y" }}</p>
-            </div>
-            <div>
-                <p class="text-xs text-surface-500">Budget Range</p>
-                <p class="font-medium"> ₦{{ rfq.budget_min|default:0|floatformat:0|intcomma }} - ₦{{ rfq.budget_max|default:0|floatformat:0|intcomma }}</p>
-            </div>
-            <div>
-                <p class="text-xs text-surface-500">Guests</p>
-                <p class="font-medium">{{ rfq.guest_count|default:"TBD" }}</p>
-            </div>
-        </div>
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      {{ rfq.event.name }}
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Send your<br />
+      <span class="italic text-ink-400">best offer.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Read the request carefully, pick a service, and write a cover letter that
+      answers exactly what the host needs.
+    </p>
+  </div>
 
-        <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-700">
-            <p class="text-xs text-surface-500">Description</p>
-            <p class="text-sm mt-1">{{ rfq.description }}</p>
-        </div>
+  <!-- ===================== RFQ SUMMARY ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 mb-6 overflow-hidden fade-up d2">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <!-- title row -->
+    <div class="flex items-start gap-4">
+      <div class="w-12 h-12 rounded-xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Request for quotation</p>
+        <h3 class="font-display text-2xl leading-tight text-ink-50">{{ rfq.title }}</h3>
+        <p class="text-sm text-ink-400 mt-1 inline-flex items-center gap-1.5 flex-wrap">
+          <span>{{ rfq.event.name }}</span>
+          <span class="text-ink-600">·</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-violet2-500/10 border border-violet2-500/25 font-mono text-[10px] uppercase tracking-widest text-violet2-400">
+            {{ rfq.category }}
+          </span>
+        </p>
+      </div>
     </div>
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <h2 class="font-semibold mb-4">Your Proposal</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1.5">Select Service</label>
-                    <select name="service" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                        <option value="">-- Select a service offering --</option>
-                        {% for service in services %}
-                        <option value="{{ service.id }}">{{ service.name }} - ${{ service.price|floatformat:0 }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1.5">Cover Letter <span class="text-red-500">*</span></label>
-                    <textarea name="cover_letter" rows="4" required class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm resize-none" placeholder="Introduce yourself and explain why you're the best fit..."></textarea>
-                </div>
-            </div>
+    <!-- meta grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/5">
+
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Required date</p>
+        <p class="text-sm text-ink-100 inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          {{ rfq.required_date|date:"M d, Y" }}
+        </p>
+      </div>
+
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Budget range</p>
+        <p class="font-display text-lg leading-none text-lime2-500">
+          ₦{{ rfq.budget_min|default:0|floatformat:0|intcomma }}<span class="text-ink-500 mx-1">–</span>₦{{ rfq.budget_max|default:0|floatformat:0|intcomma }}
+        </p>
+      </div>
+
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Guests</p>
+        <p class="text-sm text-ink-100 inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          {{ rfq.guest_count|default:"TBD" }}
+        </p>
+      </div>
+
+    </div>
+
+    {% if rfq.description %}
+      <div class="mt-5 pt-5 border-t border-white/5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">What they need</p>
+        <p class="text-sm text-ink-300 leading-relaxed whitespace-pre-wrap">{{ rfq.description }}</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- ===================== FORM ===================== -->
+  <form method="post" class="space-y-6 fade-up d3">
+    {% csrf_token %}
+
+    <!-- ============ 01 YOUR PITCH ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Why you</p>
+          <h3 class="font-display text-2xl leading-none">Your pitch</h3>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+
+        <!-- service -->
+        <div>
+          <label for="id_service" class="ef-label">Select service</label>
+          <select id="id_service" name="service" class="ef-input ef-select">
+            <option value="">— Select a service offering —</option>
+            {% for service in services %}
+              <option value="{{ service.id }}">{{ service.name }} — ${{ service.price|floatformat:0 }}</option>
+            {% endfor %}
+          </select>
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Pulls in your listed price and duration as a starting point
+          </p>
         </div>
 
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <h2 class="font-semibold mb-4">Pricing</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1.5">Proposed Price ($) <span class="text-red-500">*</span></label>
-                    <input type="number" name="proposed_price" required min="0" step="0.01" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="0.00">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1.5">Duration (hours)</label>
-                    <input type="number" name="duration_hours" value="4" min="1" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                </div>
-            </div>
-            <div class="mt-4">
-                <label class="block text-sm font-medium mb-1.5">What's Included</label>
-                <textarea name="includes" rows="2" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm resize-none" placeholder="List what's included..."></textarea>
-            </div>
+        <!-- cover letter -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="id_cover_letter" class="ef-label" style="margin-bottom:0;">Cover letter <span class="req">*</span></label>
+            <span id="cover-count" class="font-mono text-[10px] uppercase tracking-widest text-ink-500">0 / 1500</span>
+          </div>
+          <textarea id="id_cover_letter" name="cover_letter" rows="5" required maxlength="1500"
+                    class="ef-input ef-textarea"
+                    placeholder="Introduce yourself. Show you read the brief. Explain specifically why you're the right fit — mention any relevant past work or a detail from their description that caught your eye."></textarea>
         </div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{% url 'vendor_proposals' %}" class="px-6 py-3 text-sm font-medium border rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
-            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Submit Proposal</button>
+      </div>
+    </div>
+
+    <!-- ============ 02 PRICING ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-mono text-xs">02</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The numbers</p>
+          <h3 class="font-display text-2xl leading-none">Pricing &amp; scope</h3>
         </div>
-    </form>
+      </div>
+
+      <div class="space-y-5">
+
+        <!-- price + duration -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="id_proposed_price" class="ef-label">Proposed price ($) <span class="req">*</span></label>
+            <input id="id_proposed_price" type="number" name="proposed_price" required min="0" step="0.01"
+                   class="ef-input font-display text-lg tracking-tight"
+                   placeholder="0.00" />
+          </div>
+          <div>
+            <label for="id_duration_hours" class="ef-label">Duration (hours)</label>
+            <input id="id_duration_hours" type="number" name="duration_hours" value="4" min="1"
+                   class="ef-input" />
+          </div>
+        </div>
+
+        <!-- includes -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="id_includes" class="ef-label" style="margin-bottom:0;">What's included</label>
+            <span id="includes-count" class="font-mono text-[10px] uppercase tracking-widest text-ink-500">0 / 500</span>
+          </div>
+          <textarea id="id_includes" name="includes" rows="3" maxlength="500"
+                    class="ef-input ef-textarea resize-none"
+                    placeholder="List what's covered — setup, teardown, travel, equipment, staff count, anything that justifies the price."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ ACTIONS ============ -->
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d4">
+      <a href="{% url 'vendor_proposals' %}"
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+        Cancel
+      </a>
+      <button type="submit"
+              class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        Submit proposal
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ============ TIP ============ -->
+  <div class="mt-6 relative rounded-2xl border border-violet2-500/25 bg-violet2-500/[.04] p-4 overflow-hidden fade-up d4">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      </div>
+      <div class="text-xs text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 block mb-1">Tip</span>
+        Don't just lower your price — spell out what makes it worth it. Hosts award specificity, not cheapness.
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
+  .ef-textarea { min-height: 110px; line-height: 1.6; resize: none; }
+
+  .ef-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+  .ef-select option { background:#0a0a18; color:#f6f6f8; }
+
+  .ef-label {
+    display: block;
+    font-size: .75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #71718a;
+    margin-bottom: .5rem;
+  }
+  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
+
+  input:-webkit-autofill, input:-webkit-autofill:focus,
+  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
+  html:not(.dark) input:-webkit-autofill,
+  html:not(.dark) textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+  (function () {
+    function attachCounter(inputId, counterId) {
+      const input = document.getElementById(inputId);
+      const counter = document.getElementById(counterId);
+      if (!input || !counter) return;
+      const max = parseInt(input.getAttribute('maxlength'), 10) || 1000;
+      const update = () => {
+        counter.textContent = `${input.value.length} / ${max}`;
+        counter.style.color = input.value.length > max * 0.9 ? '#ff4800' : '';
+      };
+      update();
+      input.addEventListener('input', update);
+    }
+    attachCounter('id_cover_letter', 'cover-count');
+    attachCounter('id_includes', 'includes-count');
+  })();
+</script>
+
 {% endblock %}

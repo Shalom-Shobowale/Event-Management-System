@@ -1,0 +1,100 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Your ticket for {{ event.name }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f6f6f8;font-family:-apple-system,Inter,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f8;padding:32px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- CARD -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+               style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);">
+
+          <!-- HEADER STRIP -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#ff4800,#ec4899,#7c5cff);height:6px;"></td>
+          </tr>
+
+          <!-- BRAND -->
+          <tr>
+            <td style="padding:24px 28px 8px;">
+              <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#ff4800;">
+                EventFlow · Your ticket
+              </p>
+              <h1 style="margin:8px 0 0;font-size:26px;font-weight:400;color:#0a0a18;font-family:Georgia,serif;line-height:1.2;">
+                {{ event.name }}
+              </h1>
+            </td>
+          </tr>
+
+          <!-- MESSAGE -->
+          <tr>
+            <td style="padding:8px 28px 24px;">
+              <p style="margin:16px 0 0;font-size:15px;color:#4d4d66;line-height:1.5;">
+                Hi {{ guest.full_name }}, your registration is confirmed. Show the
+                QR code in your ticket at the door — no app needed.
+              </p>
+            </td>
+          </tr>
+
+          <!-- DETAILS -->
+          <tr>
+            <td style="padding:0 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                     style="border-top:1px solid #e2e8f0;font-size:13px;">
+                <tr>
+                  <td style="padding:12px 0;color:#71718a;">Venue</td>
+                  <td style="padding:12px 0;color:#0a0a18;text-align:right;">{{ event.venue }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;color:#71718a;border-top:1px solid #f1f1f5;">Date</td>
+                  <td style="padding:12px 0;color:#0a0a18;text-align:right;border-top:1px solid #f1f1f5;">
+                    {{ event.date|date:"M d, Y · H:i" }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;color:#71718a;border-top:1px solid #f1f1f5;">Seat</td>
+                  <td style="padding:12px 0;color:#ff4800;text-align:right;border-top:1px solid #f1f1f5;font-weight:bold;font-size:18px;">
+                    {{ guest.seat_number|default:"—" }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;color:#71718a;border-top:1px solid #f1f1f5;">Ticket ID</td>
+                  <td style="padding:12px 0;color:#0a0a18;text-align:right;border-top:1px solid #f1f1f5;font-family:'Courier New',monospace;font-size:12px;">
+                    {{ guest.ticket_code }}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="padding:24px 28px 32px;text-align:center;">
+              <a href="{{ ticket_url }}"
+                 style="display:inline-block;background:#ff4800;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:14px 28px;border-radius:12px;">
+                View your ticket
+              </a>
+              <p style="margin:16px 0 0;font-size:12px;color:#71718a;">
+                Or copy this link: <br/>
+                <span style="font-family:'Courier New',monospace;color:#0a0a18;word-break:break-all;">{{ ticket_url }}</span>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- FOOTER -->
+        <p style="max-width:520px;margin:24px auto 0;font-size:11px;color:#71718a;text-align:center;font-family:'Courier New',monospace;letter-spacing:.1em;text-transform:uppercase;">
+          Powered by EventFlow
+        </p>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

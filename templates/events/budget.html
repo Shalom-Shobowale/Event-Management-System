@@ -1,185 +1,365 @@
 {% extends "base_dashboard.html" %}
-
-{% block title %}Budget - {{ event.name }}{% endblock %}
-{% block page_title %}Event Budget{% endblock %}
 {% load humanize %}
+
+{% block title %}Budget · {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Budget{% endblock %}
+{% block page_title %}Event budget{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto">
-    <!-- Budget Overview -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Total Budget</p>
-            <p class="text-3xl font-bold mt-1"> ₦{{ budget.total_budget|default:0|floatformat:0|intcomma }}</p>
-            <a href="{% url 'update_budget' event.id %}" class="text-xs text-brand-600 hover:underline mt-2 inline-block">Edit Budget</a>
-        </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Spent</p>
-            <p class="text-3xl font-bold mt-1 text-error-600"> ₦{{ budget.spent|default:0|floatformat:0|intcomma }}</p>
-            <div class="flex items-center gap-2 mt-2">
-                <div class="flex-1 h-2 bg-surface-100 dark:bg-surface-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-error-500 rounded-full" style="width: {{ budget.utilization_percent }}%"></div>
-                </div>
-                <span class="text-xs text-surface-500">{{ budget.utilization_percent }}%</span>
-            </div>
-        </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-                Pending
-            </p>
 
-            <p class="text-3xl font-bold mt-1 text-warning-600">
-                ₦{{ budget.pending|default:0|floatformat:0|intcomma }}
-            </p>
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+          {{ event.name }}
+        </p>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+          Where the<br />
+          <span class="italic text-ink-400">money is going.</span>
+        </h2>
+        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+          Every expense, every category, every naira — tracked against your budget.
+        </p>
+      </div>
 
-            <p class="text-xs text-surface-500 mt-2">
-                Awaiting payment
-            </p>
-        </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">Remaining</p>
-            <p class="text-3xl font-bold mt-1 text-success-600"> ₦{{ budget.remaining|default:0|floatformat:0|intcomma }}</p>
-        </div>
+      <a href="{% url 'add_expense' event.id %}"
+         class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition self-start">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add expense
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================== BUDGET OVERVIEW ===================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6 fade-up d2">
+
+    <!-- total budget -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Total budget</p>
+      <p class="font-display text-4xl leading-none text-ink-50">
+        ₦{{ budget.total_budget|default:0|floatformat:0|intcomma }}
+      </p>
+      <a href="{% url 'update_budget' event.id %}"
+         class="inline-flex items-center gap-1.5 mt-3 font-mono text-[10px] uppercase tracking-widest text-violet2-400 hover:text-violet2-300 transition">
+        Edit budget
+        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
     </div>
 
-    <!-- Category Breakdown -->
-    <div class="grid lg:grid-cols-3 gap-6 mb-6">
-        <div class="lg:col-span-2">
-            <!-- Expenses List -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                    <h2 class="font-semibold">Expenses</h2>
-                    <a href="{% url 'add_expense' event.id %}" class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">+ Add Expense</a>
-                </div>
-                {% if expenses %}
-                <div class="divide-y divide-surface-100 dark:divide-surface-700">
-                    {% for expense in expenses %}
-                    <div class="p-4 flex items-center justify-between hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center text-brand-600 font-semibold">
-                                {{ expense.category|slice:":1"|upper }}
-                            </div>
-                            <div>
-                                <p class="font-medium">{{ expense.title }}</p>
-                                <p class="text-xs text-surface-500">{{ expense.category }} &middot; {{ expense.created_at|date:"M d" }}</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold">₦{{ expense.amount|default:0|floatformat:0|intcomma }}</p>
-                            <span class="text-xs {% if expense.paid %}text-success-600{% else %}text-warning-600{% endif %}">{% if expense.paid %}Paid{% else %}Pending{% endif %}</span>
-                        </div>
-                        <div class="gap-4 flex">
-                            <a href="{% url 'edit_expense' expense.id %} " class="text-xs bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 py-1.5 px-5">
-                                Edit
-                            </a>
+    <!-- spent -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Spent</p>
+      <p class="font-display text-4xl leading-none text-flame-500">
+        ₦{{ budget.spent|default:0|floatformat:0|intcomma }}
+      </p>
 
-                            <button
-                                type="button"
-                                onclick="openDeleteModal('{% url 'delete_expense' expense.id %}', '{{ expense.title|escapejs }}')"
-                                class="text-xs text-error-600 bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 py-1.5 px-5">
-                                Delete
-                            </button>
-                        </div>
-                        {% comment %} <div class="text-right"> {% endcomment %}
-                            {% comment %} <p class="font-bold">
-                                ₦{{ expense.amount|floatformat:0|intcomma }}
-                            </p> {% endcomment %}
-
-                            {% comment %} <span class="text-xs {% if expense.paid %}text-success-600{% else %}text-warning-600{% endif %}">
-                                {% if expense.paid %}
-                                    Paid
-                                {% else %}
-                                    Pending
-                                {% endif %}
-                            </span> {% endcomment %}
-                        {% comment %} </div> {% endcomment %}
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="p-12 text-center">
-                    <p class="text-surface-500">No expenses recorded yet</p>
-                </div>
-                {% endif %}
-            </div>
+      {% if budget.utilization_percent is not None %}
+      <div class="flex items-center gap-2 mt-3">
+        <div class="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500
+            {% if budget.utilization_percent >= 90 %}bg-flame-600
+            {% elif budget.utilization_percent >= 60 %}bg-flame-500
+            {% else %}bg-lime2-500{% endif %}"
+               style="width: {{ budget.utilization_percent }}%"></div>
         </div>
-
-        <div id="deleteModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-surface-800 rounded-xl p-6 w-full max-w-md">
-                <h3 class="text-lg font-semibold mb-3">
-                    Delete Expense
-                </h3>
-                <p class="mb-6 text-sm font-semibold">
-                    Are you sure you want to delete
-                    <strong id="expenseName"></strong>?
-                </p>
-                <form id="deleteForm" method="post">
-                    {% csrf_token %}
-
-                    <div class="flex justify-end gap-3">
-
-                        <button
-                            type="button"
-                            onclick="closeDeleteModal()"
-                            class="px-4 py-2 border rounded-lg text-xs text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">
-                            Cancel
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="px-4 py-2 border rounded-lg text-xs text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">
-                            Delete
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-        <!-- Category Chart -->
-        <div class="space-y-6">
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-                <h2 class="font-semibold mb-4">By Category</h2>
-                {% if category_totals %}
-                <div class="space-y-3">
-                    {% for item in category_totals %}
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-brand-500"></div>
-                            <span class="text-sm">{{ item.category }}</span>
-                        </div>
-                        <span class="text-sm font-medium">₦{{ item.total|default:0|floatformat:0|intcomma }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <p class="text-sm text-surface-500">No data yet</p>
-                {% endif %}
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-5 text-white">
-                <h3 class="font-semibold mb-3">Budget Tips</h3>
-                <p class="text-sm text-brand-100">Track all expenses, including vendor payments and materials. Keep receipts organized for accurate financial records.</p>
-            </div>
-        </div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-400 whitespace-nowrap">
+          {{ budget.utilization_percent }}%
+        </span>
+      </div>
+      {% endif %}
     </div>
+
+    <!-- pending -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Pending</p>
+      <p class="font-display text-4xl leading-none text-flame-400">
+        ₦{{ budget.pending|default:0|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-3 inline-flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+        Awaiting payment
+      </p>
+    </div>
+
+    <!-- remaining -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Remaining</p>
+      <p class="font-display text-4xl leading-none text-lime2-500">
+        ₦{{ budget.remaining|default:0|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-3">
+        Available to spend
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN GRID ===================== -->
+  <div class="grid lg:grid-cols-3 gap-6">
+
+    <!-- ============ EXPENSES LIST ============ -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Line items</p>
+            <h3 class="font-display text-2xl leading-none">Expenses</h3>
+          </div>
+          <a href="{% url 'add_expense' event.id %}"
+             class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-xs font-semibold transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add expense
+          </a>
+        </div>
+
+        {% if expenses %}
+          <div class="divide-y divide-white/5">
+            {% for expense in expenses %}
+            <div class="p-4 hover:bg-white/[.02] transition-colors">
+
+              <div class="flex items-start gap-3">
+
+                <!-- category initial -->
+                <div class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-lg flex-shrink-0">
+                  {{ expense.category|slice:":1"|upper }}
+                </div>
+
+                <!-- title + meta -->
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-sm text-ink-100 truncate">{{ expense.title }}</p>
+                  <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-0.5">
+                    {{ expense.category }} <span class="text-ink-600">·</span> {{ expense.created_at|date:"M d" }}
+                  </p>
+                </div>
+
+                <!-- amount + status -->
+                <div class="text-right flex-shrink-0">
+                  <p class="font-display text-xl leading-none text-ink-50">
+                    ₦{{ expense.amount|default:0|floatformat:0|intcomma }}
+                  </p>
+                  <span class="inline-flex items-center gap-1 mt-1 font-mono text-[10px] uppercase tracking-widest
+                    {% if expense.paid %}text-lime2-500{% else %}text-flame-400{% endif %}">
+                    {% if expense.paid %}
+                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      Paid
+                    {% else %}
+                      <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+                      Pending
+                    {% endif %}
+                  </span>
+                </div>
+
+              </div>
+
+              <!-- actions row -->
+              <div class="flex items-center justify-end gap-2 mt-3">
+                <a href="{% url 'edit_expense' expense.id %}"
+                   class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-xs font-medium text-ink-300 transition">
+                  Edit
+                  <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </a>
+
+                <button type="button"
+                        onclick="openDeleteModal('{% url 'delete_expense' expense.id %}', '{{ expense.title|escapejs }}')"
+                        class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-flame-600/50 hover:bg-flame-600/5 text-xs font-medium text-ink-300 hover:text-flame-400 transition">
+                  Delete
+                  <svg class="w-3 h-3 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
+                  </svg>
+                </button>
+              </div>
+
+            </div>
+            {% endfor %}
+          </div>
+
+        {% else %}
+          <!-- empty state -->
+          <div class="p-12 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-display text-2xl">No expenses recorded yet</h3>
+            <p class="mt-2 text-sm text-ink-400 max-w-sm mx-auto">
+              Start tracking what you spend — even small items add up.
+            </p>
+            <a href="{% url 'add_expense' event.id %}"
+               class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+              Add first expense
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <div class="space-y-6">
+
+      <!-- by category -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+        <div class="p-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Breakdown</p>
+          <h3 class="font-display text-2xl leading-none mb-5">By category</h3>
+
+          {% if category_totals %}
+            <div class="space-y-3">
+              {% for item in category_totals %}
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-violet2-500 flex-shrink-0"></span>
+                  <span class="text-sm text-ink-200 truncate">{{ item.category }}</span>
+                </div>
+                <span class="font-display text-lg leading-none text-ink-50 whitespace-nowrap">
+                  ₦{{ item.total|default:0|floatformat:0|intcomma }}
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-sm text-ink-500">No categories yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- budget tips -->
+      <div class="relative rounded-2xl border border-flame-600/25 bg-flame-600/[.04] p-5 overflow-hidden fade-up d4">
+        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full glow-flame pointer-events-none opacity-60"></div>
+        <div class="relative">
+          <div class="inline-flex items-center gap-2 mb-3">
+            <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-400">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </span>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Budget tips</p>
+          </div>
+          <h3 class="font-display text-xl leading-tight">Receipts save money.</h3>
+          <p class="mt-2 text-xs text-ink-300 leading-relaxed">
+            Track every expense — vendor payments, deposits, materials. Keep
+            receipts organized so your records are accurate when you reconcile.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
+<!-- ===================== DELETE MODAL ===================== -->
+<div id="deleteModal"
+     class="fixed inset-0 hidden z-50 items-center justify-center bg-ink-950/70 backdrop-blur-sm p-4"
+     onclick="if (event.target === this) closeDeleteModal()">
+  <div class="relative w-full max-w-md rounded-2xl border border-white/10 bg-ink-900 overflow-hidden"
+       style="animation: ef-result-pop .25s cubic-bezier(.2,.7,.2,1);">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
+    <div class="p-6">
+
+      <!-- icon -->
+      <div class="w-12 h-12 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 mb-4">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
+        </svg>
+      </div>
+
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-1">Confirm delete</p>
+      <h3 class="font-display text-2xl leading-tight text-ink-50">
+        Delete this expense?
+      </h3>
+      <p class="mt-3 text-sm text-ink-300 leading-relaxed">
+        You're about to delete
+        <strong id="expenseName" class="text-ink-100 font-medium"></strong>.
+        This can't be undone.
+      </p>
+
+      <form id="deleteForm" method="post" class="mt-6">
+        {% csrf_token %}
+        <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3">
+          <button type="button"
+                  onclick="closeDeleteModal()"
+                  class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+            Delete expense
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  @keyframes ef-result-pop {
+    0%   { opacity: 0; transform: translateY(8px) scale(.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
 <script>
-function openDeleteModal(url, title) {
-    document.getElementById("deleteForm").action = url;
-    document.getElementById("expenseName").textContent = title;
-    document.getElementById("deleteModal").classList.remove("hidden");
-}
+  function openDeleteModal(url, title) {
+    const modal = document.getElementById("deleteModal");
+    const form = document.getElementById("deleteForm");
+    const nameEl = document.getElementById("expenseName");
 
-function closeDeleteModal() {
-    document.getElementById("deleteModal").classList.add("hidden");
-}
+    form.action = url;
+    nameEl.textContent = '"' + title + '"';
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    // Escape key closes
+    document.addEventListener("keydown", escClose);
+  }
+
+  function closeDeleteModal() {
+    const modal = document.getElementById("deleteModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.removeEventListener("keydown", escClose);
+  }
+
+  function escClose(e) {
+    if (e.key === "Escape") closeDeleteModal();
+  }
 </script>
-{% endblock %}
 
+{% endblock %}

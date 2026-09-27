@@ -1,61 +1,199 @@
 {% extends "base_dashboard.html" %}
 
 {% block title %}{{ conversation.subject|default:"Conversation" }}{% endblock %}
+{% block page_eyebrow %}Messages{% endblock %}
 {% block page_title %}{{ conversation.subject|default:"Conversation" }}{% endblock %}
+{% block nav_messages %}nav-active{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 overflow-hidden">
-        <!-- Header -->
-        <div class="p-4 border-b border-surface-100 dark:border-surface-700">
-            <div class="flex items-center gap-3">
-                <a href="{% url 'conversations' %}" class="p-1 rounded hover:bg-surface-100 dark:hover:bg-surface-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                </a>
-                <div class="flex-1">
-                    <p class="font-semibold">{{ conversation.subject|default:"Conversation" }}</p>
-                    <div class="flex items-center gap-2 text-sm text-surface-500">
-                        {% for participant in conversation.participants.all %}
-                        <span class="px-2 py-0.5 bg-surface-100 dark:bg-surface-700 rounded">{{ participant.get_full_name|default:participant.username }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Messages -->
-        <div class="h-[400px] overflow-y-auto p-4 space-y-4" id="messages">
-            {% for message in messages %}
-            <div class="flex {% if message.sender == user %}justify-end{% else %}justify-start{% endif %}">
-                <div class="max-w-[70%]">
-                    <div class="px-4 py-2 rounded-2xl {% if message.sender == user %}bg-brand-600 text-white{% else %}bg-surface-100 dark:bg-surface-700{% endif %}">
-                        <p class="text-sm">{{ message.content }}</p>
-                    </div>
-                    <p class="text-xs text-surface-400 mt-1 {% if message.sender == user %}text-right{% endif %}">{{ message.created_at|date:"H:i" }}</p>
-                </div>
-            </div>
+  <!-- ===================== CONVERSATION CARD ===================== -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d1">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+    <!-- ============ HEADER ============ -->
+    <div class="p-4 sm:p-5 border-b border-white/5">
+      <div class="flex items-center gap-3">
+
+        <!-- back -->
+        <a href="{% url 'conversations' %}"
+           class="flex-shrink-0 w-9 h-9 rounded-lg border border-white/10 hover:border-white/25 hover:bg-white/5 grid place-items-center text-ink-300 hover:text-ink-100 transition"
+           title="Back to messages">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </a>
+
+        <!-- subject + participants -->
+        <div class="flex-1 min-w-0">
+          <h2 class="font-display text-2xl leading-tight text-ink-50 truncate">
+            {{ conversation.subject|default:"Conversation" }}
+          </h2>
+
+          <!-- participants -->
+          <div class="flex flex-wrap items-center gap-1.5 mt-2">
+            {% for participant in conversation.participants.all %}
+              <span class="inline-flex items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full bg-white/5 border border-white/10">
+                <span class="w-5 h-5 rounded-full bg-violet2-500/20 border border-violet2-500/30 grid place-items-center text-violet2-400 text-[9px] font-semibold">
+                  {{ participant.get_full_name|default:participant.username|make_list|first|upper }}
+                </span>
+                <span class="text-xs text-ink-200 truncate max-w-[140px]">
+                  {{ participant.get_full_name|default:participant.username }}
+                </span>
+              </span>
             {% endfor %}
+          </div>
         </div>
 
-        <!-- Reply Form -->
-        <div class="p-4 border-t border-surface-100 dark:border-surface-700">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="flex gap-3">
-                    <input type="text" name="content" required placeholder="Type a message..." class="flex-1 px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm">
-                    <button type="submit" class="px-4 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                    </button>
-                </div>
-            </form>
-        </div>
+      </div>
     </div>
+
+    <!-- ============ MESSAGES ============ -->
+    <div id="messages"
+         class="h-[480px] overflow-y-auto p-4 sm:p-5 space-y-4 thin-scroll"
+         style="background-image: radial-gradient(closest-side, rgba(124,92,255,.03), transparent 70%);">
+
+      {% for message in messages %}
+        {% if message.sender == user %}
+          <!-- OUTGOING -->
+          <div class="flex justify-end">
+            <div class="max-w-[80%] flex flex-col items-end">
+
+              <div class="relative px-4 py-2.5 rounded-2xl rounded-tr-md
+                          bg-gradient-to-br from-flame-600 to-flame-700
+                          text-white shadow-lg shadow-flame-600/20">
+                <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">{{ message.content }}</p>
+              </div>
+
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5">
+                {{ message.created_at|date:"H:i" }}
+              </p>
+            </div>
+          </div>
+        {% else %}
+          <!-- INCOMING -->
+          <div class="flex justify-start gap-2.5">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-violet2-500/20 border border-violet2-500/30 grid place-items-center text-violet2-400 text-[10px] font-semibold mt-0.5">
+              {{ message.sender.get_full_name|default:message.sender.username|make_list|first|upper }}
+            </div>
+
+            <div class="max-w-[80%] flex flex-col items-start">
+
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1 ml-1">
+                {{ message.sender.get_full_name|default:message.sender.username }}
+              </p>
+
+              <div class="px-4 py-2.5 rounded-2xl rounded-tl-md
+                          bg-ink-800 border border-white/10
+                          text-ink-100">
+                <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">{{ message.content }}</p>
+              </div>
+
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5 ml-1">
+                {{ message.created_at|date:"H:i" }}
+              </p>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <!-- ============ COMPOSER ============ -->
+    <div class="p-4 sm:p-5 border-t border-white/5">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="flex items-end gap-3">
+
+          <!-- input -->
+          <div class="relative flex-1">
+            <input type="text" name="content" required
+                   placeholder="Type a message…"
+                   autocomplete="off"
+                   class="ef-input pr-12" />
+            <!-- optional attachment icon placeholder (kept simple) -->
+            <button type="button"
+                    title="Attach a file"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg grid place-items-center text-ink-500 hover:text-violet2-400 hover:bg-violet2-500/10 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- send -->
+          <button type="submit"
+                  class="group flex-shrink-0 w-12 h-12 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 grid place-items-center transition shadow-lg shadow-flame-600/25"
+                  title="Send message">
+            <svg class="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </button>
+
+        </div>
+      </form>
+    </div>
+
+  </div>
+
 </div>
 
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
+
+  .thin-scroll::-webkit-scrollbar { width: 6px; }
+  .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+  .thin-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 3px; }
+  .thin-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,72,0,.4); }
+
+  input:-webkit-autofill, input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+  html:not(.dark) input:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('messages');
-    container.scrollTop = container.scrollHeight;
-});
+    if (container) container.scrollTop = container.scrollHeight;
+
+    // focus the composer on load
+    const composer = document.querySelector('input[name="content"]');
+    if (composer) composer.focus();
+  });
 </script>
+
 {% endblock %}

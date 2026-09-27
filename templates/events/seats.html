@@ -1,0 +1,479 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Seating — {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Seating{% endblock %}
+{% block page_title %}{{ event.name }}{% endblock %}
+{% block nav_my_events %}nav-active{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6">
+
+  <!-- ============ HEADER + STATS ============ -->
+  <div class="fade-up d1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-2">Seating layout</p>
+        <h2 class="font-display text-4xl leading-[1.05] tracking-tight">
+          {{ event.name }}
+        </h2>
+        <p class="mt-2 text-sm text-ink-400">
+          {{ event.get_seat_arrangement_display }} ·
+          <a href="{% url 'event_dashboard' event.id %}" class="text-flame-500 hover:text-flame-400">Back to event dashboard →</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div class="rounded-xl border border-white/10 bg-ink-900 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Total</p>
+        <p class="font-display text-3xl leading-none">{{ total_seats }}</p>
+      </div>
+      <div class="rounded-xl border border-lime2-500/30 bg-lime2-500/5 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-500 mb-1">Available</p>
+        <p class="font-display text-3xl leading-none text-lime2-500">{{ available_count }}</p>
+      </div>
+      <div class="rounded-xl border border-violet2-500/30 bg-violet2-500/5 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 mb-1">Held</p>
+        <p class="font-display text-3xl leading-none text-violet2-400">{{ held_count }}</p>
+      </div>
+      <div class="rounded-xl border border-flame-600/30 bg-flame-600/5 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-1">Taken</p>
+        <p class="font-display text-3xl leading-none text-flame-500">{{ taken_count }}</p>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-ink-900 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Blocked</p>
+        <p class="font-display text-3xl leading-none text-ink-400">{{ blocked_count }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if total_seats == 0 %}
+
+  <!-- ============ LAYOUT GENERATOR (only when no seats exist) ============ -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d2">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+    <div class="p-6">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Step 1</p>
+      <h3 class="font-display text-2xl leading-none mb-2">Create your seating layout</h3>
+      <p class="text-sm text-ink-400 mb-6">
+        Generate seats in bulk. You can hold or edit individual seats afterwards.
+      </p>
+
+      <form method="post" action="{% url 'event_seats_generate' event.id %}" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+        {% csrf_token %}
+
+        <div>
+          <label class="ef-label">Rows</label>
+          <input type="text" name="row_spec" placeholder="A-J" class="ef-input" required />
+          <p class="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">e.g. A-J or A,B,C</p>
+        </div>
+
+        <div>
+          <label class="ef-label">Seats per row</label>
+          <input type="number" name="seats_per_row" value="20" min="1" max="200" class="ef-input" required />
+        </div>
+
+        <div>
+          <label class="ef-label">Start at</label>
+          <input type="number" name="start_number" value="1" min="0" class="ef-input" />
+        </div>
+
+        <div>
+          <label class="ef-label">Section (optional)</label>
+          <input type="text" name="section" placeholder="Family" class="ef-input" />
+        </div>
+
+        <div class="sm:col-span-4 flex justify-end">
+          <button type="submit"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Generate seats
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% else %}
+
+  <!-- ============ SEAT GRID ============ -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d2">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="p-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Layout</p>
+        <h3 class="font-display text-2xl leading-none">Seat map</h3>
+      </div>
+      <div class="flex items-center gap-3 text-xs font-mono uppercase tracking-widest">
+        <span class="inline-flex items-center gap-1.5 text-lime2-500">
+          <span class="w-2.5 h-2.5 rounded bg-lime2-500/40 border border-lime2-500/60"></span>
+          Available
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-violet2-400">
+          <span class="w-2.5 h-2.5 rounded bg-violet2-500/40 border border-violet2-500/60"></span>
+          Held
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-flame-500">
+          <span class="w-2.5 h-2.5 rounded bg-flame-600/40 border border-flame-600/60"></span>
+          Taken
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-ink-400">
+          <span class="w-2.5 h-2.5 rounded bg-ink-700 border border-ink-600"></span>
+          Blocked
+        </span>
+      </div>
+    </div>
+
+    <div class="p-5 overflow-x-auto thin-scroll">
+      {% regroup seats by section|default:"General" as section_list %}
+      {% for section in section_list %}
+      <div class="mb-6 last:mb-0">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">{{ section.grouper }}</p>
+        <div class="flex flex-wrap gap-1.5">
+          {% for seat in section.list %}
+          <button type="button"
+                  class="seat-cell group relative w-12 h-12 rounded-lg border text-xs font-mono transition
+                    {% if seat.status == 'available' %}
+                      border-lime2-500/40 bg-lime2-500/10 text-lime2-500 hover:border-lime2-500 hover:bg-lime2-500/20
+                    {% elif seat.status == 'held' %}
+                      border-violet2-500/50 bg-violet2-500/15 text-violet2-400 hover:border-violet2-500 hover:bg-violet2-500/25
+                    {% elif seat.status == 'taken' %}
+                      border-flame-600/50 bg-flame-600/15 text-flame-500 hover:border-flame-600 hover:bg-flame-600/25
+                    {% else %}
+                      border-ink-700 bg-ink-800 text-ink-500 hover:border-ink-600
+                    {% endif %}"
+                  data-seat-id="{{ seat.id }}"
+                  data-seat-label="{{ seat.label }}"
+                  data-seat-status="{{ seat.status }}"
+                  data-seat-section="{{ seat.section }}"
+                  data-seat-held-for="{{ seat.held_for }}"
+                  data-seat-held-note="{{ seat.held_note }}"
+                  data-seat-access-code="{{ seat.access_code }}"
+                  data-seat-guest-id="{{ seat.guest.id|default:'' }}"
+                  data-seat-guest-name="{{ seat.guest.full_name|default:'' }}"
+                  data-seat-guest-email="{{ seat.guest.email|default:'' }}"
+                  title="{{ seat.label }}{% if seat.held_for %} — held for {{ seat.held_for }}{% endif %}{% if seat.guest %} — {{ seat.guest.full_name }}{% endif %}">
+            {{ seat.label }}
+            {% if seat.status == 'held' and seat.access_code %}
+              <span class="absolute -top-1 -right-1 px-1 py-0.5 rounded font-mono text-[8px] leading-none bg-violet2-500 text-white uppercase">
+                {{ seat.access_code|slice:":4" }}
+              </span>
+            {% endif %}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ============ BULK HOLD / RELEASE ============ -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 fade-up d3">
+
+    <div class="relative rounded-2xl border border-violet2-500/30 bg-violet2-500/5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <div class="p-5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 mb-1">Bulk action</p>
+        <h3 class="font-display text-2xl leading-none mb-4">Hold a range</h3>
+
+        <form method="post" action="{% url 'event_seat_hold' event.id %}" class="space-y-3">
+          {% csrf_token %}
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="ef-label">From</label>
+              <input type="text" name="from_label" placeholder="A-1" class="ef-input" required />
+            </div>
+            <div>
+              <label class="ef-label">To</label>
+              <input type="text" name="to_label" placeholder="A-8" class="ef-input" required />
+            </div>
+          </div>
+          <div>
+            <label class="ef-label">Held for</label>
+            <input type="text" name="held_for" placeholder="Bride's family" class="ef-input" required />
+          </div>
+
+          <div>
+            <label class="ef-label">Access code (optional)</label>
+            <input type="text" name="access_code" placeholder="FAMILY"
+                   class="ef-input font-mono uppercase tracking-wider" />
+            <p class="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">
+              Guests who enter this code get these seats automatically
+            </p>
+          </div>
+
+          <div>
+            <label class="ef-label">Note (optional)</label>
+            <textarea name="held_note" rows="2" class="ef-input resize-none" placeholder="Anything to remember"></textarea>
+          </div>
+          <button type="submit"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-violet2-500 hover:bg-violet2-400 text-ink-950 text-sm font-semibold transition">
+            Hold these seats
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="p-5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-500 mb-1">Bulk action</p>
+        <h3 class="font-display text-2xl leading-none mb-4">Release a range</h3>
+
+        <form method="post" action="{% url 'event_seat_release' event.id %}" class="space-y-3">
+          {% csrf_token %}
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="ef-label">From</label>
+              <input type="text" name="from_label" placeholder="A-1" class="ef-input" required />
+            </div>
+            <div>
+              <label class="ef-label">To</label>
+              <input type="text" name="to_label" placeholder="A-8" class="ef-input" required />
+            </div>
+          </div>
+          <p class="text-xs text-ink-400">
+            Only <span class="text-violet2-400">held</span> seats in this range will be released back to available. Taken seats are left alone.
+          </p>
+          <button type="submit"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-lime2-500/40 hover:bg-lime2-500/10 text-lime2-500 text-sm font-semibold transition">
+            Release these seats
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  {% endif %}
+
+</div>
+
+<!-- ============ SEAT DETAIL MODAL ============ -->
+<div id="seat-modal" class="fixed inset-0 z-[200] hidden" aria-hidden="true">
+  <div class="absolute inset-0 bg-ink-950/70 backdrop-blur-sm" data-seat-close></div>
+  <div class="relative mx-auto mt-20 max-w-lg px-4">
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden shadow-2xl shadow-black/60">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="p-5 border-b border-white/5 flex items-start justify-between">
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400 mb-1">Seat</p>
+          <h3 id="seat-modal-title" class="font-display text-2xl leading-tight">—</h3>
+          <p id="seat-modal-subtitle" class="text-sm text-ink-400 mt-1">—</p>
+        </div>
+        <button type="button" class="p-1.5 rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5 transition" data-seat-close>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div id="seat-modal-status"></div>
+
+        <div id="seat-modal-taken" class="hidden">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Assigned guest</p>
+          <div class="rounded-lg border border-white/5 bg-ink-950/40 p-3">
+            <p id="seat-modal-guest-name" class="text-sm font-medium text-ink-100">—</p>
+            <p id="seat-modal-guest-email" class="text-xs text-ink-500 mt-0.5">—</p>
+          </div>
+        </div>
+
+        <div id="seat-modal-assign" class="hidden">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">Assign a guest</p>
+          <input type="text" id="seat-guest-search" placeholder="Search by name or email…"
+                 class="ef-input mb-2" autocomplete="off" />
+          <div id="seat-guest-results" class="max-h-56 overflow-y-auto thin-scroll space-y-1"></div>
+        </div>
+
+        <div id="seat-modal-actions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- styles (page-scoped) -->
+<style>
+  .ef-label {
+    display: block;
+    font-size: .75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #71718a;
+    margin-bottom: .5rem;
+  }
+  .ef-input {
+    width: 100%;
+    padding: .7rem .9rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .6rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .ef-input:focus { border-color: #ff4800; background: rgba(255,72,0,.04); }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+</style>
+
+<script>
+(function () {
+  const modal = document.getElementById('seat-modal');
+  const els = {
+    title: document.getElementById('seat-modal-title'),
+    subtitle: document.getElementById('seat-modal-subtitle'),
+    status: document.getElementById('seat-modal-status'),
+    taken: document.getElementById('seat-modal-taken'),
+    guestName: document.getElementById('seat-modal-guest-name'),
+    guestEmail: document.getElementById('seat-modal-guest-email'),
+    assign: document.getElementById('seat-modal-assign'),
+    search: document.getElementById('seat-guest-search'),
+    results: document.getElementById('seat-guest-results'),
+    actions: document.getElementById('seat-modal-actions'),
+  };
+
+  const urls = {
+    assign: (seatId) => `{% url 'event_seat_assign' event.id '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', seatId),
+    unassign: (seatId) => `{% url 'event_seat_unassign' event.id '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', seatId),
+    search: `{% url 'event_seats_search_guests' event.id %}`,
+  };
+
+  let currentSeat = null;
+
+  function openModal(btn) {
+    currentSeat = {
+      id: btn.dataset.seatId,
+      label: btn.dataset.seatLabel,
+      status: btn.dataset.seatStatus,
+      section: btn.dataset.seatSection,
+      heldFor: btn.dataset.seatHeldFor,
+      heldNote: btn.dataset.seatHeldNote,
+      accessCode: btn.dataset.seatAccessCode,
+      guestId: btn.dataset.seatGuestId,
+      guestName: btn.dataset.seatGuestName,
+      guestEmail: btn.dataset.seatGuestEmail,
+    };
+
+    els.title.textContent = currentSeat.label;
+    els.subtitle.textContent = currentSeat.section ? `Section: ${currentSeat.section}` : '';
+
+    // Status line
+    const statusColors = { available: '#c6f24e', held: '#7c5cff', taken: '#ff4800', blocked: '#71718a' };
+    const color = statusColors[currentSeat.status] || '#71718a';
+    let statusHtml = `<span style="display:inline-block;padding:3px 10px;border-radius:9999px;background:${color}20;color:${color};border:1px solid ${color}50;font-family:monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;">${currentSeat.status}</span>`;
+
+    if (currentSeat.heldFor) {
+      statusHtml += `<p class="text-sm text-ink-300 mt-3">Held for: <span class="text-violet2-400 font-medium">${currentSeat.heldFor}</span></p>`;
+      if (currentSeat.heldNote) {
+        statusHtml += `<p class="text-xs text-ink-500 mt-1">${currentSeat.heldNote}</p>`;
+      }
+    }
+
+    // NEW — show access code when present
+    if (currentSeat.accessCode) {
+      statusHtml += `<p class="text-sm text-ink-300 mt-2">Access code: <span class="font-mono text-violet2-400 bg-violet2-500/10 border border-violet2-500/30 px-2 py-0.5 rounded">${currentSeat.accessCode}</span></p>`;
+    }
+
+    els.status.innerHTML = statusHtml;
+
+    // Taken block
+    if (currentSeat.status === 'taken') {
+      els.taken.classList.remove('hidden');
+      els.guestName.textContent = currentSeat.guestName || '—';
+      els.guestEmail.textContent = currentSeat.guestEmail || '—';
+    } else {
+      els.taken.classList.add('hidden');
+    }
+
+    // Assign block
+    if (currentSeat.status === 'held' || currentSeat.status === 'available') {
+      els.assign.classList.remove('hidden');
+      els.search.value = '';
+      els.results.innerHTML = '';
+    } else {
+      els.assign.classList.add('hidden');
+    }
+
+    // Actions
+    let actionsHtml = '<div class="flex items-center justify-end gap-2 pt-2 border-t border-white/5">';
+    if (currentSeat.status === 'taken') {
+      actionsHtml += `
+        <form method="post" action="${urls.unassign(currentSeat.id)}">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <button type="submit" class="px-4 py-2 rounded-lg border border-flame-600/40 hover:bg-flame-600/10 text-flame-500 text-sm font-medium transition">
+            Unassign guest
+          </button>
+        </form>`;
+    } else if (currentSeat.status === 'held') {
+      actionsHtml += `<p class="text-xs text-ink-500 mr-auto">Assign a guest below, or release via the range form.</p>`;
+    } else if (currentSeat.status === 'available') {
+      actionsHtml += `<p class="text-xs text-ink-500 mr-auto">Assign a guest below, or hold via the range form.</p>`;
+    }
+    actionsHtml += '</div>';
+    els.actions.innerHTML = actionsHtml;
+
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    currentSeat = null;
+  }
+
+  // Open on seat click
+  document.addEventListener('click', function (e) {
+    const cell = e.target.closest('.seat-cell');
+    if (cell) { e.preventDefault(); openModal(cell); return; }
+    if (e.target.closest('[data-seat-close]')) { e.preventDefault(); closeModal(); }
+  });
+
+  // ESC to close
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  // Guest search (debounced)
+  let searchTimer = null;
+  if (els.search) {
+    els.search.addEventListener('input', function () {
+      clearTimeout(searchTimer);
+      const q = els.search.value.trim();
+      if (q.length < 2) { els.results.innerHTML = ''; return; }
+      searchTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`${urls.search}?q=${encodeURIComponent(q)}`, { credentials: 'same-origin' });
+          const data = await res.json();
+          if (!data.results || !data.results.length) {
+            els.results.innerHTML = '<p class="text-xs text-ink-500 px-2 py-3">No matches.</p>';
+            return;
+          }
+          els.results.innerHTML = data.results.map(g => `
+            <form method="post" action="${urls.assign(currentSeat.id)}" class="block">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <input type="hidden" name="guest_id" value="${g.id}">
+              <button type="submit" class="w-full text-left px-3 py-2 rounded-lg hover:bg-flame-600/5 hover:border-flame-600/40 border border-transparent transition">
+                <p class="text-sm font-medium text-ink-100">${g.name}</p>
+                <p class="text-[11px] text-ink-500 mt-0.5">${g.email}${g.current_seat ? ' · currently ' + g.current_seat : ''}</p>
+              </button>
+            </form>
+          `).join('');
+        } catch (err) {
+          els.results.innerHTML = '<p class="text-xs text-flame-500 px-2 py-3">Search failed.</p>';
+        }
+      }, 250);
+    });
+  }
+})();
+</script>
+
+{% endblock %}

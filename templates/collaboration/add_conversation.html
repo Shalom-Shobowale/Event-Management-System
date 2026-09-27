@@ -1,46 +1,212 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}Start Conversation{% endblock %}
-{% block page_title %}Start Conversation{% endblock %}
+{% block title %}Start conversation · {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Messages{% endblock %}
+{% block page_title %}Start conversation{% endblock %}
+{% block nav_messages %}nav-active{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">Start Conversation</h2>
-        <p class="text-sm text-surface-500 mt-1">Connect with collaborators for {{ event.name }}</p>
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      {{ event.name }}
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Say hello<br />
+      <span class="italic text-ink-400">to a collaborator.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Open a thread with your event host or a confirmed vendor. Everything stays
+      tied to this event.
+    </p>
+  </div>
+
+  <form method="post" class="space-y-6 fade-up d2">
+    {% csrf_token %}
+
+    <!-- ============ 01 CONVERSATION SETUP ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Who and what</p>
+          <h3 class="font-display text-2xl leading-none">Conversation setup</h3>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+
+        <!-- subject -->
+        <div>
+          <label for="id_subject" class="ef-label">Subject <span class="req">*</span></label>
+          <input id="id_subject" type="text" name="subject" required
+                 class="ef-input"
+                 placeholder="e.g. Timing for the venue walkthrough"
+                 autocomplete="off" />
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            A short line — shows up in both inboxes
+          </p>
+        </div>
+
+        <!-- participant -->
+        <div>
+          <label for="id_participant" class="ef-label">Participant <span class="req">*</span></label>
+          <select id="id_participant" name="participant" required class="ef-input ef-select">
+            <option value="">— Select a participant —</option>
+            {% for user in potential_participants %}
+              {% if user != request.user %}
+                <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Available participants include the event host and confirmed vendors
+          </p>
+        </div>
+
+      </div>
     </div>
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Subject <span class="text-error-500">*</span></label>
-                    <input type="text" name="subject" required class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm" placeholder="Conversation topic">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Participant <span class="text-error-500">*</span></label>
-                    <select name="participant" required class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm">
-                        <option value="">-- Select a participant --</option>
-                        {% for user in potential_participants %}
-                        {% if user != request.user %}
-                        <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                    <p class="text-xs text-surface-500 mt-1">Available participants include the event host and confirmed vendors</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Message</label>
-                    <textarea name="message" rows="4" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none" placeholder="Write your first message..."></textarea>
-                </div>
-            </div>
-        </div>
+    <!-- ============ 02 FIRST MESSAGE ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{% url 'event_workspace' event.id %}" class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
-            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Start Conversation</button>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs">02</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Optional</p>
+          <h3 class="font-display text-2xl leading-none">First message</h3>
         </div>
-    </form>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label for="id_message" class="ef-label" style="margin-bottom:0;">Message</label>
+          <span id="msg-count" class="font-mono text-[10px] uppercase tracking-widest text-ink-500">0 / 1000</span>
+        </div>
+        <textarea id="id_message" name="message" rows="4" maxlength="1000"
+                  class="ef-input ef-textarea resize-none"
+                  placeholder="Write your first message — set the tone and say what you need. You can keep it short."></textarea>
+      </div>
+
+    </div>
+
+    <!-- ============ ACTIONS ============ -->
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
+      <a href="{% url 'event_workspace' event.id %}"
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+        Cancel
+      </a>
+      <button type="submit"
+              class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        Start conversation
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ============ TIP ============ -->
+  <div class="mt-6 relative rounded-2xl border border-violet2-500/25 bg-violet2-500/[.04] p-4 overflow-hidden fade-up d3">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      </div>
+      <div class="text-xs text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 block mb-1">Tip</span>
+        Be specific in your subject line. <span class="font-mono text-ink-100">"Timing for the venue walkthrough"</span> is easier to find a week later than <span class="font-mono text-ink-500">"Quick question"</span>.
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
+  .ef-textarea { min-height: 110px; line-height: 1.55; resize: none; }
+
+  .ef-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+  .ef-select option { background:#0a0a18; color:#f6f6f8; }
+
+  .ef-label {
+    display: block;
+    font-size: .75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #71718a;
+    margin-bottom: .5rem;
+  }
+  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
+
+  input:-webkit-autofill, input:-webkit-autofill:focus,
+  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
+  html:not(.dark) input:-webkit-autofill,
+  html:not(.dark) textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+  (function () {
+    const msg = document.getElementById('id_message');
+    const counter = document.getElementById('msg-count');
+    if (!msg || !counter) return;
+    const max = parseInt(msg.getAttribute('maxlength'), 10) || 1000;
+    const update = () => {
+      counter.textContent = `${msg.value.length} / ${max}`;
+      counter.style.color = msg.value.length > max * 0.9 ? '#ff4800' : '';
+    };
+    update();
+    msg.addEventListener('input', update);
+  })();
+</script>
+
 {% endblock %}

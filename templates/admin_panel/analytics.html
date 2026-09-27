@@ -1,0 +1,160 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics & Business Intelligence{% endblock %}
+{% block nav_analytics %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-5">
+            <p class="text-3xl font-bold">{{ total_guests }}</p>
+            <p class="text-sm text-surface-500 mt-1">Total Guests Registered</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-5">
+            <p class="text-3xl font-bold text-success-500">{{ total_checked_in }}</p>
+            <p class="text-sm text-surface-500 mt-1">Checked In</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-5">
+            <p class="text-3xl font-bold text-brand-500">{{ attendance_rate }}%</p>
+            <p class="text-sm text-surface-500 mt-1">Attendance Rate</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-5">
+            <p class="text-3xl font-bold">{{ completed_bookings }}</p>
+            <p class="text-sm text-surface-500 mt-1">Completed Bookings</p>
+        </div>
+    </div>
+
+    <!-- Growth Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">User Growth (12 Months)</h3>
+            <canvas id="userGrowthChart" height="200"></canvas>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Event & Guest Growth</h3>
+            <canvas id="eventGrowthChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Distribution Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Event Categories</h3>
+            <canvas id="categoryChart" height="200"></canvas>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Vendor Categories</h3>
+            <canvas id="vendorCategoryChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Booking & Geography -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Booking Status Distribution</h3>
+            <canvas id="bookingStatusChart" height="200"></canvas>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Geographic Distribution (Top Cities)</h3>
+            <canvas id="geoChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Booking Trends -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+        <h3 class="text-base font-semibold mb-4">Booking Trends (12 Months)</h3>
+        <canvas id="bookingTrendChart" height="120"></canvas>
+    </div>
+
+    <!-- Revenue Placeholder -->
+    <div class="bg-gradient-to-br from-brand-600 to-accent-600 rounded-2xl p-8 text-white">
+        <h3 class="text-lg font-semibold mb-2">Revenue Overview</h3>
+        <p class="text-3xl font-bold">${{ total_booking_value|floatformat:2 }}</p>
+        <p class="text-sm opacity-80 mt-1">Total Booking Value (Completed)</p>
+        <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="bg-white/10 rounded-xl p-4">
+                <p class="text-sm opacity-80">Subscriptions</p>
+                <p class="text-lg font-semibold mt-1">Architecture Ready</p>
+                <p class="text-xs opacity-60 mt-1">Payment integration pending activation</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4">
+                <p class="text-sm opacity-80">Commission</p>
+                <p class="text-lg font-semibold mt-1">Scalable Foundation</p>
+                <p class="text-xs opacity-60 mt-1">Commission rate configurable in settings</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+new Chart(document.getElementById('userGrowthChart'), {
+    type: 'line',
+    data: {
+        labels: {{ months_json|safe }},
+        datasets: [
+            { label: 'Hosts', data: {{ hosts_growth_json|safe }}, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4 },
+            { label: 'Vendors', data: {{ vendors_growth_json|safe }}, borderColor: '#14b8a6', backgroundColor: 'rgba(20,184,166,0.1)', fill: true, tension: 0.4 },
+        ]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}, scales: { y: { beginAtZero: true }}}
+});
+
+new Chart(document.getElementById('eventGrowthChart'), {
+    type: 'line',
+    data: {
+        labels: {{ months_json|safe }},
+        datasets: [
+            { label: 'Events', data: {{ events_growth_json|safe }}, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.4 },
+            { label: 'Guests', data: {{ guests_growth_json|safe }}, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.4 },
+        ]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}, scales: { y: { beginAtZero: true }}}
+});
+
+new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys({{ category_data_json|safe }}),
+        datasets: [{ data: Object.values({{ category_data_json|safe }}), backgroundColor: ['#3b82f6','#14b8a6','#f59e0b','#22c55e','#ef4444','#8b5cf6','#06b6d4','#64748b'], borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}, cutout: '60%' }
+});
+
+new Chart(document.getElementById('vendorCategoryChart'), {
+    type: 'bar',
+    data: {
+        labels: Object.keys({{ vendor_cat_data_json|safe }}),
+        datasets: [{ label: 'Vendors', data: Object.values({{ vendor_cat_data_json|safe }}), backgroundColor: '#14b8a6', borderRadius: 6 }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false }}, scales: { y: { beginAtZero: true }}}
+});
+
+new Chart(document.getElementById('bookingStatusChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys({{ booking_status_json|safe }}),
+        datasets: [{ data: Object.values({{ booking_status_json|safe }}), backgroundColor: ['#3b82f6','#22c55e','#f59e0b','#14b8a6','#ef4444','#64748b'], borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}, cutout: '60%' }
+});
+
+new Chart(document.getElementById('geoChart'), {
+    type: 'bar',
+    data: {
+        labels: Object.keys({{ geo_data_json|safe }}).slice(0, 10),
+        datasets: [{ label: 'Vendors', data: Object.values({{ geo_data_json|safe }}).slice(0, 10), backgroundColor: '#3b82f6', borderRadius: 6 }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false }}, scales: { y: { beginAtZero: true }}}
+});
+
+new Chart(document.getElementById('bookingTrendChart'), {
+    type: 'line',
+    data: {
+        labels: {{ months_json|safe }},
+        datasets: [{ label: 'Bookings', data: {{ bookings_trend_json|safe }}, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}, scales: { y: { beginAtZero: true }}}
+});
+</script>
+{% endblock %}

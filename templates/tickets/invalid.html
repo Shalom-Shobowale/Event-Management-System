@@ -1,24 +1,154 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invalid Ticket</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.4s ease-in-out; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invalid ticket · EventFlow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+
+  <style>
+    /* shake — reserved for the icon, harder and with a rotation */
+    @keyframes ef-shake {
+      0%, 100% { transform: translateX(0) rotate(0); }
+      15%      { transform: translateX(-8px) rotate(-6deg); }
+      30%      { transform: translateX(8px) rotate(6deg); }
+      45%      { transform: translateX(-6px) rotate(-4deg); }
+      60%      { transform: translateX(6px) rotate(4deg); }
+      80%      { transform: translateX(-3px) rotate(-2deg); }
+    }
+    .animate-shake { animation: ef-shake 0.6s cubic-bezier(.36,.07,.19,.97); }
+
+    /* deep red alert pulse behind the icon */
+    @keyframes ef-alert-pulse {
+      0%, 100% { opacity: .6; transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.2); }
+    }
+    .alert-glow { animation: ef-alert-pulse 2.4s ease-in-out infinite; }
+
+    /* X mark draws itself in */
+    @keyframes ef-draw-x {
+      0%   { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .draw-x { stroke-dasharray: 40; animation: ef-draw-x .5s ease-out .15s forwards; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-shake, .alert-glow, .draw-x { animation: none !important; stroke-dashoffset: 0 !important; }
+    }
+
+    html.dark, html.dark body {
+      background: #05050d !important;
+      color: #f6f6f8 !important;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-surface-50 flex items-center justify-center p-4 font-sans">
-    <div class="text-center max-w-sm">
-        <div class="w-20 h-20 rounded-full bg-error-50 flex items-center justify-center mx-auto mb-6 animate-shake">
-            <svg class="w-10 h-10 text-error-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-        </div>
-        <h1 class="text-3xl font-extrabold text-error-600 mb-2">Invalid Ticket</h1>
-        <p class="text-surface-600">This ticket code was not found in our system. Please check the code and try again.</p>
+
+<body class="min-h-screen bg-ink-950 text-ink-50 antialiased font-sans flex items-center justify-center p-4 sm:p-6">
+
+  <!-- ambient grid -->
+  <div class="fixed inset-0 bg-grid pointer-events-none"></div>
+  <!-- glows — flame on top-left, violet on bottom-right, deep flame low-left -->
+  <div class="fixed -top-40 -left-40 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none opacity-70"></div>
+  <div class="fixed -bottom-40 -right-40 w-[560px] h-[560px] rounded-full glow-violet pointer-events-none opacity-70"></div>
+  <div class="fixed -bottom-20 left-1/3 w-[420px] h-[420px] rounded-full glow-flame pointer-events-none opacity-40"></div>
+
+  <main class="relative w-full max-w-sm fade-up">
+
+    <!-- ===================== ALERT ICON ===================== -->
+    <div class="relative flex justify-center mb-8">
+
+      <!-- pulsing deep flame glow behind -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full bg-flame-700/25 blur-2xl alert-glow"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-flame-600/30 blur-xl alert-glow"></div>
+
+      <!-- icon chip -->
+      <div class="relative w-24 h-24 rounded-3xl bg-flame-600/15 border border-flame-600/40 grid place-items-center text-flame-500 animate-shake">
+        <svg class="w-11 h-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path class="draw-x" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </div>
     </div>
+
+    <!-- ===================== HEADING ===================== -->
+    <div class="text-center mb-8">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-3">
+        Access denied
+      </p>
+      <h1 class="font-display text-4xl leading-[1.05] tracking-tight text-ink-50">
+        Invalid<br />
+        <span class="italic text-flame-500">ticket.</span>
+      </h1>
+      <p class="mt-4 text-sm text-ink-400 max-w-xs mx-auto leading-relaxed">
+        This ticket code wasn't found in the system. It may have been entered incorrectly, or the ticket may not exist.
+      </p>
+    </div>
+
+    <!-- ===================== WHAT TO DO ===================== -->
+    <div class="relative rounded-2xl border border-flame-600/30 bg-ink-900 overflow-hidden">
+
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="p-5">
+
+        <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400 mb-4">
+          Try this
+        </p>
+
+        <ul class="space-y-3.5">
+
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 w-6 h-6 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 flex-shrink-0 font-mono text-[10px] font-semibold">
+              1
+            </span>
+            <span class="text-sm text-ink-200 leading-relaxed">
+              Check the ticket code character by character — a single mistyped digit can cause this.
+            </span>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 w-6 h-6 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 flex-shrink-0 font-mono text-[10px] font-semibold">
+              2
+            </span>
+            <span class="text-sm text-ink-200 leading-relaxed">
+              Ask the guest to re-open their ticket email and re-scan the QR code directly.
+            </span>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 w-6 h-6 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 flex-shrink-0 font-mono text-[10px] font-semibold">
+              3
+            </span>
+            <span class="text-sm text-ink-200 leading-relaxed">
+              If the code still won't validate, escalate to the event host before granting entry.
+            </span>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <!-- status footer -->
+      <div class="border-t border-white/5 p-4 text-center bg-flame-600/[.04]">
+        <span class="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-flame-500">
+          <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+          Do not admit
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ===================== FOOTNOTE ===================== -->
+    <p class="mt-6 text-center font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      Powered by <span class="text-flame-500">EventFlow</span>
+    </p>
+
+  </main>
+
 </body>
 </html>

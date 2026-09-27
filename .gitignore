@@ -1,2 +1,29 @@
-node_modules
+assets/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+*.log
+
+# Environment
 .env
+.env.*
+!.env.example
+
+# Node / Tailwind
+node_modules/
+tailwindcss.exe
+package.json
+package-lock.json
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/

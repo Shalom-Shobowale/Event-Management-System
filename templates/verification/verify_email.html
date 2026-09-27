@@ -1,0 +1,112 @@
+{% extends "base_dashboard.html" %}
+
+{% comment %} {% block title %}Verify Email{% endblock %} {% endcomment %}
+{% block page_title %}Verify Email{% endblock %}
+
+{% block content %}
+<div class="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+    <div class="mx-auto w-full max-w-md">
+
+        <!-- Card -->
+        <div class="rounded-2xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 px-6 py-8 shadow-sm ring-1 ring-gray-200 sm:px-8">
+
+            <!-- Header -->
+            <div class="text-center">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                    <svg
+                        class="h-6 w-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                    </svg>
+                </div>
+
+                <h2 class="mt-4 text-2xl font-bold tracking-tight">
+                    Verify Your Email
+                </h2>
+
+                <p class="mt-2 text-sm leading-6">
+                    Enter the 6-digit code that was sent to your email address.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" class="mt-8 space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label
+                        for="code"
+                        class="block text-sm font-medium "
+                    >
+                        Verification Code
+                    </label>
+
+                    <div class="mt-2">
+                        <input
+                            type="text"
+                            id="code"
+                            name="code"
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            required
+                            placeholder="000000"
+                            class="block w-full rounded-lg border-0 px-4 py-3
+                                   text-center text-lg font-semibold tracking-[0.4em]
+                                   text-gray-900 shadow-sm ring-1 ring-inset
+                                   ring-gray-300 placeholder:text-gray-300
+                                   focus:ring-2 focus:ring-inset
+                                   focus:ring-blue-600 sm:text-sm"
+                        />
+                    </div>
+
+                    <p class="mt-2 text-xs text-gray-500">
+                        Enter the 6-digit verification code from your email.
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-3">
+                    <button
+                        type="submit"
+                        class="flex w-full items-center justify-center rounded-lg
+                               bg-blue-600 px-4 py-3 text-sm font-semibold
+                               text-white shadow-sm transition
+                               hover:bg-blue-500
+                               focus:outline-none focus:ring-2
+                               focus:ring-blue-600 focus:ring-offset-2"
+                    >
+                        Verify Email
+                    </button>
+
+                    <a
+                        href="{% url 'send_email_verification' %}"
+                        class="flex w-full items-center justify-center rounded-lg
+                               px-4 py-3 text-sm font-semibold text-blue-600
+                               transition hover:bg-blue-50 hover:text-blue-700"
+                    >
+                        Resend Code
+                    </a>
+                </div>
+            </form>
+
+        </div>
+
+        <!-- Help text -->
+        <p class="mt-6 text-center text-xs text-gray-500 ">
+            Didn't receive the code? Check your spam or junk folder.
+        </p>
+
+    </div>
+</div>
+{% endblock %}

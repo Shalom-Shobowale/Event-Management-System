@@ -1,0 +1,108 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Platform Settings{% endblock %}
+{% block nav_settings %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- General Settings -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">General</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Platform Name</label>
+                    <input type="text" name="platform_name" value="{{ settings.platform_name }}" class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Support Email</label>
+                    <input type="email" name="support_email" value="{{ settings.support_email }}" class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Mode -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Maintenance Mode</h3>
+            <div class="flex items-center gap-3 mb-4">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="maintenance_mode" class="sr-only peer" {% if settings.maintenance_mode %}checked{% endif %}>
+                    <div class="w-11 h-6 bg-surface-200 dark:bg-surface-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-error-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
+                <span class="text-sm font-medium">Enable Maintenance Mode</span>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Maintenance Message</label>
+                <textarea name="maintenance_message" rows="2" class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">{{ settings.maintenance_message }}</textarea>
+            </div>
+        </div>
+
+        <!-- Limits -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Platform Limits</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Max Events Per Host</label>
+                    <input type="number" name="max_events_per_host" value="{{ settings.max_events_per_host }}" class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Max Guests Per Event</label>
+                    <input type="number" name="max_guests_per_event" value="{{ settings.max_guests_per_event }}" class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Verification & Approval -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Verification & Approval</h3>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="vendor_approval_required" class="sr-only peer" {% if settings.vendor_approval_required %}checked{% endif %}>
+                        <div class="w-11 h-6 bg-surface-200 dark:bg-surface-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                    <span class="text-sm font-medium">Require Vendor Approval Before Listing</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="host_approval_required" class="sr-only peer" {% if settings.host_approval_required %}checked{% endif %}>
+                        <div class="w-11 h-6 bg-surface-200 dark:bg-surface-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                    <span class="text-sm font-medium">Require Host Approval Before Creating Events</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketplace -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-base font-semibold mb-4">Marketplace</h3>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="enable_marketplace" class="sr-only peer" {% if settings.enable_marketplace %}checked{% endif %}>
+                        <div class="w-11 h-6 bg-surface-200 dark:bg-surface-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                    <span class="text-sm font-medium">Enable Marketplace</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="enable_vendor_registration" class="sr-only peer" {% if settings.enable_vendor_registration %}checked{% endif %}>
+                        <div class="w-11 h-6 bg-surface-200 dark:bg-surface-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                    <span class="text-sm font-medium">Enable Vendor Registration</span>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-surface-500 uppercase mb-1 block">Commission Rate (%)</label>
+                    <input type="number" name="commission_rate" step="0.01" value="{{ settings.commission_rate }}" class="w-32 px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="px-6 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors">Save Settings</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

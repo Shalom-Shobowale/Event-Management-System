@@ -1,0 +1,131 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}EventFlow{% endblock %} · EventFlow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+
+  <style>
+    /* Public pages — force dark theme + palette regardless of app.css */
+    html, body {
+      background: #05050d;
+      color: #f6f6f8;
+    }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-display, h1, h2, h3 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .font-mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .bg-grid {
+      background-image:
+        linear-gradient(to right, #ffffff 1px, transparent 1px),
+        linear-gradient(to bottom, #ffffff 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity: 0.05;
+    }
+    .glow-flame {
+      background: radial-gradient(closest-side, rgba(255,72,0,.35), transparent 70%);
+      filter: blur(80px);
+    }
+    .glow-violet {
+      background: radial-gradient(closest-side, rgba(124,92,255,.35), transparent 70%);
+      filter: blur(80px);
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-ink-950 text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white">
+
+  <!-- ===================== PUBLIC NAV ===================== -->
+  <nav class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- logo -->
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
+          <span class="font-display text-2xl tracking-tight">EventFlow</span>
+        </a>
+
+        <!-- nav links -->
+        <div class="hidden md:flex items-center gap-1 text-sm text-ink-300">
+          <a href="/#features" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">Features</a>
+          <a href="/#how" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">How it works</a>
+          <a href="/#events" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">Events</a>
+        </div>
+
+        <!-- actions -->
+        <div class="flex items-center gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition">
+              Dashboard
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="px-4 py-2 text-sm text-ink-200 hover:text-white transition">Sign in</a>
+            <a href="{% url 'register' %}"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition">
+              Get started
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== CONTENT ===================== -->
+  <main class="pt-24 pb-16 min-h-screen">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="border-t border-white/5 bg-ink-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
+          <span class="font-display text-2xl">EventFlow</span>
+        </div>
+        <p class="text-xs text-ink-500">© 2026 EventFlow. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== TOASTS ===================== -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
+
+  {% if messages %}
+  <div id="django-messages" hidden>
+    {% for message in messages %}
+      <div class="django-message" data-message="{{ message|escape }}" data-type="{{ message.tags }}"></div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% include "reports/_report_modal.html" %}
+  
+  <script src="{% static 'js/app.js' %}?v=3"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

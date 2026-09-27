@@ -1,0 +1,38 @@
+{% extends "emails/_base.html" %}
+
+{% block title %}Verify your email{% endblock %}
+
+{% block content %}
+  <p style="margin:0 0 8px 0;color:#71718a;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">
+    Verification
+  </p>
+
+  <h1 style="margin:0 0 16px 0;color:#f6f6f8;font-family:Georgia,serif;font-weight:normal;font-size:28px;line-height:1.2;letter-spacing:-0.01em;">
+    Confirm your email address
+  </h1>
+
+  <p style="margin:0 0 24px 0;">
+    Hi{% if user.first_name %} {{ user.first_name }}{% endif %}, use the code below to verify your EventFlow account.
+  </p>
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+      <td align="center" style="padding:24px 0;background-color:rgba(255,72,0,0.06);border:1px solid rgba(255,72,0,0.25);border-radius:12px;">
+        <p style="margin:0 0 6px 0;color:#71718a;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;">
+          Your code
+        </p>
+        <p style="margin:0;color:#ff7a3d;font-family:'Courier New',monospace;font-size:38px;font-weight:bold;letter-spacing:0.3em;">
+          {{ code }}
+        </p>
+      </td>
+    </tr>
+  </table>
+
+  <p style="margin:24px 0 0 0;font-size:13px;color:#71718a;">
+    This code expires in {{ expires_in_hours }} hour{{ expires_in_hours|pluralize }}. If you didn't request this, you can safely ignore this email.
+  </p>
+{% endblock %}
+
+{% block footer %}
+  For your security, never share this code with anyone.
+{% endblock %}

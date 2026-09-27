@@ -1,0 +1,149 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Staff & Roles{% endblock %}
+{% block page_title %}Staff & Roles{% endblock %}
+{% block nav_staff %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Current Staff -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div class="p-6 border-b border-surface-200 dark:border-surface-800">
+            <h3 class="text-base font-semibold">Admin Staff ({{ staff|length }})</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-surface-200 dark:border-surface-800 text-left text-xs text-surface-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 font-semibold">User</th>
+                        <th class="px-6 py-3 font-semibold">Role</th>
+                        <th class="px-6 py-3 font-semibold">Assigned By</th>
+                        <th class="px-6 py-3 font-semibold">Assigned At</th>
+                        <th class="px-6 py-3 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-100 dark:divide-surface-800">
+                    {% for s in staff %}
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-brand-600 dark:text-brand-400 text-sm font-semibold">
+                                    {{ s.first_name|default:s.username|make_list|first|upper }}
+                                </div>
+                                <div>
+                                    <p class="font-medium">{{ s.get_full_name|default:s.username }}</p>
+                                    <p class="text-xs text-surface-500">{{ s.email }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                {% if s.admin_role.role == 'super_admin' %}bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400
+                                {% elif s.admin_role.role == 'operations' %}bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400
+                                {% elif s.admin_role.role == 'support' %}bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400
+                                {% else %}bg-warning-50 text-warning-600 dark:bg-warning-500/10 dark:text-warning-400{% endif %}">
+                                {{ s.admin_role.get_role_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-surface-500">{{ s.admin_role.assigned_by|default:'-' }}</td>
+                        <td class="px-6 py-4 text-xs text-surface-400">{{ s.admin_role.created_at|date:"M j, Y" }}</td>
+                        <td class="px-6 py-4">
+                            {% if s.id != request.user.id %}
+                            <form method="post" action="{% url 'admin_staff_remove' s.id %}" onsubmit="return confirm('Remove admin role from {{ s.username }}?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-error-500 hover:underline text-xs font-medium">Remove Role</button>
+                            </form>
+                            {% else %}
+                            <span class="text-xs text-surface-400">You</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="px-6 py-12 text-center text-surface-400"><p class="text-sm">No staff members assigned yet.</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Assign New Admin -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+        <h3 class="text-base font-semibold mb-4">Assign Admin Role</h3>
+        <form method="get" class="mb-4">
+            <input type="text" name="search" value="{{ search }}" placeholder="Search users..." class="w-full px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+            <button type="submit" class="mt-2 px-4 py-2 bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 rounded-lg text-sm font-medium hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">Search</button>
+        </form>
+
+        <div class="space-y-2 max-h-64 overflow-y-auto">
+            {% for u in all_users %}
+            <div class="flex items-center justify-between py-2 border-b border-surface-100 dark:border-surface-800 last:border-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-surface-200 dark:bg-surface-700 flex items-center justify-center text-xs font-bold text-surface-500">
+                        {{ u.first_name|default:u.username|make_list|first|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">{{ u.get_full_name|default:u.username }}</p>
+                        <p class="text-xs text-surface-500">{{ u.email }}</p>
+                    </div>
+                </div>
+                <form method="post" class="flex gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                    <select name="role" class="px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none">
+                        <option value="operations">Operations Admin</option>
+                        <option value="support">Support Admin</option>
+                        <option value="finance">Finance Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                    <button type="submit" class="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-medium hover:bg-brand-700 transition-colors">Assign</button>
+                </form>
+            </div>
+            {% empty %}
+            <p class="text-sm text-surface-400 py-4">No users available or search for a specific user above.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Role Permissions Reference -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+        <h3 class="text-base font-semibold mb-4">Role Permissions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-error-50 dark:bg-error-500/5 rounded-xl p-4">
+                <p class="text-sm font-bold text-error-600 dark:text-error-400 mb-2">Super Admin</p>
+                <ul class="text-xs text-surface-500 space-y-1">
+                    <li>Full platform access</li>
+                    <li>Manage staff & permissions</li>
+                    <li>Configure settings</li>
+                    <li>Access everything</li>
+                </ul>
+            </div>
+            <div class="bg-brand-50 dark:bg-brand-500/5 rounded-xl p-4">
+                <p class="text-sm font-bold text-brand-600 dark:text-brand-400 mb-2">Operations Admin</p>
+                <ul class="text-xs text-surface-500 space-y-1">
+                    <li>Manage events</li>
+                    <li>Approve hosts & vendors</li>
+                    <li>Monitor activity</li>
+                    <li>No billing access</li>
+                </ul>
+            </div>
+            <div class="bg-accent-50 dark:bg-accent-500/5 rounded-xl p-4">
+                <p class="text-sm font-bold text-accent-600 dark:text-accent-400 mb-2">Support Admin</p>
+                <ul class="text-xs text-surface-500 space-y-1">
+                    <li>Review support tickets</li>
+                    <li>Assist users</li>
+                    <li>Resolve disputes</li>
+                    <li>No financial access</li>
+                </ul>
+            </div>
+            <div class="bg-warning-50 dark:bg-warning-500/5 rounded-xl p-4">
+                <p class="text-sm font-bold text-warning-600 dark:text-warning-400 mb-2">Finance Admin</p>
+                <ul class="text-xs text-surface-500 space-y-1">
+                    <li>Review transactions</li>
+                    <li>Manage payouts</li>
+                    <li>Monitor subscriptions</li>
+                    <li>No permission changes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Q
 from event.models import Event
 from vendors.models import Vendor, Service, VendorCategory
@@ -57,7 +58,10 @@ def quote_request_detail(request, rfq_id):
 @login_required
 def my_quote_requests(request):
     rfqs = QuoteRequest.objects.filter(event__host=request.user).select_related('event')
-    return render(request, 'bookings/my_quote_requests.html', {'rfqs': rfqs})
+    paginator = Paginator(rfqs, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'bookings/my_quote_requests.html', {'rfqs': page_obj, 'page_obj': page_obj})
 
 
 @login_required
@@ -81,8 +85,13 @@ def browse_rfqs(request):
     if search:
         rfqs = rfqs.filter(Q(title__icontains=search) | Q(description__icontains=search))
 
+    paginator = Paginator(rfqs, 15)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'bookings/browse_rfqs.html', {
-        'rfqs': rfqs,
+        'rfqs': page_obj,
+        'page_obj': page_obj,
         'vendor': vendor,
         'categories': VendorCategory.choices,
         'selected_category': category,
@@ -101,6 +110,10 @@ def submit_proposal(request, rfq_id):
         return redirect('vendor_register')
 
     vendor = request.user.vendor_profile
+
+    if vendor.is_suspended:
+        messages.error(request, 'Your vendor account is suspended. You cannot submit proposals.')
+        return redirect('vendor_dashboard')
 
     # Check vendor hasn't already submitted
     if Proposal.objects.filter(quote_request=rfq, vendor=vendor).exists():
@@ -136,7 +149,10 @@ def vendor_proposals(request):
         return redirect('vendor_register')
 
     proposals = Proposal.objects.filter(vendor__user=request.user).select_related('quote_request', 'quote_request__event')
-    return render(request, 'bookings/vendor_proposals.html', {'proposals': proposals})
+    paginator = Paginator(proposals, 15)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'bookings/vendor_proposals.html', {'proposals': page_obj, 'page_obj': page_obj})
 
 
 @login_required
@@ -213,6 +229,10 @@ def confirm_booking(request, booking_id):
         messages.error(request, 'Access denied.')
         return redirect('dashboard')
 
+    if booking.vendor.is_suspended:
+        messages.error(request, 'Your vendor account is suspended. You cannot confirm bookings.')
+        return redirect('vendor_bookings')
+
     booking.confirm()
     messages.success(request, 'Booking confirmed!')
     return redirect('vendor_bookings')
@@ -255,5 +275,7 @@ def vendor_bookings(request):
 
     vendor = request.user.vendor_profile
     bookings = Booking.objects.filter(vendor=vendor).select_related('event')
-    return render(request, 'bookings/vendor_bookings.html', {'bookings': bookings})
-
+    paginator = Paginator(bookings, 15)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'bookings/vendor_bookings.html', {'bookings': page_obj, 'page_obj': page_obj})

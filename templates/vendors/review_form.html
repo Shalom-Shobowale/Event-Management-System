@@ -1,104 +1,498 @@
-{% extends "base_dashboard.html" %}
-
-{% block title %}Write Review{% endblock %}
-{% block page_title %}Write a Review{% endblock %}
-
-{% block content %}
+{% extends "base_dashboard.html" %} {% block title %}Write review{% endblock %}
+{% block page_eyebrow %}Feedback{% endblock %} {% block page_title %}Write a
+review{% endblock %} {% block content %}
 <div class="max-w-2xl mx-auto">
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6 mb-6">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold overflow-hidden">
-                {% if vendor.logo %}
-                <img src="{{ vendor.logo.url }}" class="w-full h-full object-cover" alt="">
-                {% else %}
-                {{ vendor.business_name|make_list|first|upper }}
-                {% endif %}
-            </div>
-            <div>
-                <h2 class="font-semibold">{{ vendor.business_name }}</h2>
-                <div class="flex items-center gap-2 mt-1 text-sm text-surface-500">
-                    <span class="text-yellow-500">★</span>
-                    {{ vendor.average_rating|floatformat:1 }} ({{ vendor.total_reviews }} reviews)
-                </div>
-            </div>
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      Your feedback
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      How did it go?<br />
+      <span class="italic text-ink-400">Be honest.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Your review helps the next host choose the right vendor — and helps
+      vendors know what to keep doing.
+    </p>
+  </div>
+
+  <!-- ===================== VENDOR CARD ===================== -->
+  <div
+    class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 mb-6 overflow-hidden fade-up d2"
+  >
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="flex items-center gap-4">
+      <div
+        class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center overflow-hidden flex-shrink-0"
+      >
+        {% if vendor.logo %}
+        <img
+          src="{{ vendor.logo.url }}"
+          class="w-full h-full object-cover"
+          alt=""
+        />
+        {% else %}
+        <span class="font-display text-2xl text-flame-500 leading-none">
+          {{ vendor.business_name|make_list|first|upper }}
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <p
+          class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1"
+        >
+          Reviewing
+        </p>
+        <h3 class="font-display text-2xl leading-tight truncate text-ink-50">
+          {{ vendor.business_name }}
+        </h3>
+        <div class="flex items-center gap-2 mt-1.5 text-sm">
+          <div class="flex items-center gap-0.5">
+            <svg
+              class="w-3.5 h-3.5 text-flame-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <span class="font-medium text-ink-100"
+              >{{ vendor.average_rating|floatformat:1 }}</span
+            >
+          </div>
+          <span class="text-ink-500 font-mono text-xs"
+            >({{ vendor.total_reviews }} reviews)</span
+          >
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FORM ===================== -->
+  <form method="post" class="space-y-5 fade-up d3">
+    {% csrf_token %}
+
+    <!-- ============ RATING SECTION ============ -->
+    <div
+      class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden"
+    >
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs"
+          >01</span
+        >
+        <div>
+          <p
+            class="font-mono text-[10px] uppercase tracking-widest text-ink-500"
+          >
+            Rate the vendor
+          </p>
+          <h3 class="font-display text-2xl leading-none">
+            Overall rating <span class="text-flame-500">*</span>
+          </h3>
+        </div>
+      </div>
+
+      <!-- big star picker -->
+      <div class="flex flex-col items-center py-4">
+        <div id="rating-stars" class="flex items-center gap-1.5">
+          {% for i in "12345" %}
+          <label class="cursor-pointer group/star">
+            <input
+              type="radio"
+              name="rating"
+              value="{{ forloop.counter }}"
+              {%
+              if
+              forloop.counter=""
+              ="5"
+              %}checked{%
+              endif
+              %}
+              class="sr-only peer"
+            />
+            <svg
+              class="ef-star"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              data-index="{{ forloop.counter }}"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </label>
+          {% endfor %}
+        </div>
+
+        <p
+          id="rating-label"
+          class="mt-4 font-mono text-[11px] uppercase tracking-widest text-ink-400"
+        >
+          Excellent
+        </p>
+      </div>
     </div>
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <h2 class="font-semibold mb-4">Your Rating</h2>
+    <!-- ============ SUB-RATINGS ============ -->
+    <div
+      class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden"
+    >
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
-            <div class="mb-6">
-                <label class="block text-sm font-medium mb-3">Overall Rating <span class="text-red-500">*</span></label>
-                <div class="flex items-center gap-2">
-                    {% for i in "12345" %}
-                    <label class="cursor-pointer">
-                        <input type="radio" name="rating" value="{{ forloop.counter }}" {% if forloop.counter == 5 %}checked{% endif %} class="sr-only peer">
-                        <svg class="w-8 h-8 text-surface-200 peer-checked:text-yellow-400 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </label>
-                    {% endfor %}
-                </div>
-            </div>
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs"
+          >02</span
+        >
+        <div>
+          <p
+            class="font-mono text-[10px] uppercase tracking-widest text-ink-500"
+          >
+            Breakdown
+          </p>
+          <h3 class="font-display text-2xl leading-none">Specific scores</h3>
+        </div>
+      </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                    <label class="block text-sm font-medium mb-2">Professionalism</label>
-                    <select name="professionalism" class="w-full px-3 py-2 rounded-lg border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="3">3 - Good</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="1">1 - Poor</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">Quality</label>
-                    <select name="quality" class="w-full px-3 py-2 rounded-lg border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="3">3 - Good</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="1">1 - Poor</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">Communication</label>
-                    <select name="communication" class="w-full px-3 py-2 rounded-lg border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="3">3 - Good</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="1">1 - Poor</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">Timeliness</label>
-                    <select name="timeliness" class="w-full px-3 py-2 rounded-lg border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm">
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="3">3 - Good</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="1">1 - Poor</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1.5">Review Title</label>
-                <input type="text" name="title" class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm" placeholder="Summarize your experience">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1.5">Your Review <span class="text-red-500">*</span></label>
-                <textarea name="comment" rows="4" required class="w-full px-4 py-3 rounded-xl border dark:border-surface-600 bg-white dark:bg-surface-700 text-sm resize-none" placeholder="Tell others about your experience..."></textarea>
-            </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- professionalism -->
+        <div>
+          <label for="id_professionalism" class="ef-label"
+            >Professionalism</label
+          >
+          <select
+            id="id_professionalism"
+            name="professionalism"
+            class="ef-input ef-select"
+          >
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Very good</option>
+            <option value="3">3 — Good</option>
+            <option value="2">2 — Fair</option>
+            <option value="1">1 — Poor</option>
+          </select>
         </div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{% url 'vendor_profile' slug=vendor.slug %}" class="px-6 py-3 text-sm font-medium border rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
-            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Submit Review</button>
+        <!-- quality -->
+        <div>
+          <label for="id_quality" class="ef-label">Quality</label>
+          <select id="id_quality" name="quality" class="ef-input ef-select">
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Very good</option>
+            <option value="3">3 — Good</option>
+            <option value="2">2 — Fair</option>
+            <option value="1">1 — Poor</option>
+          </select>
         </div>
-    </form>
+
+        <!-- communication -->
+        <div>
+          <label for="id_communication" class="ef-label">Communication</label>
+          <select
+            id="id_communication"
+            name="communication"
+            class="ef-input ef-select"
+          >
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Very good</option>
+            <option value="3">3 — Good</option>
+            <option value="2">2 — Fair</option>
+            <option value="1">1 — Poor</option>
+          </select>
+        </div>
+
+        <!-- timeliness -->
+        <div>
+          <label for="id_timeliness" class="ef-label">Timeliness</label>
+          <select
+            id="id_timeliness"
+            name="timeliness"
+            class="ef-input ef-select"
+          >
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Very good</option>
+            <option value="3">3 — Good</option>
+            <option value="2">2 — Fair</option>
+            <option value="1">1 — Poor</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ WRITTEN REVIEW ============ -->
+    <div
+      class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden"
+    >
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-mono text-xs"
+          >03</span
+        >
+        <div>
+          <p
+            class="font-mono text-[10px] uppercase tracking-widest text-ink-500"
+          >
+            In your words
+          </p>
+          <h3 class="font-display text-2xl leading-none">Written review</h3>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <!-- title -->
+        <div>
+          <label for="id_title" class="ef-label">Review title</label>
+          <input
+            id="id_title"
+            type="text"
+            name="title"
+            class="ef-input"
+            placeholder="e.g. Best photographer we've worked with"
+            maxlength="100"
+          />
+          <p
+            class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500"
+          >
+            Short headline · optional
+          </p>
+        </div>
+
+        <!-- comment -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="id_comment" class="ef-label" style="margin-bottom: 0">
+              Your review <span class="req">*</span>
+            </label>
+            <span
+              id="comment-count"
+              class="font-mono text-[10px] uppercase tracking-widest text-ink-500"
+            >
+              0 / 2000
+            </span>
+          </div>
+          <textarea
+            id="id_comment"
+            name="comment"
+            rows="6"
+            required
+            maxlength="2000"
+            class="ef-input resize-none"
+            placeholder="What stood out? What could have been better? The more specific, the more useful it is to the next host."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ ACTIONS ============ -->
+    <div
+      class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d4"
+    >
+      <a
+        href="{% url 'vendor_profile' slug=vendor.slug %}"
+        class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition"
+      >
+        Cancel
+      </a>
+      <button
+        type="submit"
+        class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition"
+      >
+        Submit review
+        <svg
+          class="w-4 h-4 transition-transform group-hover:translate-x-1"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </button>
+    </div>
+  </form>
 </div>
+
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    color: #f6f6f8;
+    font-size: 0.875rem;
+    transition:
+      border-color 0.2s,
+      background 0.2s,
+      box-shadow 0.2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+  }
+  .ef-input:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255, 72, 0, 0.04);
+    box-shadow: 0 0 0 4px rgba(255, 72, 0, 0.12);
+  }
+  .ef-textarea {
+    min-height: 120px;
+    line-height: 1.55;
+  }
+
+  .ef-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+  .ef-select option {
+    background: #0a0a18;
+    color: #f6f6f8;
+  }
+
+  .ef-label {
+    display: block;
+    font-size: 0.75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #71718a;
+    margin-bottom: 0.5rem;
+  }
+  .ef-label .req {
+    color: #ff5a1f;
+    margin-left: 0.15rem;
+  }
+
+  /* star rating */
+  .ef-star {
+    width: 44px;
+    height: 44px;
+    color: rgba(255, 255, 255, 0.12);
+    transition:
+      color 0.15s,
+      transform 0.15s,
+      filter 0.15s;
+    cursor: pointer;
+  }
+  #rating-stars:hover .ef-star {
+    color: rgba(255, 255, 255, 0.2);
+  }
+  #rating-stars .ef-star:hover,
+  #rating-stars .ef-star:hover ~ .ef-star {
+    color: #ff4800;
+    filter: drop-shadow(0 0 12px rgba(255, 72, 0, 0.5));
+    transform: scale(1.08);
+  }
+
+  /* keyboard navigation on stars — via :focus-within */
+  #rating-stars:focus-within .ef-star {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* autofill fix */
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #0a0a18;
+  }
+  html:not(.dark) .ef-input::placeholder {
+    color: rgba(0, 0, 0, 0.35);
+  }
+  html:not(.dark) .ef-select option {
+    background: #ffffff;
+    color: #0a0a18;
+  }
+  html:not(.dark) .ef-star {
+    color: rgba(0, 0, 0, 0.12);
+  }
+  html:not(.dark) #rating-stars:hover .ef-star {
+    color: rgba(0, 0, 0, 0.2);
+  }
+  html:not(.dark) input:-webkit-autofill,
+  html:not(.dark) textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== PAGE SCRIPTS ===================== -->
+<script>
+  (function () {
+    const stars = document.querySelectorAll("#rating-stars .ef-star");
+    const labels = {
+      1: "Poor",
+      2: "Fair",
+      3: "Good",
+      4: "Very good",
+      5: "Excellent",
+    };
+
+    function paint(value) {
+      stars.forEach((s) => {
+        const idx = parseInt(s.dataset.index, 10);
+        s.style.color = idx <= value ? "#ff4800" : "";
+        s.style.filter =
+          idx <= value ? "drop-shadow(0 0 12px rgba(255,72,0,.45))" : "";
+        s.style.transform = idx <= value ? "scale(1.05)" : "";
+      });
+      const lbl = document.getElementById("rating-label");
+      if (lbl) lbl.textContent = labels[value] || "";
+    }
+
+    // paint on load from checked radio
+    const checked = document.querySelector('input[name="rating"]:checked');
+    if (checked) paint(parseInt(checked.value, 10));
+
+    // paint on change
+    document.querySelectorAll('input[name="rating"]').forEach((r) => {
+      r.addEventListener("change", () => paint(parseInt(r.value, 10)));
+    });
+
+    // comment counter
+    const comment = document.getElementById("id_comment");
+    const counter = document.getElementById("comment-count");
+    if (comment && counter) {
+      const max = parseInt(comment.getAttribute("maxlength"), 10) || 2000;
+      const update = () => {
+        counter.textContent = `${comment.value.length} / ${max}`;
+        counter.style.color = comment.value.length > max * 0.9 ? "#ff4800" : "";
+      };
+      update();
+      comment.addEventListener("input", update);
+    }
+  })();
+</script>
+
 {% endblock %}

@@ -1,0 +1,26 @@
+{% comment %}
+Reusable "Report" affordance. Drop into any customer surface.
+
+Usage:
+  {% include "reports/_report_button.html" with target_type="vendor" target_id=vendor.id target_label=vendor.business_name %}
+
+The global report modal lives in base.html. This partial only renders
+the button and the data attributes the modal reads.
+{% endcomment %}
+
+{% if user.is_authenticated %}
+    <button
+        type="button"
+        class="report-trigger group inline-flex items-center gap-1.5 text-xs text-ink-500 hover:text-flame-500 transition-colors"
+        data-target-type="{{ target_type }}"
+        data-target-id="{{ target_id }}"
+        data-target-label="{{ target_label|default:'' }}"
+        title="Report this"
+    >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 21v-4m14 4h6m-6-11V4a1 1 0 00-1-1h-6a1 1 0 00-1 1v6"/>
+        </svg>
+        <span class="group-hover:underline">Report</span>
+    </button>
+{% endif %}

@@ -1,0 +1,177 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{{ vendor.business_name }}{% endblock %}
+{% block page_title %}{{ vendor.business_name }}{% endblock %}
+{% block nav_vendor_verif %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Vendor Header -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+            {% if vendor.logo %}
+            <img src="{{ vendor.logo.url }}" alt="" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0">
+            {% else %}
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                {{ vendor.business_name|make_list|first|upper }}
+            </div>
+            {% endif %}
+            <div class="flex-1">
+                <h2 class="text-xl font-bold">{{ vendor.business_name }}</h2>
+                <p class="text-sm text-surface-500">{{ vendor.city }}, {{ vendor.country }} - {{ vendor.email|default:vendor.user.email }}</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full
+                        {% if vendor.verification_status == 'verified' %}bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-success-400
+                        {% elif vendor.verification_status == 'pending' %}bg-warning-50 text-warning-600 dark:bg-warning-500/10 dark:text-warning-400
+                        {% elif vendor.verification_status == 'rejected' %}bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400
+                        {% else %}bg-surface-100 text-surface-500 dark:bg-surface-800 dark:text-surface-400{% endif %}">
+                        {{ vendor.get_verification_status_display }}
+                    </span>
+                    {% if vendor.badge != 'none' %}
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">{{ vendor.get_badge_display }}</span>
+                    {% endif %}
+                    {% if vendor.is_suspended %}
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400">Suspended</span>
+                    {% endif %}
+                </div>
+                <div class="grid grid-cols-4 gap-4 mt-4">
+                    <div><p class="text-lg font-bold">{{ vendor.total_bookings }}</p><p class="text-xs text-surface-500">Bookings</p></div>
+                    <div><p class="text-lg font-bold">{{ vendor.average_rating }}</p><p class="text-xs text-surface-500">Rating</p></div>
+                    <div><p class="text-lg font-bold">{{ vendor.total_reviews }}</p><p class="text-xs text-surface-500">Reviews</p></div>
+                    <div><p class="text-lg font-bold">{{ vendor.years_in_business }}</p><p class="text-xs text-surface-500">Years</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Actions -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Verification Actions</h3>
+            <div class="space-y-3">
+                <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="flex gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="approve">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-success-600 text-white rounded-lg text-sm font-medium hover:bg-success-700 transition-colors">Approve</button>
+                </form>
+                <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="flex gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="pending">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-warning-500 text-white rounded-lg text-sm font-medium hover:bg-warning-600 transition-colors">Set Pending</button>
+                </form>
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-error-100 dark:hover:bg-error-500/20 transition-colors list-none">Reject Vendor</summary>
+                    <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="mt-2 space-y-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="reject">
+                        <textarea name="reason" placeholder="Reason for rejection..." class="w-full px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none" rows="2"></textarea>
+                        <button type="submit" class="w-full px-4 py-2 bg-error-600 text-white rounded-lg text-sm font-medium hover:bg-error-700 transition-colors">Confirm Reject</button>
+                    </form>
+                </details>
+
+                <div class="pt-3 border-t border-surface-100 dark:border-surface-800">
+                    <h4 class="text-xs font-semibold text-surface-500 uppercase mb-2">Badge</h4>
+                    <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="flex gap-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="badge">
+                        <select name="badge" class="flex-1 px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none">
+                            <option value="none" {% if vendor.badge == 'none' %}selected{% endif %}>No Badge</option>
+                            <option value="verified" {% if vendor.badge == 'verified' %}selected{% endif %}>Verified Vendor</option>
+                            <option value="top" {% if vendor.badge == 'top' %}selected{% endif %}>Top Vendor</option>
+                            <option value="trusted" {% if vendor.badge == 'trusted' %}selected{% endif %}>Trusted Vendor</option>
+                        </select>
+                        <button type="submit" class="px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:bg-accent-700 transition-colors">Set</button>
+                    </form>
+                </div>
+
+                {% if vendor.is_suspended %}
+                <form method="post" action="{% url 'admin_vendor_action' vendor.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="activate">
+                    <button type="submit" class="w-full px-4 py-2 bg-success-600 text-white rounded-lg text-sm font-medium hover:bg-success-700 transition-colors">Activate Vendor</button>
+                </form>
+                {% else %}
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-error-100 dark:hover:bg-error-500/20 transition-colors list-none">Suspend Vendor</summary>
+                    <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="mt-2 space-y-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="suspend">
+                        <textarea name="reason" placeholder="Reason..." class="w-full px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none" rows="2"></textarea>
+                        <button type="submit" class="w-full px-4 py-2 bg-error-600 text-white rounded-lg text-sm font-medium hover:bg-error-700 transition-colors">Confirm Suspend</button>
+                    </form>
+                </details>
+                {% endif %}
+
+                <details class="group">
+                    <summary class="w-full px-4 py-2 bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 rounded-lg text-sm font-medium cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors list-none">Admin Notes</summary>
+                    <form method="post" action="{% url 'admin_vendor_action' vendor.id %}" class="mt-2 space-y-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="notes">
+                        <textarea name="admin_notes" placeholder="Internal notes..." class="w-full px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 outline-none" rows="3">{{ vendor.admin_notes }}</textarea>
+                        <button type="submit" class="w-full px-4 py-2 bg-surface-600 text-white rounded-lg text-sm font-medium hover:bg-surface-700 transition-colors">Save Notes</button>
+                    </form>
+                </details>
+            </div>
+        </div>
+
+        <!-- Business Info & Services -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Business Information</h3>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-surface-500">License</span><span>{{ vendor.business_license|default:'-' }}</span></div>
+                <div class="flex justify-between"><span class="text-surface-500">Team Size</span><span>{{ vendor.team_size }}</span></div>
+                <div class="flex justify-between"><span class="text-surface-500">Service Radius</span><span>{{ vendor.service_radius_km }} km</span></div>
+                <div class="flex justify-between"><span class="text-surface-500">Categories</span><span class="text-right">{{ vendor.categories|truncatewords:5 }}</span></div>
+                <div class="flex justify-between"><span class="text-surface-500">Website</span><span>{{ vendor.website|default:'-' }}</span></div>
+            </div>
+            {% if vendor.description %}
+            <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-800">
+                <p class="text-xs text-surface-500 uppercase font-semibold mb-1">Description</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400">{{ vendor.description|truncatewords:30 }}</p>
+            </div>
+            {% endif %}
+            <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-800">
+                <p class="text-xs text-surface-500 uppercase font-semibold mb-2">Services ({{ services|length }})</p>
+                <div class="space-y-1">
+                    {% for service in services %}
+                    <div class="flex justify-between text-sm py-1">
+                        <span>{{ service.name }}</span>
+                        <span class="text-surface-500">${{ service.price }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-surface-400">No services listed.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews & Reports -->
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-6">
+            <h3 class="text-sm font-semibold mb-4">Reviews & Reports</h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto">
+                {% for review in reviews %}
+                <div class="py-2 border-b border-surface-100 dark:border-surface-800 last:border-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-sm font-medium">{{ review.reviewer|default:'Anonymous' }}</span>
+                        <span class="text-xs text-warning-500">{{ review.rating }}/5</span>
+                    </div>
+                    <p class="text-xs text-surface-500">{{ review.comment|truncatewords:15 }}</p>
+                </div>
+                {% empty %}
+                <p class="text-sm text-surface-400 py-4">No reviews yet.</p>
+                {% endfor %}
+            </div>
+            {% if reports %}
+            <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-800">
+                <p class="text-xs text-error-500 font-semibold uppercase mb-2">Reports ({{ reports|length }})</p>
+                {% for report in reports %}
+                <div class="py-1">
+                    <p class="text-xs font-medium">{{ report.get_category_display }}</p>
+                    <p class="text-xs text-surface-500">{{ report.reason|truncatewords:10 }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

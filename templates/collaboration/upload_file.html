@@ -1,50 +1,286 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}Upload File{% endblock %}
-{% block page_title %}Upload File{% endblock %}
+{% block title %}Upload file · {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Workspace{% endblock %}
+{% block page_title %}Upload file{% endblock %}
 
 {% block content %}
 <div class="max-w-xl mx-auto">
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">Upload File</h2>
-        <p class="text-sm text-surface-500 mt-1">Share documents for {{ event.name }}</p>
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      {{ event.name }}
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Share a file<br />
+      <span class="italic text-ink-400">with the team.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      Contracts, floor plans, mood boards, spreadsheets — anything the team needs
+      to see, kept in one place.
+    </p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-6 fade-up d2">
+    {% csrf_token %}
+
+    <!-- ============ 01 FILE ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs">01</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The file</p>
+          <h3 class="font-display text-2xl leading-none">Choose a document</h3>
+        </div>
+      </div>
+
+      <!-- dropzone -->
+      <div id="file-dropzone"
+           class="ef-dropzone"
+           onclick="document.getElementById('file-input').click()"
+           ondragover="event.preventDefault(); this.classList.add('is-drag');"
+           ondragleave="this.classList.remove('is-drag');"
+           ondrop="event.preventDefault(); this.classList.remove('is-drag'); handleDrop(event);">
+
+        <div class="ef-dropzone-inner">
+
+          <div id="file-icon" class="w-14 h-14 rounded-2xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 mx-auto mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+          </div>
+
+          <p id="file-name" class="text-sm font-medium text-ink-100">
+            Click to select <span class="text-ink-500">or drag &amp; drop</span>
+          </p>
+          <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-ink-500">
+            PDF · DOC · XLS · JPG · PNG · up to 10 MB
+          </p>
+
+          <button type="button"
+                  id="clear-file-btn"
+                  class="hidden mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-xs font-medium text-ink-300 hover:text-flame-400 transition">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            Remove file
+          </button>
+
+        </div>
+
+        <input type="file" name="file" id="file-input" required
+               class="hidden"
+               accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+               onchange="updateFileName(this)" />
+      </div>
+
     </div>
 
-    <form method="post" enctype="multipart/form-data" class="space-y-6">
-        {% csrf_token %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">File <span class="text-error-500">*</span></label>
-                    <div class="border-2 border-dashed border-surface-200 dark:border-surface-600 rounded-xl p-8 text-center hover:border-brand-500 transition-colors cursor-pointer">
-                        <input type="file" name="file" id="file-input" required class="hidden" onchange="updateFileName(this)">
-                        <label for="file-input" class="cursor-pointer">
-                            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-3">
-                                <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                            </div>
-                            <p id="file-name" class="text-sm text-surface-600 dark:text-surface-400">Click to select or drag and drop</p>
-                            <p class="text-xs text-surface-400 mt-1">PDF, DOC, XLS, JPG, PNG up to 10MB</p>
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Description</label>
-                    <textarea name="description" rows="2" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none" placeholder="Optional description..."></textarea>
-                </div>
-            </div>
-        </div>
+    <!-- ============ 02 DESCRIPTION ============ -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
-        <div class="flex items-center justify-end gap-3">
-            <a href="{% url 'event_workspace' event.id %}" class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Cancel</a>
-            <button type="submit" class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">Upload File</button>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">02</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Context</p>
+          <h3 class="font-display text-2xl leading-none">Description</h3>
         </div>
-    </form>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label for="id_description" class="ef-label" style="margin-bottom:0;">What is it?</label>
+          <span id="desc-count" class="font-mono text-[10px] uppercase tracking-widest text-ink-500">0 / 300</span>
+        </div>
+        <textarea id="id_description" name="description" rows="2" maxlength="300"
+                  class="ef-input ef-textarea resize-none"
+                  placeholder="Optional — a line of context helps teammates find the right file later."></textarea>
+      </div>
+
+    </div>
+
+    <!-- ============ ACTIONS ============ -->
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
+      <a href="{% url 'event_workspace' event.id %}"
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+        Cancel
+      </a>
+      <button type="submit"
+              id="upload-btn"
+              class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+        Upload file
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ============ TIP ============ -->
+  <div class="mt-6 relative rounded-2xl border border-lime2-500/25 bg-lime2-500/[.04] p-4 overflow-hidden fade-up d3">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      </div>
+      <div class="text-xs text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-lime2-500 block mb-1">Tip</span>
+        Name files clearly before uploading — <span class="font-mono text-ink-100">venue-contract-signed.pdf</span> is easier to find six months later than <span class="font-mono text-ink-500">scan001.pdf</span>.
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ===================== PAGE STYLES ===================== -->
+<style>
+  .ef-input {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: .75rem;
+    color: #f6f6f8;
+    font-size: .875rem;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    outline: none;
+    font-family: inherit;
+  }
+  .ef-input::placeholder { color: rgba(255,255,255,.28); }
+  .ef-input:hover { border-color: rgba(255,255,255,.15); }
+  .ef-input:focus {
+    border-color: #ff4800;
+    background: rgba(255,72,0,.04);
+    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
+  }
+  .ef-textarea { min-height: 70px; line-height: 1.55; resize: none; }
+
+  .ef-label {
+    display: block;
+    font-size: .75rem;
+    font-family: "JetBrains Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #71718a;
+    margin-bottom: .5rem;
+  }
+
+  /* dropzone */
+  .ef-dropzone {
+    display: block;
+    padding: 2rem 1.5rem;
+    border: 2px dashed rgba(255,255,255,.12);
+    border-radius: .875rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background-color .2s;
+  }
+  .ef-dropzone:hover { border-color: rgba(124,92,255,.5); background: rgba(124,92,255,.03); }
+  .ef-dropzone.is-drag { border-color: #7c5cff; background: rgba(124,92,255,.06); }
+
+  /* when a file is selected */
+  .ef-dropzone.has-file {
+    border-style: solid;
+    border-color: rgba(198,242,78,.5);
+    background: rgba(198,242,78,.04);
+  }
+  .ef-dropzone.has-file #file-icon {
+    background-color: rgba(198,242,78,.15);
+    border-color: rgba(198,242,78,.25);
+    color: #c6f24e;
+  }
+
+  .ef-dropzone-inner { display: flex; flex-direction: column; align-items: center; }
+
+  input:-webkit-autofill, input:-webkit-autofill:focus,
+  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f6f6f8;
+    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* light mode */
+  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
+  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
+  html:not(.dark) .ef-dropzone { border-color: rgba(0,0,0,.12); }
+  html:not(.dark) input:-webkit-autofill,
+  html:not(.dark) textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0a0a18;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  }
+</style>
+
+<!-- ===================== SCRIPT ===================== -->
 <script>
+/* ---------- file name + state ---------- */
 function updateFileName(input) {
-    const fileName = input.files[0]?.name || 'Click to select or drag and drop';
-    document.getElementById('file-name').textContent = fileName;
+  const nameEl = document.getElementById('file-name');
+  const dropzone = document.getElementById('file-dropzone');
+  const clearBtn = document.getElementById('clear-file-btn');
+  const file = input.files && input.files[0];
+
+  if (!file) {
+    nameEl.innerHTML = 'Click to select <span class="text-ink-500">or drag &amp; drop</span>';
+    dropzone.classList.remove('has-file');
+    clearBtn.classList.add('hidden');
+    return;
+  }
+
+  // show the file name (truncate if long)
+  const display = file.name.length > 40
+    ? file.name.slice(0, 37) + '…'
+    : file.name;
+  const sizeKb = (file.size / 1024).toFixed(0);
+  nameEl.innerHTML =
+    '<span class="text-lime2-500">' + display + '</span>' +
+    ' <span class="text-ink-500 text-xs">· ' + sizeKb + ' KB</span>';
+
+  dropzone.classList.add('has-file');
+  clearBtn.classList.remove('hidden');
 }
+
+/* ---------- drag & drop ---------- */
+function handleDrop(ev) {
+  const input = document.getElementById('file-input');
+  if (!input || !ev.dataTransfer || !ev.dataTransfer.files.length) return;
+  input.files = ev.dataTransfer.files;
+  updateFileName(input);
+}
+
+/* ---------- clear selection ---------- */
+document.addEventListener('DOMContentLoaded', function () {
+  const clearBtn = document.getElementById('clear-file-btn');
+  const input = document.getElementById('file-input');
+  if (!clearBtn || !input) return;
+
+  clearBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); // don't reopen the file picker
+    input.value = '';
+    updateFileName(input);
+  });
+
+  // description counter
+  const desc = document.getElementById('id_description');
+  const counter = document.getElementById('desc-count');
+  if (desc && counter) {
+    const max = parseInt(desc.getAttribute('maxlength'), 10) || 300;
+    const update = () => {
+      counter.textContent = `${desc.value.length} / ${max}`;
+      counter.style.color = desc.value.length > max * 0.9 ? '#ff4800' : '';
+    };
+    update();
+    desc.addEventListener('input', update);
+  }
+});
 </script>
+
 {% endblock %}

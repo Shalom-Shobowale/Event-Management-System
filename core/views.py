@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from .models import Host
+from core.security import record_failed_login, is_account_locked
 from event.models import Event
 from guest.models import Guest
 
@@ -11,7 +12,23 @@ from guest.models import Guest
 def landing(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return render(request, 'landing.html')
+
+    events = (
+        Event.objects
+        .select_related('host')
+        .filter(
+            is_published=True,
+            is_archived=False,
+            is_suspended=False,
+            date__gte=timezone.now(),
+        )
+        .order_by('date')[:6]   # ← the fix
+    )
+
+    return render(request, 'landing.html', {
+        'events': events,
+    })
+
 
 
 def register_view(request):
@@ -60,35 +77,28 @@ def register_view(request):
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
         remember = request.POST.get('remember')
 
+        ip = request.META.get('REMOTE_ADDR', '')
+        if is_account_locked(username, ip):
+            messages.error(request, 'Too many failed attempts. Please try again in 15 minutes.')
+            return render(request, 'auth/login.html')
+
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
+            if user.is_suspended:
+                messages.error(request, 'Your account has been suspended. Contact support for assistance.')
+                return render(request, 'auth/login.html')
             login(request, user)
-
             if not remember:
                 request.session.set_expiry(0)
-
-            messages.success(
-                request,
-                f'Welcome back, {user.get_full_name() or user.username}!'
-            )
-
-            # Redirect to intended page
-            next_url = request.POST.get('next')
-
-            if next_url:
-                return redirect(next_url)
-
+            messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
             return redirect('dashboard')
-
+        record_failed_login(username, request.META.get('REMOTE_ADDR', ''))
         messages.error(request, 'Invalid credentials.')
-
     return render(request, 'auth/login.html')
 
 
@@ -100,31 +110,33 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    from django.utils import timezone
+
     user = request.user
+    now = timezone.now()
 
-    # Check if user has a vendor profile - redirect to vendor dashboard
-    if hasattr(user, 'vendor_profile'):
-        from vendors.models import Service
-        vendor = user.vendor_profile
-        services = vendor.services.all()[:5]
-        recent_reviews = vendor.reviews.all()[:3]
-        context = {
-            'vendor': vendor,
-            'services': services,
-            'recent_reviews': recent_reviews,
-            'total_services': vendor.services.count(),
-            'total_portfolio': vendor.portfolio.count(),
-        }
-        return render(request, 'vendors/dashboard.html', context)
+    # Base: host's own events (all of them, for stats)
+    all_events = Event.objects.filter(host=user)
 
-    # Regular host dashboard
-    events = Event.objects.filter(host=user)
-    total_events = events.count()
+    # Stats
+    total_events = all_events.count()
     total_guests = Guest.objects.filter(event__host=user).count()
     checked_in = Guest.objects.filter(event__host=user, checked_in=True).count()
-    upcoming = events.filter(date__gte=timezone.now()).count()
-    attendance_rate = round((checked_in / total_guests * 100) if total_guests > 0 else 0, 1)
-    recent_events = events[:5]
+
+    # Upcoming: future, not archived, not suspended — soonest first
+    upcoming_qs = all_events.filter(
+        date__gte=now,
+        is_archived=False,
+        is_suspended=False,
+    )
+    upcoming = upcoming_qs.count()
+    upcoming_events = upcoming_qs.order_by('date')[:5]
+
+    # Attendance rate
+    attendance_rate = round(
+        (checked_in / total_guests * 100) if total_guests > 0 else 0,
+        1,
+    )
 
     context = {
         'total_events': total_events,
@@ -132,9 +144,16 @@ def dashboard(request):
         'checked_in': checked_in,
         'upcoming': upcoming,
         'attendance_rate': attendance_rate,
-        'recent_events': recent_events,
+
+        # The events shown in the "Next up" list
+        'upcoming_events': upcoming_events,
+
+        # Kept for backward-compat with any other template that uses them
+        'events': all_events,
+        'recent_events': upcoming_events,
     }
     return render(request, 'dashboard.html', context)
+
 
 
 @login_required

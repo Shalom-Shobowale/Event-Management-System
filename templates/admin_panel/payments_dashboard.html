@@ -1,0 +1,311 @@
+{% extends 'admin_panel/base.html' %}
+{% load humanize %}
+
+{% block title %}Payments overview{% endblock %}
+{% block page_eyebrow %}Finance{% endblock %}
+{% block page_title %}Payments overview{% endblock %}
+{% block nav_payments %}nav-active{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-2">Money in</p>
+      <h2 class="font-display text-4xl leading-[1.05] tracking-tight">
+        How the platform<br />
+        <span class="italic text-ink-400">is earning.</span>
+      </h2>
+    </div>
+    <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      Commission {{ commission_rate_pct }}%
+    </p>
+  </div>
+
+  <!-- ===================== PRIMARY REVENUE ===================== -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+    <!-- Total revenue -->
+    <div class="lg:col-span-1 relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full glow-lime pointer-events-none opacity-30"></div>
+      <div class="relative">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Total revenue</p>
+        <p class="font-display text-5xl leading-none text-lime2-600 dark:text-lime2-500">
+          ₦{{ total_revenue|floatformat:0|intcomma }}
+        </p>
+        <div class="mt-5 pt-5 border-t border-ink-100 dark:border-white/5 grid grid-cols-2 gap-4">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Platform</p>
+            <p class="font-display text-xl leading-none text-flame-500">₦{{ platform_commission|floatformat:0|intcomma }}</p>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Hosts</p>
+            <p class="font-display text-xl leading-none text-ink-900 dark:text-ink-50">₦{{ host_earnings|floatformat:0|intcomma }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time windows -->
+    <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Today</p>
+        <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+          ₦{{ revenue_today|floatformat:0|intcomma }}
+        </p>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Since midnight</p>
+      </div>
+
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">This week</p>
+        <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+          ₦{{ revenue_week|floatformat:0|intcomma }}
+        </p>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Rolling 7 days</p>
+      </div>
+
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-ink-400"></div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">This month</p>
+        <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+          ₦{{ revenue_month|floatformat:0|intcomma }}
+        </p>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Rolling 30 days</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== STATUS STRIP ===================== -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="flex items-center justify-between mb-2">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Paid</p>
+        <span class="w-2 h-2 rounded-full bg-lime2-500"></span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ paid_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500 mt-1.5">Successful</p>
+    </div>
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+      <div class="flex items-center justify-between mb-2">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Pending</p>
+        {% if pending_count > 0 %}
+          <span class="w-2 h-2 rounded-full bg-flame-500 animate-pulse"></span>
+        {% endif %}
+      </div>
+      <p class="font-display text-3xl leading-none {% if pending_count > 0 %}text-flame-500{% else %}text-ink-900 dark:text-ink-50{% endif %}">
+        {{ pending_count }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mt-1.5">Needs follow-up</p>
+    </div>
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <div class="flex items-center justify-between mb-2">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Failed</p>
+        <span class="w-2 h-2 rounded-full bg-flame-600"></span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ failed_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5">Declined</p>
+    </div>
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <div class="flex items-center justify-between mb-2">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Refunded</p>
+        <span class="w-2 h-2 rounded-full bg-violet2-500"></span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ refunded_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5">Reversed</p>
+    </div>
+  </div>
+
+  <!-- ===================== TOP EVENTS + RECENT ===================== -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Top earning events -->
+    <div class="lg:col-span-2 relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="p-5 border-b border-ink-100 dark:border-white/5">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Leaderboard</p>
+        <h3 class="font-display text-2xl leading-none">Top-earning events</h3>
+      </div>
+
+      {% if top_events %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-ink-100 dark:border-white/5 text-left">
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">#</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Event</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Guests</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal text-right">Revenue</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100 dark:divide-white/5">
+            {% for row in top_events %}
+            <tr class="hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
+              <td class="px-5 py-3">
+                <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+                  {{ forloop.counter|stringformat:"02d" }}
+                </span>
+              </td>
+              <td class="px-5 py-3">
+                <a href="{% url 'event_dashboard' row.event__id %}"
+                   class="text-sm font-medium text-ink-900 dark:text-ink-50 hover:text-flame-500 transition truncate block max-w-[280px]">
+                  {{ row.event__name }}
+                </a>
+                <p class="font-mono text-[10px] text-ink-500 mt-0.5">
+                  @{{ row.event__host__username }}
+                  {% if row.event__date %} · {{ row.event__date|date:"M j, Y" }}{% endif %}
+                </p>
+              </td>
+              <td class="px-5 py-3">
+                <span class="font-display text-lg leading-none text-ink-900 dark:text-ink-50">{{ row.guests }}</span>
+              </td>
+              <td class="px-5 py-3 text-right">
+                <span class="font-display text-lg leading-none text-lime2-600 dark:text-lime2-500">
+                  ₦{{ row.revenue|floatformat:0|intcomma }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="p-16 text-center">
+        <div class="inline-flex flex-col items-center gap-3">
+          <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M3 17l6-6 4 4 8-8"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl">No revenue yet</h3>
+          <p class="text-sm text-ink-400 max-w-xs">
+            Once guests start paying for tickets, your top-earning events show up here.
+          </p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Pending follow-up -->
+    <div class="relative rounded-2xl border border-flame-600/30 bg-flame-600/[.04] overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full glow-flame pointer-events-none opacity-50"></div>
+
+      <div class="relative p-5 border-b border-flame-600/20">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-400">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </span>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Follow up</p>
+        </div>
+        <h3 class="font-display text-2xl leading-tight">Pending payments</h3>
+        <p class="text-sm text-ink-300 mt-1">
+          {% if pending_count > 0 %}
+            {{ pending_count }} guest{{ pending_count|pluralize }} stuck in pending — chase them.
+          {% else %}
+            Nothing pending. All clear.
+          {% endif %}
+        </p>
+      </div>
+
+      {% if recent_pending %}
+      <div class="relative divide-y divide-flame-600/10 max-h-[400px] overflow-y-auto thin-scroll">
+        {% for g in recent_pending %}
+        <div class="flex items-center justify-between gap-3 p-4">
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-ink-100 truncate">{{ g.full_name }}</p>
+            <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ g.email }}</p>
+            <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ g.event.name|truncatechars:32 }}</p>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="font-display text-lg leading-none text-flame-400">
+              ₦{{ g.amount_paid|default:0|floatformat:0|intcomma }}
+            </p>
+            <p class="font-mono text-[10px] text-ink-500 mt-0.5">{{ g.registered_at|date:"M j" }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="relative p-10 text-center">
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+          No pending payments
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ===================== RECENT PAID ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+    <div class="p-5 border-b border-ink-100 dark:border-white/5 flex items-center justify-between">
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Recent</p>
+        <h3 class="font-display text-2xl leading-none">Latest successful payments</h3>
+      </div>
+      <a href="{% url 'admin_transactions' %}"
+         class="text-[10px] font-mono uppercase tracking-widest text-ink-400 hover:text-flame-500 transition">
+        All transactions →
+      </a>
+    </div>
+
+    {% if recent_paid %}
+    <div class="divide-y divide-ink-100 dark:divide-white/5">
+      {% for g in recent_paid %}
+      <div class="flex items-center gap-4 px-5 py-4 hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
+        <div class="w-9 h-9 rounded-full bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-medium text-sm flex-shrink-0">
+          {{ g.full_name|make_list|first|upper }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-ink-900 dark:text-ink-50 truncate">{{ g.full_name }}</p>
+          <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">
+            {{ g.email }} · {{ g.event.name|truncatechars:40 }}
+          </p>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <p class="font-display text-xl leading-none text-lime2-600 dark:text-lime2-500">
+            ₦{{ g.amount_paid|floatformat:0|intcomma }}
+          </p>
+          <p class="font-mono text-[10px] text-ink-500 mt-0.5">
+            {{ g.registered_at|date:"M j · H:i" }}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-16 text-center">
+      <div class="inline-flex flex-col items-center gap-3">
+        <div class="w-14 h-14 rounded-2xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-display text-2xl">No payments yet</h3>
+        <p class="text-sm text-ink-400 max-w-xs">
+          When guests start paying for tickets, every successful payment shows up here.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

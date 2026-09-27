@@ -1,0 +1,269 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Host verification{% endblock %}
+{% block page_eyebrow %}Trust &amp; safety{% endblock %}
+{% block page_title %}Host verification center{% endblock %}
+{% block nav_host_verif %}nav-active{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-2">Verification</p>
+      <h2 class="font-display text-4xl leading-[1.05] tracking-tight">
+        Confirm the hosts<br />
+        <span class="italic text-ink-400">worth trusting.</span>
+      </h2>
+    </div>
+    <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      {{ hosts|length }} host{{ hosts|length|pluralize }}
+    </p>
+  </div>
+
+  <!-- ===================== FILTERS ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+    <form method="get" class="p-5">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+
+        <!-- search -->
+        <div class="md:col-span-7 relative">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500 pointer-events-none"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" name="search" value="{{ search }}"
+                 placeholder="Search by name, email, or organization…"
+                 class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/50 text-sm text-ink-900 dark:text-ink-100 placeholder-ink-500 focus:border-flame-600 focus:bg-flame-600/5 focus:ring-4 focus:ring-flame-600/12 outline-none transition" />
+        </div>
+
+        <!-- level -->
+        <select name="level"
+                class="md:col-span-4 px-3 py-2.5 rounded-lg border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/50 text-sm text-ink-900 dark:text-ink-100 focus:border-flame-600 outline-none transition">
+          <option value=""  {% if not level %}selected{% endif %}>All levels</option>
+          <option value="0" {% if level == '0' %}selected{% endif %}>Level 0 — Unverified</option>
+          <option value="1" {% if level == '1' %}selected{% endif %}>Level 1 — Email verified</option>
+          <option value="2" {% if level == '2' %}selected{% endif %}>Level 2 — Phone verified</option>
+          <option value="3" {% if level == '3' %}selected{% endif %}>Level 3 — Trusted host</option>
+        </select>
+
+        <!-- submit -->
+        <button type="submit"
+                class="md:col-span-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </button>
+      </div>
+
+      {% if search or level %}
+        <div class="flex items-center justify-between mt-4 pt-4 border-t border-ink-100 dark:border-white/5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Filters active</p>
+          <a href="{% url 'admin_host_verification' %}"
+             class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-flame-500 transition">
+            Clear →
+          </a>
+        </div>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- ===================== LEVEL LEGEND ===================== -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+
+    <!-- Level 0 -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-ink-500"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-8 h-8 rounded-lg bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 grid place-items-center font-mono text-sm text-ink-500">
+          0
+        </div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Unverified</span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+        {% for n in level_counts %}{% if n.level == 0 %}{{ n.count }}{% endif %}{% endfor %}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Needs attention</p>
+    </div>
+
+    <!-- Level 1 -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center font-mono text-sm text-flame-500">
+          1
+        </div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-flame-500">Email</span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+        {% for n in level_counts %}{% if n.level == 1 %}{{ n.count }}{% endif %}{% endfor %}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Basic verification</p>
+    </div>
+
+    <!-- Level 2 -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center font-mono text-sm text-violet2-500">
+          2
+        </div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-500">Phone</span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+        {% for n in level_counts %}{% if n.level == 2 %}{{ n.count }}{% endif %}{% endfor %}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Contact verified</p>
+    </div>
+
+    <!-- Level 3 -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center font-mono text-sm text-lime2-600 dark:text-lime2-500">
+          3
+        </div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">Trusted</span>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">
+        {% for n in level_counts %}{% if n.level == 3 %}{{ n.count }}{% endif %}{% endfor %}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Full access</p>
+    </div>
+  </div>
+
+  <!-- ===================== TABLE ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-ink-100 dark:border-white/5 text-left">
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Host</th>
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Organization</th>
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Verification</th>
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Events</th>
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Status</th>
+            <th class="px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal text-right"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-100 dark:divide-white/5">
+          {% for host in hosts %}
+          <tr class="group hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
+
+            <!-- host -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-500 font-medium text-sm flex-shrink-0">
+                  {{ host.first_name|default:host.username|make_list|first|upper }}
+                </div>
+                <div class="min-w-0">
+                  <p class="font-medium text-ink-900 dark:text-ink-50 truncate">
+                    {{ host.get_full_name|default:host.username }}
+                  </p>
+                  <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ host.email }}</p>
+                </div>
+              </div>
+            </td>
+
+            <!-- organization -->
+            <td class="px-6 py-4">
+              <span class="text-sm text-ink-400 truncate">{{ host.organization|default:"—" }}</span>
+            </td>
+
+            <!-- verification -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2.5">
+
+                {% if host.verification_level == 0 %}
+                  <div class="w-7 h-7 rounded-lg bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 grid place-items-center font-mono text-xs text-ink-500">
+                    0
+                  </div>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Unverified</span>
+
+                {% elif host.verification_level == 1 %}
+                  <div class="w-7 h-7 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center font-mono text-xs text-flame-500">
+                    1
+                  </div>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-flame-500">Email verified</span>
+
+                {% elif host.verification_level == 2 %}
+                  <div class="w-7 h-7 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center font-mono text-xs text-violet2-500">
+                    2
+                  </div>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-500">Phone verified</span>
+
+                {% else %}
+                  <div class="w-7 h-7 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center font-mono text-xs text-lime2-600 dark:text-lime2-500">
+                    3
+                  </div>
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">Trusted</span>
+
+                {% endif %}
+              </div>
+            </td>
+
+            <!-- events -->
+            <td class="px-6 py-4">
+              <span class="font-display text-xl leading-none text-ink-900 dark:text-ink-50">
+                {{ host.event_count|default:"0" }}
+              </span>
+            </td>
+
+            <!-- status -->
+            <td class="px-6 py-4">
+              {% if host.is_suspended %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-400">
+                  <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
+                  Suspended
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
+                  <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+                  Active
+                </span>
+              {% endif %}
+            </td>
+
+            <!-- action -->
+            <td class="px-6 py-4 text-right">
+              <a href="{% url 'admin_user_detail' host.id %}"
+                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-xs font-medium text-ink-400 dark:text-ink-200 hover:text-flame-600 dark:hover:text-flame-400 transition">
+                Review
+                <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-16 text-center">
+              <div class="inline-flex flex-col items-center gap-3">
+                <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-500">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <h3 class="font-display text-2xl">Nothing to review</h3>
+                <p class="text-sm text-ink-400 max-w-xs">
+                  No hosts match your current filters. Try widening your search.
+                </p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

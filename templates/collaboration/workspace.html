@@ -1,199 +1,482 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}Workspace - {{ event.name }}{% endblock %}
-{% block page_title %}Event Workspace{% endblock %}
+{% block title %}Workspace · {{ event.name }}{% endblock %}
+{% block page_eyebrow %}Collaborate{% endblock %}
+{% block page_title %}Event workspace{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto">
-    <!-- Header -->
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            <h2 class="text-xl font-bold">Event Workspace</h2>
-            <p class="text-sm text-surface-500 mt-1">{{ event.name }}</p>
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+          {{ event.name }}
+        </p>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+          Where everything<br />
+          <span class="italic text-ink-400">comes together.</span>
+        </h2>
+        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+          Tasks, files, notes, and the team — all in one place for this event.
+        </p>
+      </div>
+
+      <a href="{% url 'event_dashboard' event.id %}"
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-sm font-medium text-ink-100 transition self-start">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+        </svg>
+        Event dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================== STATS ===================== -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-up d2">
+
+    <!-- tasks -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Tasks</span>
+        <div class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+          </svg>
         </div>
-        <a href="{% url 'event_dashboard' event.id %}" class="text-sm text-brand-600 hover:underline">Back to Event</a>
+      </div>
+      <p class="font-display text-4xl leading-none text-ink-50">{{ task_stats.total|default:"0" }}</p>
+      <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+        {{ task_stats.done|default:"0" }} completed
+      </p>
     </div>
 
-    <!-- Stats Overview -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-            <p class="text-xs font-semibold text-surface-500 uppercase">Tasks</p>
-            <p class="text-2xl font-bold mt-1">{{ task_stats.total }}</p>
-            <p class="text-xs text-surface-400">{{ task_stats.done }} completed</p>
+    <!-- progress -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Progress</span>
+        <div class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
         </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-            <p class="text-xs font-semibold text-surface-500 uppercase">Progress</p>
-            <p class="text-2xl font-bold mt-1">{{ task_stats.progress }}%</p>
-        </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-            <p class="text-xs font-semibold text-surface-500 uppercase">Files</p>
-            <p class="text-2xl font-bold mt-1">{{ files.count }}</p>
-        </div>
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-4">
-            <p class="text-xs font-semibold text-surface-500 uppercase">Members</p>
-            <p class="text-2xl font-bold mt-1">{{ members.count }}</p>
-        </div>
+      </div>
+      <p class="font-display text-4xl leading-none text-lime2-500">
+        {{ task_stats.progress|default:"0" }}<span class="text-ink-500 text-2xl">%</span>
+      </p>
+      <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">Event readiness</p>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-6">
-        <!-- Tasks & Activity -->
-        <div class="lg:col-span-2 space-y-6">
-            <!-- Tasks -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                    <h3 class="font-semibold">Tasks</h3>
-                    <a href="{% url 'event_tasks' event.id %}" class="text-sm text-brand-600 hover:underline">View All</a>
-                </div>
-                {% if tasks %}
-                <div class="divide-y divide-surface-100 dark:divide-surface-700">
-                    {% for task in tasks|slice:":5" %}
-                    <div class="p-4 flex items-center gap-3">
-                        <div class="w-5 h-5 rounded-full border-2
-                            {% if task.status == 'done' %}border-success-500 bg-success-500
-                            {% elif task.priority == 'urgent' %}border-error-500
-                            {% elif task.priority == 'high' %}border-warning-500
-                            {% else %}border-surface-300{% endif %}
-                            flex items-center justify-center">
-                            {% if task.status == 'done' %}
-                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                            {% endif %}
-                        </div>
-                        <span class="{% if task.status == 'done' %}line-through text-surface-400{% endif %} flex-1">{{ task.title }}</span>
-                        <a href="{% url 'update_task' task.id %}" class="p-1 rounded hover:bg-surface-100 dark:hover:bg-surface-700">
-                            <svg class="w-4 h-4 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="p-8 text-center">
-                    <p class="text-sm text-surface-500">No tasks yet</p>
-                    <a href="{% url 'create_task' event.id %}" class="text-sm text-brand-600 hover:underline">Create task</a>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Files -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                    <h3 class="font-semibold">Files</h3>
-                    <a href="{% url 'upload_file' event.id %}" class="text-sm text-brand-600 hover:underline">Upload</a>
-                </div>
-                {% if files %}
-                <div class="divide-y divide-surface-100 dark:divide-surface-700">
-                    {% for file in files %}
-                    <div class="p-4 flex items-center gap-3 hover:bg-surface-50 dark:hover:bg-surface-700/50">
-                        <div class="w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-medium truncate">{{ file.name }}</p>
-                            <p class="text-xs text-surface-500">{{ file.uploaded_by.username }} · {{ file.created_at|date:"M d" }}</p>
-                        </div>
-                        <a href="{{ file.file.url }}" target="_blank" class="text-sm text-brand-600 hover:underline">View</a>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="p-8 text-center">
-                    <p class="text-sm text-surface-500">No files uploaded yet</p>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Activity Log -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700">
-                    <h3 class="font-semibold">Recent Activity</h3>
-                </div>
-                {% if activity %}
-                <div class="divide-y divide-surface-100 dark:divide-surface-700">
-                    {% for log in activity %}
-                    <div class="p-4 flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 text-xs font-semibold">
-                            {{ log.user.username|make_list|first|upper }}
-                        </div>
-                        <div>
-                            <p class="text-sm">{{ log.description }}</p>
-                            <p class="text-xs text-surface-500 mt-1">{{ log.created_at|timesince }} ago</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="p-8 text-center">
-                    <p class="text-sm text-surface-500">No activity yet</p>
-                </div>
-                {% endif %}
-            </div>
+    <!-- files -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Files</span>
+        <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
         </div>
-
-        <!-- Sidebar -->
-        <div class="space-y-6">
-            <!-- Team Members -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                    <h3 class="font-semibold">Team</h3>
-                    <a href="{% url 'add_member' event.id %}" class="text-xs text-brand-600 hover:underline">Add</a>
-                </div>
-                <div class="p-4 space-y-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-brand-600 text-xs font-semibold">
-                            {{ event.host.username|make_list|first|upper }}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium truncate">{{ event.host.get_full_name|default:event.host.username }}</p>
-                            <p class="text-xs text-surface-500">Host</p>
-                        </div>
-                    </div>
-                    {% for member in members %}
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-surface-100 dark:bg-surface-700 flex items-center justify-center text-surface-600 text-xs font-semibold">
-                            {{ member.user.username|make_list|first|upper }}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium truncate">{{ member.user.username }}</p>
-                            <p class="text-xs text-surface-500">{{ member.get_role_display }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Notes -->
-            <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
-                <div class="p-5 border-b border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                    <h3 class="font-semibold">Notes</h3>
-                    <a href="{% url 'add_note' event.id %}" class="text-xs text-brand-600 hover:underline">Add</a>
-                </div>
-                {% if notes %}
-                <div class="divide-y divide-surface-100 dark:divide-surface-700">
-                    {% for note in notes %}
-                    <div class="p-4">
-                        <p class="font-medium text-sm">{{ note.title }}</p>
-                        <p class="text-xs text-surface-500 mt-1">{{ note.content|truncatewords:20 }}</p>
-                        <p class="text-xs text-surface-400 mt-2">{{ note.created_at|date:"M d, Y" }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="p-6 text-center">
-                    <p class="text-sm text-surface-500">No notes yet</p>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-5 text-white">
-                <h3 class="font-semibold mb-3">Quick Actions</h3>
-                <div class="space-y-2">
-                    <a href="{% url 'create_task' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Add Task</a>
-                    <a href="{% url 'upload_file' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Upload File</a>
-                    <a href="{% url 'add_note' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Add Note</a>
-                    <a href="{% url 'start_conversation' event.id %}" class="block px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">+ Start Chat</a>
-                </div>
-            </div>
-        </div>
+      </div>
+      <p class="font-display text-4xl leading-none text-ink-50">{{ files.count|default:"0" }}</p>
+      <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">Uploaded</p>
     </div>
+
+    <!-- members -->
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Members</span>
+        <div class="w-8 h-8 rounded-lg bg-flame-500/15 border border-flame-500/25 grid place-items-center text-flame-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="font-display text-4xl leading-none text-ink-50">{{ members.count|default:"0" }}</p>
+      <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">Collaborating</p>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN GRID ===================== -->
+  <div class="grid lg:grid-cols-3 gap-6">
+
+    <!-- ============ LEFT COLUMN ============ -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <!-- TASKS -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Checklist</p>
+            <h3 class="font-display text-2xl leading-none">Tasks</h3>
+          </div>
+          <a href="{% url 'event_tasks' event.id %}"
+             class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-flame-500 hover:text-flame-400 transition">
+            View all
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+
+        {% if tasks %}
+          <div class="divide-y divide-white/5">
+            {% for task in tasks|slice:":5" %}
+            <div class="group flex items-center gap-3 p-4 hover:bg-white/[.02] transition-colors">
+
+              <!-- status indicator -->
+              <div class="w-5 h-5 rounded-full border-2 grid place-items-center flex-shrink-0
+                {% if task.status == 'done' %}
+                  border-lime2-500 bg-lime2-500
+                {% elif task.priority == 'urgent' %}
+                  border-flame-600
+                {% elif task.priority == 'high' %}
+                  border-flame-500
+                {% elif task.priority == 'medium' %}
+                  border-violet2-500
+                {% else %}
+                  border-white/15
+                {% endif %}">
+                {% if task.status == 'done' %}
+                  <svg class="w-3 h-3 text-ink-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"/>
+                  </svg>
+                {% endif %}
+              </div>
+
+              <!-- title -->
+              <span class="flex-1 min-w-0 text-sm truncate
+                {% if task.status == 'done' %}line-through text-ink-500{% else %}text-ink-100{% endif %}">
+                {{ task.title }}
+              </span>
+
+              <!-- priority chip -->
+              {% if task.priority == 'urgent' %}
+                <span class="flex-shrink-0 px-2 py-0.5 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[9px] uppercase tracking-widest text-flame-400 inline-flex items-center gap-1">
+                  <span class="w-1 h-1 rounded-full bg-flame-500 animate-pulse"></span>
+                  Urgent
+                </span>
+              {% elif task.priority == 'high' %}
+                <span class="flex-shrink-0 px-2 py-0.5 rounded-full bg-flame-500/15 border border-flame-500/30 font-mono text-[9px] uppercase tracking-widest text-flame-400">
+                  High
+                </span>
+              {% endif %}
+
+              <!-- edit -->
+              <a href="{% url 'update_task' task.id %}"
+                 class="flex-shrink-0 w-7 h-7 rounded-lg grid place-items-center text-ink-500 hover:text-violet2-400 hover:bg-violet2-500/10 transition"
+                 title="Edit task">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-10 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-4 text-flame-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+            </div>
+            <p class="text-sm text-ink-400 mb-3">No tasks yet.</p>
+            <a href="{% url 'create_task' event.id %}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-xs font-semibold transition">
+              Create task
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- FILES -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Documents</p>
+            <h3 class="font-display text-2xl leading-none">Files</h3>
+          </div>
+          <a href="{% url 'upload_file' event.id %}"
+             class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-xs font-semibold transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Upload
+          </a>
+        </div>
+
+        {% if files %}
+          <div class="divide-y divide-white/5">
+            {% for file in files %}
+            <div class="group flex items-center gap-3 p-4 hover:bg-white/[.02] transition-colors">
+
+              <div class="w-10 h-10 rounded-xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm text-ink-100 truncate">{{ file.name }}</p>
+                <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-0.5">
+                  {{ file.uploaded_by.username }} <span class="text-ink-600">·</span> {{ file.created_at|date:"M d" }}
+                </p>
+              </div>
+
+              <a href="{{ file.file.url }}" target="_blank"
+                 class="group/btn inline-flex items-center gap-1.5 text-xs font-medium text-violet2-400 hover:text-violet2-300 transition flex-shrink-0">
+                View
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-10 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center mx-auto mb-4 text-violet2-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <p class="text-sm text-ink-400 mb-3">No files uploaded yet.</p>
+            <a href="{% url 'upload_file' event.id %}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet2-500 hover:bg-violet2-400 text-ink-950 text-xs font-semibold transition">
+              Upload first file
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d4">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+        <div class="p-5 border-b border-white/5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Timeline</p>
+          <h3 class="font-display text-2xl leading-none">Recent activity</h3>
+        </div>
+
+        {% if activity %}
+          <div class="divide-y divide-white/5">
+            {% for log in activity %}
+            <div class="flex items-start gap-3 p-4 hover:bg-white/[.02] transition-colors">
+
+              <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-medium text-xs flex-shrink-0">
+                {{ log.user.username|make_list|first|upper }}
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-ink-200 leading-relaxed">{{ log.description }}</p>
+                <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5">
+                  {{ log.created_at|timesince }} ago
+                </p>
+              </div>
+
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-10 text-center">
+            <p class="text-sm text-ink-500">No activity yet.</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <div class="space-y-6">
+
+      <!-- TEAM -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Collaborators</p>
+            <h3 class="font-display text-2xl leading-none">Team</h3>
+          </div>
+          <a href="{% url 'add_member' event.id %}"
+             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-[10px] font-mono uppercase tracking-widest font-semibold transition">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add
+          </a>
+        </div>
+
+        <div class="p-4 space-y-3">
+
+          <!-- host -->
+          <div class="flex items-center gap-3 p-2 rounded-lg">
+            <div class="w-9 h-9 rounded-full bg-flame-600 grid place-items-center text-ink-950 font-display text-lg flex-shrink-0">
+              {{ event.host.username|make_list|first|upper }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink-100 truncate">
+                {{ event.host.get_full_name|default:event.host.username }}
+              </p>
+              <span class="font-mono text-[9px] uppercase tracking-widest text-flame-400">Host</span>
+            </div>
+          </div>
+
+          {% for member in members %}
+          <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[.03] transition-colors">
+            <div class="w-9 h-9 rounded-full bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-medium text-xs flex-shrink-0">
+              {{ member.user.username|make_list|first|upper }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink-200 truncate">{{ member.user.username }}</p>
+              <span class="font-mono text-[9px] uppercase tracking-widest text-ink-500">{{ member.get_role_display }}</span>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d4">
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Scratchpad</p>
+            <h3 class="font-display text-2xl leading-none">Notes</h3>
+          </div>
+          <a href="{% url 'add_note' event.id %}"
+             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet2-500 hover:bg-violet2-400 text-ink-950 text-[10px] font-mono uppercase tracking-widest font-semibold transition">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add
+          </a>
+        </div>
+
+        {% if notes %}
+          <div class="divide-y divide-white/5">
+            {% for note in notes %}
+            <div class="p-4 hover:bg-white/[.02] transition-colors">
+              <p class="font-medium text-sm text-ink-100">{{ note.title }}</p>
+              <p class="text-xs text-ink-400 mt-1 leading-relaxed">{{ note.content|truncatewords:20 }}</p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">{{ note.created_at|date:"M d, Y" }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-6 text-center">
+            <p class="text-sm text-ink-500">No notes yet.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="relative rounded-2xl border border-flame-600/25 bg-flame-600/[.04] p-5 overflow-hidden fade-up d4">
+        <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full glow-flame pointer-events-none opacity-60"></div>
+
+        <div class="relative">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-400">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </span>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Quick actions</p>
+          </div>
+
+          <div class="space-y-2">
+
+            <a href="{% url 'create_task' event.id %}"
+               class="group flex items-center justify-between gap-3 p-3 rounded-xl border border-white/5 hover:border-flame-600/40 hover:bg-flame-600/10 transition">
+              <span class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-ink-100">Add task</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-ink-500 group-hover:text-flame-500 group-hover:translate-x-0.5 transition-all"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+
+            <a href="{% url 'upload_file' event.id %}"
+               class="group flex items-center justify-between gap-3 p-3 rounded-xl border border-white/5 hover:border-violet2-500/40 hover:bg-violet2-500/10 transition">
+              <span class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-ink-100">Upload file</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-ink-500 group-hover:text-violet2-400 group-hover:translate-x-0.5 transition-all"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+
+            <a href="{% url 'add_note' event.id %}"
+               class="group flex items-center justify-between gap-3 p-3 rounded-xl border border-white/5 hover:border-lime2-500/40 hover:bg-lime2-500/10 transition">
+              <span class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-ink-100">Add note</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-ink-500 group-hover:text-lime2-500 group-hover:translate-x-0.5 transition-all"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+
+            <a href="{% url 'start_conversation' event.id %}"
+               class="group flex items-center justify-between gap-3 p-3 rounded-xl border border-white/5 hover:border-flame-500/40 hover:bg-flame-500/10 transition">
+              <span class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-flame-500/15 border border-flame-500/25 grid place-items-center text-flame-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-ink-100">Start chat</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-ink-500 group-hover:text-flame-400 group-hover:translate-x-0.5 transition-all"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 {% endblock %}

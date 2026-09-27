@@ -1,0 +1,122 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Security{% endblock %}
+{% block page_title %}Security Center{% endblock %}
+{% block nav_security %}text-white bg-brand-600{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Stats -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-5">
+            <p class="text-3xl font-bold">{{ total_events }}</p>
+            <p class="text-sm text-surface-500 mt-1">Total Events</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-error-200 dark:border-error-500/20 p-5">
+            <p class="text-3xl font-bold text-error-500">{{ critical_events }}</p>
+            <p class="text-sm text-surface-500 mt-1">Critical Unresolved</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-warning-200 dark:border-warning-500/20 p-5">
+            <p class="text-3xl font-bold text-warning-500">{{ high_events }}</p>
+            <p class="text-sm text-surface-500 mt-1">High Unresolved</p>
+        </div>
+        <div class="bg-white dark:bg-surface-900 rounded-2xl border border-success-200 dark:border-success-500/20 p-5">
+            <p class="text-3xl font-bold text-success-500">{{ resolved_events }}</p>
+            <p class="text-sm text-surface-500 mt-1">Resolved</p>
+        </div>
+    </div>
+
+    <!-- Suspicious Users -->
+    {% if suspicious_users %}
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-warning-200 dark:border-warning-500/20 p-6">
+        <h3 class="text-base font-semibold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Suspicious Users (Multiple Security Events)
+        </h3>
+        <div class="space-y-2">
+            {% for user in suspicious_users %}
+            <div class="flex items-center justify-between py-2 border-b border-surface-100 dark:border-surface-800 last:border-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-error-100 dark:bg-error-500/20 flex items-center justify-center text-error-600 text-sm font-bold">
+                        {{ user.first_name|default:user.username|make_list|first|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">{{ user.username }}</p>
+                        <p class="text-xs text-surface-500">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400">{{ user.event_count }} events</span>
+                    <a href="{% url 'admin_user_detail' user.id %}" class="text-brand-600 dark:text-brand-400 hover:underline text-xs font-medium">Review</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 p-4">
+        <form method="get" class="flex flex-wrap gap-3">
+            <select name="severity" class="px-4 py-2 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-sm outline-none focus:border-brand-500">
+                <option value="" {% if not severity %}selected{% endif %}>All Severities</option>
+                <option value="low" {% if severity == 'low' %}selected{% endif %}>Low</option>
+                <option value="medium" {% if severity == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="high" {% if severity == 'high' %}selected{% endif %}>High</option>
+                <option value="critical" {% if severity == 'critical' %}selected{% endif %}>Critical</option>
+            </select>
+            <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">Filter</button>
+        </form>
+    </div>
+
+    <!-- Security Events -->
+    <div class="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-surface-200 dark:border-surface-800 text-left text-xs text-surface-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 font-semibold">Type</th>
+                        <th class="px-6 py-3 font-semibold">Severity</th>
+                        <th class="px-6 py-3 font-semibold">User</th>
+                        <th class="px-6 py-3 font-semibold">IP</th>
+                        <th class="px-6 py-3 font-semibold">Description</th>
+                        <th class="px-6 py-3 font-semibold">Time</th>
+                        <th class="px-6 py-3 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-100 dark:divide-surface-800">
+                    {% for event in security_events %}
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
+                        <td class="px-6 py-4 text-sm font-medium">{{ event.get_event_type_display }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                {% if event.severity == 'critical' %}bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400
+                                {% elif event.severity == 'high' %}bg-warning-50 text-warning-600 dark:bg-warning-500/10 dark:text-warning-400
+                                {% elif event.severity == 'medium' %}bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400
+                                {% else %}bg-surface-100 text-surface-500 dark:bg-surface-800 dark:text-surface-400{% endif %}">{{ event.get_severity_display }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm">{{ event.user|default:'-' }}</td>
+                        <td class="px-6 py-4 text-xs text-surface-500">{{ event.ip_address|default:'-' }}</td>
+                        <td class="px-6 py-4 text-sm text-surface-500 max-w-xs truncate">{{ event.description }}</td>
+                        <td class="px-6 py-4 text-xs text-surface-400">{{ event.created_at|timesince }} ago</td>
+                        <td class="px-6 py-4">
+                            {% if not event.is_resolved %}
+                            <div class="flex gap-1">
+                                <form method="post" action="{% url 'admin_security_action' event.id %}">{% csrf_token %}<input type="hidden" name="action" value="resolve"><button type="submit" class="px-2 py-1 text-xs font-medium text-success-600 dark:text-success-400 hover:underline">Resolve</button></form>
+                                {% if event.user %}
+                                <form method="post" action="{% url 'admin_security_action' event.id %}">{% csrf_token %}<input type="hidden" name="action" value="lockout"><button type="submit" class="px-2 py-1 text-xs font-medium text-error-500 hover:underline">Lockout</button></form>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <span class="text-xs text-success-500">Resolved</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="px-6 py-12 text-center text-surface-400"><p class="text-sm">No security events recorded.</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

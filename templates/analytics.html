@@ -1,221 +1,396 @@
-{% extends "base_dashboard.html" %} {% block title %}Analytics{% endblock %}
-{%block page_title %}Analytics{% endblock %} {% block nav_analytics
-%}bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400{% endblock
-%} {% block content %}
-<!-- Stats Overview -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-  >
-    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-      Total Events
-    </p>
-    <p class="text-2xl font-bold mt-1">{{ total_events }}</p>
+{% extends "base_dashboard.html" %}
+
+{% block title %}Analytics{% endblock %}
+{% block page_eyebrow %}Insights{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block nav_analytics %}nav-active{% endblock %}
+
+{% block content %}
+
+<!-- ===================== HEADER ===================== -->
+<div class="mb-8 fade-up d1">
+  <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Insights</p>
+  <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+    The numbers,<br />
+    <span class="italic text-ink-400">at a glance.</span>
+  </h2>
+  <p class="mt-4 text-sm text-ink-400 max-w-xl">
+    Attendance, check-in timing and per-event performance across everything you run.
+  </p>
+</div>
+
+<!-- ===================== STATS ===================== -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 fade-up d2">
+
+  <!-- total events -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Total events</span>
+      <div class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="font-display text-4xl leading-none text-ink-50">{{ total_events|default:"0" }}</p>
+    <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">All time</p>
   </div>
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-  >
-    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-      Total Guests
-    </p>
-    <p class="text-2xl font-bold mt-1">{{ total_guests }}</p>
+
+  <!-- total guests -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Total guests</span>
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="font-display text-4xl leading-none text-ink-50">{{ total_guests|default:"0" }}</p>
+    <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">Registered</p>
   </div>
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-  >
-    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-      Checked In
-    </p>
-    <p class="text-2xl font-bold mt-1 text-success-600">
-      {{ total_checked_in }}
+
+  <!-- checked in -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Checked in</span>
+      <div class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="font-display text-4xl leading-none text-lime2-500">{{ total_checked_in|default:"0" }}</p>
+    <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-lime2-500 inline-flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span> At the door
     </p>
   </div>
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-  >
-    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-      No-Show Rate
+
+  <!-- no-show rate -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">No-show rate</span>
+      <div class="w-8 h-8 rounded-lg bg-flame-500/15 border border-flame-500/25 grid place-items-center text-flame-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M20 12H4m8-8v16"/>
+        </svg>
+      </div>
+    </div>
+    <p class="font-display text-4xl leading-none text-flame-500">
+      {{ no_show_rate|default:"0" }}<span class="text-ink-500 text-2xl">%</span>
     </p>
-    <p class="text-2xl font-bold mt-1 text-warning-600">{{ no_show_rate }}%</p>
+    <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">Didn't attend</p>
   </div>
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
-  >
-    <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider">
-      Total Scans
-    </p>
-    <p class="text-2xl font-bold mt-1">{{ total_scans }}</p>
+
+  <!-- total scans -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Total scans</span>
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+        </svg>
+      </div>
+    </div>
+    <p class="font-display text-4xl leading-none text-ink-50">{{ total_scans|default:"0" }}</p>
+    <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">QR validations</p>
   </div>
 </div>
 
-<!-- Charts -->
-<div class="grid lg:grid-cols-2 gap-6 mb-8">
-  <!-- Attendance -->
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-  >
-    <h3 class="font-semibold mb-4">Event Attendance</h3>
+<!-- ===================== CHARTS ===================== -->
+<div class="grid lg:grid-cols-2 gap-6 mb-8 fade-up d3">
 
-    <div class="relative h-80">
+  <!-- attendance -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Comparison</p>
+        <h3 class="font-display text-2xl leading-none">Event attendance</h3>
+      </div>
+      <div class="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest">
+        <span class="inline-flex items-center gap-1.5 text-ink-400">
+          <span class="w-2.5 h-2.5 rounded-sm bg-flame-600"></span> Registered
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-ink-400">
+          <span class="w-2.5 h-2.5 rounded-sm bg-lime2-500"></span> Checked in
+        </span>
+      </div>
+    </div>
+    <div class="relative h-72">
       <canvas id="attendanceChart"></canvas>
     </div>
   </div>
 
-  <!-- Peak -->
-  <div
-    class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-  >
-    <h3 class="font-semibold mb-4">Peak Check-in Times</h3>
-
-    <div class="relative h-80">
+  <!-- peak -->
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+    <div class="mb-6">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Timing</p>
+      <h3 class="font-display text-2xl leading-none">Peak check-in times</h3>
+    </div>
+    <div class="relative h-72">
       <canvas id="peakChart"></canvas>
     </div>
   </div>
 </div>
 
-<!-- Event Breakdown -->
-<div
-  class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700"
->
-  <div class="p-5 border-b border-surface-100 dark:border-surface-700">
-    <h2 class="font-semibold">Event Breakdown</h2>
+<!-- ===================== EVENT BREAKDOWN ===================== -->
+<div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d4">
+  <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+  <div class="flex items-center justify-between p-5 border-b border-white/5">
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Per event</p>
+      <h2 class="font-display text-2xl leading-none">Event breakdown</h2>
+    </div>
   </div>
+
   {% if events %}
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-surface-100 dark:border-surface-700">
-          <th
-            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
-          >
-            Event
-          </th>
-          <th
-            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
-          >
-            Registered
-          </th>
-          <th
-            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
-          >
-            Checked In
-          </th>
-          <th
-            class="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase tracking-wider"
-          >
-            Rate
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-surface-100 dark:divide-surface-700">
-        {% for event in events %}
-        <tr
-          class="hover:bg-surface-50 dark:hover:bg-surface-700/50 transition-colors"
-        >
-          <td class="px-5 py-3">
-            <a
-              href="{% url 'event_dashboard' event.id %}"
-              class="font-medium text-brand-600 dark:text-brand-400 hover:underline"
-              >{{ event.name }}</a
-            >
-            <p class="text-xs text-surface-500">
-              {{ event.date|date:"M d, Y" }}
-            </p>
-          </td>
-          <td class="px-5 py-3">{{ event.registered_guests }}</td>
-          <td class="px-5 py-3">{{ event.checked_in_guests }}</td>
-          <td class="px-5 py-3">
-            <div class="flex items-center gap-2">
-              <div
-                class="flex-1 h-2 bg-surface-100 dark:bg-surface-700 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full bg-brand-600 rounded-full"
-                  style="width: {{ event.attendance_rate }}%"
-                ></div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Event</th>
+            <th class="text-left px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Registered</th>
+            <th class="text-left px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Checked in</th>
+            <th class="text-left px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Rate</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {% for event in events %}
+          <tr class="hover:bg-white/[.02] transition-colors">
+
+            <td class="px-5 py-4">
+              <a href="{% url 'event_dashboard' event.id %}"
+                 class="font-medium text-ink-100 hover:text-flame-400 transition">
+                {{ event.name }}
+              </a>
+              <p class="text-xs text-ink-500 mt-0.5 font-mono">{{ event.date|date:"M d, Y" }}</p>
+            </td>
+
+            <td class="px-5 py-4">
+              <span class="font-display text-xl text-ink-100">{{ event.registered_guests|default:"0" }}</span>
+            </td>
+
+            <td class="px-5 py-4">
+              <span class="font-display text-xl text-lime2-500">{{ event.checked_in_guests|default:"0" }}</span>
+            </td>
+
+            <td class="px-5 py-4 min-w-[180px]">
+              <div class="flex items-center gap-3">
+                <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500
+                    {% if event.attendance_rate >= 75 %}bg-lime2-500
+                    {% elif event.attendance_rate >= 40 %}bg-flame-500
+                    {% else %}bg-flame-600{% endif %}"
+                       style="width: {{ event.attendance_rate }}%"></div>
+                </div>
+                <span class="font-mono text-xs text-ink-300 min-w-[3rem] text-right">
+                  {{ event.attendance_rate }}%
+                </span>
               </div>
-              <span class="text-xs font-medium"
-                >{{ event.attendance_rate }}%</span
-              >
-            </div>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
-  <div class="p-12 text-center">
-    <p class="text-surface-500">No events to analyze yet.</p>
-  </div>
+    <div class="p-12 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-2xl">No data yet</h3>
+      <p class="mt-2 text-sm text-ink-400 max-w-sm mx-auto">
+        Once you run events and check guests in, their numbers will show up here.
+      </p>
+      <a href="{% url 'create_event' %}"
+         class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        Create an event
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
   {% endif %}
 </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const eventData = {{ event_data_json|safe }};
-      const hourlyData = {{ hourly_data_json|safe }};
+  document.addEventListener('DOMContentLoaded', function () {
+    const eventData  = {{ event_data_json|safe }};
+    const hourlyData = {{ hourly_data_json|safe }};
 
-      // Attendance Chart
-      console.log(eventData);
-      if (eventData.length > 0) {
-          new Chart(document.getElementById('attendanceChart'), {
-              type: 'bar',
-              data: {
-                  labels: eventData.map(e => e.name.length > 15 ? e.name.substring(0, 15) + '...' : e.name),
-                  datasets: [{
-                      label: 'Registered',
-                      data: eventData.map(e => e.registered),
-                      backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                      borderRadius: 6,
-                  }, {
-                      label: 'Checked In',
-                      data: eventData.map(e => e.checked_in),
-                      backgroundColor: 'rgba(34, 197, 94, 0.7)',
-                      borderRadius: 6,
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { position: 'bottom' } },
-                  scales: {
-                      y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                      x: { grid: { display: false } }
-                  }
-              }
-          });
-      }
+    // ---- ink-system colors (match page) ----
+    const COLORS = {
+      flame:       '#ff4800',
+      flameSoft:   'rgba(255,72,0,.72)',
+      flameFaint:  'rgba(255,72,0,.10)',
+      lime:        '#c6f24e',
+      limeSoft:    'rgba(198,242,78,.72)',
+      limeFaint:   'rgba(198,242,78,.12)',
+      violet:      '#7c5cff',
+      violetSoft:  'rgba(124,92,255,.72)',
+      violetFaint: 'rgba(124,92,255,.12)',
+      ink300:      '#a0a0b3',
+      ink400:      '#71718a',
+      ink500:      '#4d4d66',
+      grid:        'rgba(255,255,255,.05)',
+      tick:        '#71718a',
+    };
 
-      // Peak Times Chart
-      const hours = Object.keys(hourlyData).sort();
-      if (hours.length > 0) {
-          new Chart(document.getElementById('peakChart'), {
-              type: 'line',
-              data: {
-                  labels: hours,
-                  datasets: [{
-                      label: 'Check-ins',
-                      data: hours.map(h => hourlyData[h]),
-                      borderColor: 'rgb(59, 130, 246)',
-                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                      fill: true,
-                      tension: 0.4,
-                      pointRadius: 4,
-                      pointBackgroundColor: 'rgb(59, 130, 246)',
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { display: false } },
-                  scales: {
-                      y: { beginAtZero: true, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                      x: { grid: { display: false } }
-                  }
-              }
-          });
-      }
+    // detect theme for tick/grid color
+    function isDark() {
+      return document.documentElement.classList.contains('dark') ||
+             !document.documentElement.classList.contains('light');
+    }
+    const tickColor = isDark() ? '#a0a0b3' : '#4d4d66';
+    const gridColor = isDark() ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)';
+    const borderColor = isDark() ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+
+    // global Chart defaults
+    Chart.defaults.color = tickColor;
+    Chart.defaults.font.family = "'JetBrains Mono', ui-monospace, monospace";
+    Chart.defaults.font.size = 11;
+
+    // ---- Attendance Chart ----
+    if (Array.isArray(eventData) && eventData.length > 0) {
+      const ctx = document.getElementById('attendanceChart');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: eventData.map(e => e.name.length > 15 ? e.name.substring(0, 15) + '…' : e.name),
+          datasets: [
+            {
+              label: 'Registered',
+              data: eventData.map(e => e.registered),
+              backgroundColor: COLORS.flameSoft,
+              hoverBackgroundColor: COLORS.flame,
+              borderRadius: 6,
+              borderSkipped: false,
+              maxBarThickness: 28,
+            },
+            {
+              label: 'Checked in',
+              data: eventData.map(e => e.checked_in),
+              backgroundColor: COLORS.limeSoft,
+              hoverBackgroundColor: COLORS.lime,
+              borderRadius: 6,
+              borderSkipped: false,
+              maxBarThickness: 28,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }, // custom legend rendered in HTML
+            tooltip: {
+              backgroundColor: '#0a0a18',
+              borderColor: 'rgba(255,255,255,.1)',
+              borderWidth: 1,
+              titleColor: '#f6f6f8',
+              bodyColor: '#cbcbd6',
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '500' },
+              bodyFont:  { family: "'Inter', sans-serif", size: 12 },
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: gridColor, drawBorder: false },
+              border: { display: false },
+              ticks: { color: tickColor, padding: 8 }
+            },
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { color: tickColor, padding: 6 }
+            }
+          }
+        }
+      });
+    }
+
+    // ---- Peak Times Chart ----
+    const hours = Object.keys(hourlyData || {}).sort();
+    if (hours.length > 0) {
+      const ctx = document.getElementById('peakChart').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 300);
+      grad.addColorStop(0, 'rgba(124,92,255,.35)');
+      grad.addColorStop(1, 'rgba(124,92,255,0)');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: hours,
+          datasets: [{
+            label: 'Check-ins',
+            data: hours.map(h => hourlyData[h]),
+            borderColor: COLORS.violet,
+            backgroundColor: grad,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: COLORS.violet,
+            pointBorderColor: '#0a0a18',
+            pointBorderWidth: 2,
+            borderWidth: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0a0a18',
+              borderColor: 'rgba(255,255,255,.1)',
+              borderWidth: 1,
+              titleColor: '#f6f6f8',
+              bodyColor: '#cbcbd6',
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '500' },
+              bodyFont:  { family: "'Inter', sans-serif", size: 12 },
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: gridColor, drawBorder: false },
+              border: { display: false },
+              ticks: { color: tickColor, padding: 8 }
+            },
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { color: tickColor, padding: 6 }
+            }
+          }
+        }
+      });
+    }
   });
 </script>
 {% endblock %}

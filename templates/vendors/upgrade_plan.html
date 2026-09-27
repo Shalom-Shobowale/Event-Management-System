@@ -1,0 +1,181 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Upgrade plan{% endblock %}
+{% block page_eyebrow %}Vendor{% endblock %}
+{% block page_title %}Upgrade your plan{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+
+  <!-- HEADER -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
+      Your subscription
+    </p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+      Unlock more<br />
+      <span class="italic text-ink-400">growth tools.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+      You're currently on the <strong class="text-ink-100">{{ current_plan_name }}</strong> plan.
+      Upgrade to add more portfolio items, get analytics, and boost your visibility.
+    </p>
+  </div>
+
+  <!-- CURRENT SUBSCRIPTION STATUS -->
+  {% if subscription %}
+  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 mb-8 overflow-hidden fade-up d2">
+    <div class="absolute top-0 left-0 right-0 h-0.5
+      {% if subscription.status == 'trialing' %}bg-lime2-500
+      {% elif subscription.status == 'active' %}bg-lime2-500
+      {% elif subscription.status == 'past_due' %}bg-flame-600
+      {% else %}bg-violet2-500{% endif %}"></div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Current plan</p>
+        <p class="font-display text-2xl leading-none text-ink-50">
+          {{ subscription.plan.name|default:"Free" }}
+        </p>
+      </div>
+
+      <div class="text-right">
+        {% if subscription.is_on_trial %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-500">
+            <span class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"></span>
+            Trial · ends {{ subscription.trial_end_at|date:"M d" }}
+          </span>
+        {% elif subscription.status == 'active' %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-500">
+            Active
+          </span>
+        {% elif subscription.status == 'past_due' %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-400">
+            Past due
+          </span>
+        {% else %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-400">
+            {{ subscription.get_status_display }}
+          </span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- PLAN CARDS -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for plan in plans %}
+    <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden
+                {% if subscription.plan.id == plan.id %}border-lime2-500/50{% endif %}">
+
+      <!-- top edge color -->
+      <div class="absolute top-0 left-0 right-0 h-0.5
+        {% if plan.name == 'Premium' %}bg-flame-600
+        {% elif plan.name == 'Pro' %}bg-violet2-500
+        {% else %}bg-lime2-500{% endif %}"></div>
+
+      <div class="p-6">
+
+        <!-- plan name + price -->
+        <div class="mb-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">
+            {% if plan.name == 'Premium' %}Best value
+            {% elif plan.name == 'Pro' %}Most popular
+            {% else %}Always free{% endif %}
+          </p>
+          <h3 class="font-display text-3xl leading-none text-ink-50">{{ plan.name }}</h3>
+          <p class="mt-3 font-display text-4xl leading-none text-flame-500">
+            ₦{{ plan.monthly_price|floatformat:0 }}
+            <span class="text-ink-500 text-base font-sans">/mo</span>
+          </p>
+        </div>
+
+        <!-- features -->
+        <ul class="space-y-3 mb-6 text-sm">
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 w-4 h-4 rounded-full bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="text-ink-200">Up to {{ plan.portfolio_limit }} portfolio items</span>
+          </li>
+
+          {% if plan.has_analytics %}
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 w-4 h-4 rounded-full bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="text-ink-200">Advanced earnings analytics</span>
+          </li>
+          {% endif %}
+
+          {% if plan.has_featured_placement %}
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 w-4 h-4 rounded-full bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="text-ink-200">Featured vendor placement</span>
+          </li>
+          {% endif %}
+
+          {% if plan.has_video_portfolio %}
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 w-4 h-4 rounded-full bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="text-ink-200">Video portfolio support</span>
+          </li>
+          {% endif %}
+
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 w-4 h-4 rounded-full bg-lime2-500/15 border border-lime2-500/30 grid place-items-center text-lime2-500 flex-shrink-0">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="text-ink-200">Priority support</span>
+          </li>
+        </ul>
+
+        <!-- CTA -->
+        {% if plan.monthly_price == 0 %}
+          <button disabled
+                  class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/10 text-ink-500 text-sm font-medium cursor-not-allowed">
+            Your free plan
+          </button>
+        {% elif subscription and subscription.plan.id == plan.id %}
+          <button disabled
+                  class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl border border-lime2-500/30 bg-lime2-500/10 text-lime2-500 text-sm font-medium cursor-not-allowed">
+            Currently active
+          </button>
+        {% else %}
+          <a href="{% url 'subscribe_to_plan' plan.id %}"
+             class="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+            Subscribe to {{ plan.name }}
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- FOOTER NOTE -->
+  <p class="mt-8 text-center font-mono text-[10px] uppercase tracking-widest text-ink-500">
+    Cancel anytime · Payments secured by Paystack
+  </p>
+
+</div>
+{% endblock %}

@@ -1,62 +1,166 @@
 {% extends "base_dashboard.html" %}
 
-{% block title %}My Proposals{% endblock %}
-{% block page_title %}My Proposals{% endblock %}
+{% block title %}My proposals{% endblock %}
+{% block page_eyebrow %}Vendor{% endblock %}
+{% block page_title %}My proposals{% endblock %}
+{% block nav_proposals %}nav-active{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto">
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">Your Proposals</h2>
-        <p class="text-surface-500 text-sm mt-1">Track proposals you've submitted to event organizers</p>
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Your bids</p>
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+          Proposals<br />
+          <span class="italic text-ink-400">you've sent.</span>
+        </h2>
+        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+          Track every bid you've submitted — see which are pending, which were
+          accepted, and which to follow up on.
+        </p>
+      </div>
+
+      <a href="{% url 'browse_rfqs' %}"
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-lime2-500/40 hover:bg-lime2-500/5 text-sm font-medium text-ink-100 transition self-start">
+        Browse open RFQs
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  {% if proposals %}
+
+    <div class="space-y-4 fade-up d2">
+      {% for proposal in proposals %}
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden hover:border-white/20 transition-colors">
+
+        <!-- colored top edge color-coded by status -->
+        <div class="absolute top-0 left-0 right-0 h-0.5
+          {% if proposal.status == 'accepted' %}bg-lime2-500
+          {% elif proposal.status == 'rejected' %}bg-flame-600
+          {% elif proposal.status == 'submitted' %}bg-flame-500
+          {% else %}bg-ink-600{% endif %}"></div>
+
+        <div class="p-5 sm:p-6">
+
+          <!-- top row -->
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+            <div class="flex items-start gap-4 min-w-0 flex-1">
+              <!-- avatar -->
+              <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-xl flex-shrink-0">
+                {{ proposal.quote_request.title|make_list|first|upper }}
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h3 class="font-display text-xl leading-tight text-ink-50 truncate">
+                  {{ proposal.quote_request.title }}
+                </h3>
+
+                <p class="text-sm text-ink-300 mt-1 truncate">
+                  {{ proposal.quote_request.event.name }}
+                </p>
+
+                <!-- meta row -->
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs">
+                  <span class="inline-flex items-center gap-1.5 text-ink-400">
+                    <svg class="w-3 h-3 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Required {{ proposal.quote_request.required_date|date:"M d, Y" }}
+                  </span>
+
+                  <span class="text-ink-600">·</span>
+
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-violet2-500/10 border border-violet2-500/25 font-mono text-[10px] uppercase tracking-widest text-violet2-400">
+                    {{ proposal.quote_request.category }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- price + duration -->
+            <div class="text-right flex-shrink-0 sm:min-w-[130px]">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Your bid</p>
+              <p class="font-display text-3xl leading-none text-flame-500">
+                ${{ proposal.proposed_price|floatformat:0 }}
+              </p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-1.5">
+                {{ proposal.estimated_duration_hours }} hr{{ proposal.estimated_duration_hours|pluralize }}
+              </p>
+            </div>
+
+          </div>
+
+          <!-- footer row: status + submitted date -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-5 pt-4 border-t border-white/5">
+
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase tracking-widest
+              {% if proposal.status == 'accepted' %}
+                bg-lime2-500/15 border border-lime2-500/30 text-lime2-500
+              {% elif proposal.status == 'rejected' %}
+                bg-flame-600/15 border border-flame-600/30 text-flame-400
+              {% elif proposal.status == 'submitted' %}
+                bg-flame-500/15 border border-flame-500/30 text-flame-400
+              {% else %}
+                bg-white/5 border border-white/10 text-ink-400
+              {% endif %}">
+              {% if proposal.status == 'accepted' %}
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+              {% elif proposal.status == 'submitted' %}
+                <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+              {% elif proposal.status == 'rejected' %}
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              {% endif %}
+              {{ proposal.get_status_display }}
+            </span>
+
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+              Submitted {{ proposal.created_at|date:"M d, Y" }}
+            </span>
+
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
     </div>
 
-    {% if proposals %}
-    <div class="space-y-4">
-        {% for proposal in proposals %}
-        <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-start justify-between">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 font-bold">
-                        {{ proposal.quote_request.title|make_list|first|upper }}
-                    </div>
-                    <div>
-                        <h3 class="font-semibold">{{ proposal.quote_request.title }}</h3>
-                        <p class="text-sm text-surface-500 mt-1">{{ proposal.quote_request.event.name }}</p>
-                        <div class="flex items-center gap-3 mt-2 text-xs text-surface-400">
-                            <span>Required: {{ proposal.quote_request.required_date|date:"M d, Y" }}</span>
-                            <span>{{ proposal.quote_request.category }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <p class="text-xl font-bold text-brand-600">${{ proposal.proposed_price|floatformat:0 }}</p>
-                        <span class="text-xs text-surface-500">{{ proposal.estimated_duration_hours }} hrs</span>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-4 pt-4 border-t border-surface-100 dark:border-surface-700 flex items-center justify-between">
-                <span class="px-3 py-1 text-xs font-medium rounded-full
-                    {% if proposal.status == 'accepted' %}bg-green-50 text-green-700
-                    {% elif proposal.status == 'rejected' %}bg-red-50 text-red-700
-                    {% elif proposal.status == 'submitted' %}bg-yellow-50 text-yellow-700
-                    {% else %}bg-gray-50 text-gray-600{% endif %}">
-                    {{ proposal.get_status_display }}
-                </span>
-                <span class="text-xs text-surface-400">Submitted {{ proposal.created_at|date:"M d, Y" }}</span>
-            </div>
-        </div>
-        {% endfor %}
+  {% else %}
+
+    <!-- empty state -->
+    <div class="relative rounded-2xl border border-dashed border-white/10 bg-ink-900/50 p-12 text-center fade-up d2">
+      <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-3xl">No proposals yet</h3>
+      <p class="mt-3 text-sm text-ink-400 max-w-sm mx-auto">
+        Browse open quote requests from event hosts and send your first proposal —
+        you'll be able to track every bid from this page.
+      </p>
+      <a href="{% url 'browse_rfqs' %}"
+         class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+        Browse open RFQs
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
     </div>
-    {% else %}
-    <div class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-12 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
-        <h3 class="font-semibold mb-1">No proposals yet</h3>
-        <p class="text-sm text-surface-500 mb-4">Browse open quote requests and submit your proposals</p>
-        <a href="{% url 'dashboard' %}" class="inline-flex px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors">Go to Dashboard</a>
-    </div>
-    {% endif %}
+
+  {% endif %}
+
 </div>
 {% endblock %}

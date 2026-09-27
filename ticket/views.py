@@ -12,6 +12,9 @@ def validate_ticket(request, ticket_code):
     except Guest.DoesNotExist:
         return render(request, 'tickets/invalid.html', {'status': 'invalid'})
 
+    if guest.event.is_suspended:
+        return render(request, 'tickets/invalid.html', {'status': 'invalid', 'suspended': True})
+
     if guest.checked_in:
         CheckInLog.objects.create(
             guest=guest,
@@ -44,6 +47,9 @@ def api_validate(request, ticket_code):
         guest = Guest.objects.get(ticket_code=ticket_code)
     except Guest.DoesNotExist:
         return JsonResponse({'status': 'invalid', 'message': 'Ticket not found'}, status=404)
+
+    if guest.event.is_suspended:
+        return JsonResponse({'status': 'invalid', 'message': 'Event is suspended'}, status=403)
 
     if guest.checked_in:
         CheckInLog.objects.create(

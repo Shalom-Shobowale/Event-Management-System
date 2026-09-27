@@ -1,3 +1,4 @@
+from time import timezone
 import uuid
 from django.db import models
 from django.conf import settings
@@ -57,6 +58,21 @@ class Vendor(models.Model):
     # Verification
     verification_status = models.CharField(max_length=20, choices=VerificationStatus.choices, default=VerificationStatus.UNVERIFIED)
     verified_at = models.DateTimeField(null=True, blank=True)
+
+    # Admin Badges
+    class Badge(models.TextChoices):
+        NONE = 'none', 'None'
+        VERIFIED = 'verified', 'Verified Vendor'
+        TOP = 'top', 'Top Vendor'
+        TRUSTED = 'trusted', 'Trusted Vendor'
+    badge = models.CharField(max_length=20, choices=Badge.choices, default=Badge.NONE)
+
+    # Admin Suspension
+    is_suspended = models.BooleanField(default=False)
+    suspended_at = models.DateTimeField(null=True, blank=True)
+    suspended_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='suspended_vendors')
+    suspension_reason = models.TextField(blank=True, default='')
+    admin_notes = models.TextField(blank=True, default='')
 
     # Metrics
     total_bookings = models.PositiveIntegerField(default=0)
@@ -201,3 +217,64 @@ class SavedVendor(models.Model):
 
     def __str__(self):
         return f"{self.user} saved {self.vendor.business_name}"
+
+
+# vendors/models.py
+class SubscriptionPlan(models.Model):
+    """Admin-configurable plans (never hardcode prices)"""
+    name = models.CharField(max_length=50)  # Free, Pro, Premium
+    description = models.TextField(blank=True)
+    monthly_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    yearly_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    portfolio_limit = models.PositiveIntegerField(default=8)  # Free: 8, Pro: 30, Premium: 100
+    has_analytics = models.BooleanField(default=False)
+    has_featured_placement = models.BooleanField(default=False)
+    has_video_portfolio = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    paystack_plan_code = models.CharField(max_length=100, blank=True, default='')
+    
+    def __str__(self):
+        return self.name
+
+
+class VendorSubscription(models.Model):
+    class Status(models.TextChoices):
+        TRIALING = 'trialing', 'Trialing'
+        ACTIVE = 'active', 'Active'
+        PAST_DUE = 'past_due', 'Past Due'
+        CANCELLED = 'cancelled', 'Cancelled'
+        EXPIRED = 'expired', 'Expired'
+        FREE = 'free', 'Free'
+    
+    vendor = models.OneToOneField('Vendor', on_delete=models.CASCADE, related_name='subscription')
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.FREE)
+    
+    # Trial fields
+    trial_start_at = models.DateTimeField(null=True, blank=True)
+    trial_end_at = models.DateTimeField(null=True, blank=True)
+    
+    # Billing fields
+    current_period_start = models.DateTimeField(null=True, blank=True)
+    current_period_end = models.DateTimeField(null=True, blank=True)
+    paystack_subscription_code = models.CharField(max_length=100, blank=True, default='')
+    paystack_email_token = models.CharField(max_length=100, blank=True, default='')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_on_trial(self):
+        return self.status == self.Status.TRIALING and self.trial_end_at > timezone.now()
+    
+    def has_feature(self, feature_name):
+        """Check if vendor has access to a feature"""
+        if self.is_on_trial():
+            return True  # Full Pro access during trial
+        if not self.plan:
+            return False
+        feature_map = {
+            'analytics': self.plan.has_analytics,
+            'featured_placement': self.plan.has_featured_placement,
+            'video_portfolio': self.plan.has_video_portfolio,
+        }
+        return feature_map.get(feature_name, False)

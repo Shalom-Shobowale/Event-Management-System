@@ -1,0 +1,222 @@
+{% extends 'admin_panel/base.html' %}
+{% load humanize %}
+
+{% block title %}Host payouts{% endblock %}
+{% block page_eyebrow %}Finance{% endblock %}
+{% block page_title %}Host payouts{% endblock %}
+{% block nav_payouts %}nav-active{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-2">Payouts</p>
+      <h2 class="font-display text-4xl leading-[1.05] tracking-tight">
+        Where the money<br />
+        <span class="italic text-ink-400">actually lands.</span>
+      </h2>
+      <p class="mt-3 text-sm text-ink-400 max-w-xl">
+        Every host with a connected bank account, their earnings, and the platform's
+        <span class="text-flame-400">{{ commission_rate }}%</span> commission on each event.
+      </p>
+    </div>
+    <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      {{ connected_count }} connected · {{ unconnected_count }} not
+    </p>
+  </div>
+
+  <!-- ===================== STAT STRIP ===================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-ink-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Gross volume</p>
+      <p class="font-display text-4xl leading-none text-ink-900 dark:text-ink-50">
+        ₦{{ total_gross|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Paid tickets</p>
+    </div>
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Platform fee</p>
+      <p class="font-display text-4xl leading-none text-flame-500">
+        ₦{{ total_platform|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mt-2 inline-flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
+        Your cut
+      </p>
+    </div>
+
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Host net</p>
+      <p class="font-display text-4xl leading-none text-lime2-600 dark:text-lime2-500">
+        ₦{{ total_net|floatformat:0|intcomma }}
+      </p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500 mt-2 inline-flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+        Settled to hosts
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== CONNECTED HOSTS ===================== -->
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+    <div class="p-5 border-b border-ink-100 dark:border-white/5">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Payout-ready</p>
+      <h3 class="font-display text-2xl leading-none">
+        Connected hosts
+        <span class="text-ink-500 text-lg">({{ connected_count }})</span>
+      </h3>
+    </div>
+
+    {% if connected_hosts %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-ink-100 dark:border-white/5 text-left">
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Host</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Bank</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Gross</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Fee</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal">Net</th>
+              <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-ink-500 font-normal text-right"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100 dark:divide-white/5">
+            {% for d in connected_hosts %}
+            <tr class="group hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
+
+              <!-- host -->
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-500 font-medium text-sm flex-shrink-0">
+                    {{ d.host.first_name|default:d.host.username|make_list|first|upper }}
+                  </div>
+                  <div class="min-w-0">
+                    <p class="font-medium text-ink-900 dark:text-ink-50 truncate">
+                      {{ d.host.get_full_name|default:d.host.username }}
+                    </p>
+                    <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ d.host.email }}</p>
+                  </div>
+                </div>
+              </td>
+
+              <!-- bank -->
+              <td class="px-5 py-4">
+                <p class="text-sm text-ink-700 dark:text-ink-200 truncate">{{ d.bank_name }}</p>
+                <p class="font-mono text-[10px] text-ink-500 mt-0.5">
+                  •••• {{ d.account_number|slice:"-4:" }} · {{ d.account_name|truncatechars:24 }}
+                </p>
+              </td>
+
+              <!-- gross -->
+              <td class="px-5 py-4">
+                <span class="font-display text-xl leading-none text-ink-900 dark:text-ink-50">
+                  ₦{{ d.gross_earnings|floatformat:0|intcomma }}
+                </span>
+              </td>
+
+              <!-- fee -->
+              <td class="px-5 py-4">
+                <span class="font-display text-xl leading-none text-flame-500">
+                  ₦{{ d.platform_fee|floatformat:0|intcomma }}
+                </span>
+              </td>
+
+              <!-- net -->
+              <td class="px-5 py-4">
+                <span class="font-display text-xl leading-none text-lime2-600 dark:text-lime2-500">
+                  ₦{{ d.net_earnings|floatformat:0|intcomma }}
+                </span>
+              </td>
+
+              <!-- action -->
+              <td class="px-5 py-4 text-right">
+                <a href="{% url 'admin_user_detail' d.host.id %}"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/40 hover:bg-flame-600/5 text-xs font-medium text-ink-700 dark:text-ink-200 hover:text-flame-600 dark:hover:text-flame-400 transition">
+                  View
+                  <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5"
+                       fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-16 text-center">
+        <div class="inline-flex flex-col items-center gap-3">
+          <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl">No connected hosts</h3>
+          <p class="text-sm text-ink-400 max-w-xs">
+            No hosts have connected a bank account yet. They'll appear here once they do.
+          </p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ===================== UNCONNECTED HOSTS ===================== -->
+  {% if unconnected_hosts %}
+  <div class="relative rounded-2xl border border-flame-600/30 bg-flame-600/[.04] overflow-hidden">
+    <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full glow-flame pointer-events-none opacity-50"></div>
+
+    <div class="relative p-5 border-b border-flame-600/20">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-400">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </span>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Action needed</p>
+      </div>
+      <h3 class="font-display text-2xl leading-tight">
+        Hosts without a payout account
+        <span class="text-ink-500 text-lg">({{ unconnected_count }})</span>
+      </h3>
+      <p class="text-sm text-ink-300 mt-1">
+        These hosts can't create paid events until they connect a bank account.
+      </p>
+    </div>
+
+    <div class="relative divide-y divide-flame-600/10">
+      {% for host in unconnected_hosts %}
+      <div class="flex items-center justify-between gap-4 p-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-full bg-ink-800/50 border border-white/10 grid place-items-center text-ink-400 font-medium text-sm flex-shrink-0">
+            {{ host.first_name|default:host.username|make_list|first|upper }}
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-ink-100 truncate">
+              {{ host.get_full_name|default:host.username }}
+            </p>
+            <p class="font-mono text-[10px] text-ink-500 truncate mt-0.5">{{ host.email }}</p>
+          </div>
+        </div>
+        <a href="{% url 'admin_user_detail' host.id %}"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-flame-600/40 hover:bg-flame-600/10 text-xs font-medium text-ink-200 hover:text-flame-400 transition flex-shrink-0">
+          View host
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

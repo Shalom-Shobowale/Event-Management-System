@@ -1,47 +1,167 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valid Entry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        @keyframes checkmark { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        @keyframes slideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        .animate-checkmark { animation: checkmark 0.5s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
-    </style>
-</head>
-<body class="min-h-screen bg-surface-50 flex items-center justify-center p-4 font-sans">
-    <div class="text-center max-w-sm">
-        <div class="w-20 h-20 rounded-full bg-success-50 flex items-center justify-center mx-auto mb-6 animate-checkmark">
-            <svg class="w-10 h-10 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-        </div>
-        <h1 class="text-3xl font-extrabold text-success-600 mb-2 animate-slide-up">Welcome!</h1>
-        <p class="text-surface-600 mb-6 animate-slide-up" style="animation-delay: 0.1s">Entry validated successfully</p>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome · {{ guest.full_name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-        <div class="bg-white rounded-2xl shadow-lg border border-surface-100 p-6 text-left animate-slide-up" style="animation-delay: 0.2s">
-            <div class="space-y-3">
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Guest</span>
-                    <span class="text-sm font-semibold">{{ guest.full_name }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Event</span>
-                    <span class="text-sm font-medium">{{ guest.event.name }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Seat</span>
-                    <span class="text-sm font-bold text-brand-600">{{ guest.seat_number }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Checked In</span>
-                    <span class="text-sm font-medium text-success-600">Just now</span>
-                </div>
-            </div>
-        </div>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+
+  <style>
+    /* checkmark: circle pops in, then the tick draws itself */
+    @keyframes ef-pop {
+      0%   { transform: scale(0); }
+      60%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .animate-checkmark { animation: ef-pop 0.55s cubic-bezier(.2,.7,.2,1) forwards; }
+
+    @keyframes ef-draw-tick {
+      0%   { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .draw-tick { stroke-dasharray: 40; animation: ef-draw-tick .45s ease-out .25s forwards; }
+
+    /* slide-up reveals with stagger */
+    @keyframes ef-slide-up {
+      0%   { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-up { animation: ef-slide-up .5s cubic-bezier(.2,.7,.2,1) forwards; opacity: 0; }
+
+    /* soft lime ring that keeps pulsing around the checkmark */
+    @keyframes ef-success-ring {
+      0%   { transform: scale(1);   opacity: .7; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .success-ring { animation: ef-success-ring 2.4s cubic-bezier(0,0,.2,1) infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-checkmark, .draw-tick, .animate-slide-up, .success-ring {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        stroke-dashoffset: 0 !important;
+      }
+    }
+
+    html.dark, html.dark body {
+      background: #05050d !important;
+      color: #f6f6f8 !important;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink-950 text-ink-50 antialiased font-sans flex items-center justify-center p-4 sm:p-6">
+
+  <!-- ambient grid -->
+  <div class="fixed inset-0 bg-grid pointer-events-none"></div>
+  <!-- glows — lime on top-right, flame on bottom-left, violet on bottom-right -->
+  <div class="fixed -top-40 -right-40 w-[560px] h-[560px] rounded-full glow-lime pointer-events-none opacity-70"></div>
+  <div class="fixed -bottom-40 -left-40 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none opacity-70"></div>
+  <div class="fixed -bottom-20 right-1/3 w-[420px] h-[420px] rounded-full glow-violet pointer-events-none opacity-40"></div>
+
+  <main class="relative w-full max-w-sm fade-up">
+
+    <!-- ===================== SUCCESS ICON ===================== -->
+    <div class="relative flex justify-center mb-8">
+
+      <!-- expanding success ring -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-3xl border-2 border-lime2-500/50 success-ring"></div>
+
+      <!-- soft glow behind the icon -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-lime2-500/20 blur-2xl"></div>
+
+      <!-- icon chip -->
+      <div class="relative w-24 h-24 rounded-3xl bg-lime2-500/15 border border-lime2-500/40 grid place-items-center text-lime2-500 animate-checkmark">
+        <svg class="w-11 h-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path class="draw-tick" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
     </div>
+
+    <!-- ===================== HEADING ===================== -->
+    <div class="text-center mb-8">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-lime2-500 mb-3 animate-slide-up" style="animation-delay: 0.1s">
+        Entry validated
+      </p>
+      <h1 class="font-display text-4xl leading-[1.05] tracking-tight text-ink-50 animate-slide-up" style="animation-delay: 0.15s">
+        Welcome<br />
+        <span class="italic text-lime2-500">in.</span>
+      </h1>
+      <p class="mt-4 text-sm text-ink-400 max-w-xs mx-auto leading-relaxed animate-slide-up" style="animation-delay: 0.25s">
+        Their ticket checked out. Point them toward their seat and let the next guest through.
+      </p>
+    </div>
+
+    <!-- ===================== GUEST DETAILS ===================== -->
+    <div class="relative rounded-2xl border border-lime2-500/30 bg-ink-900 overflow-hidden animate-slide-up" style="animation-delay: 0.35s">
+
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+      <div class="p-6">
+
+        <!-- guest header -->
+        <div class="flex items-center gap-4 mb-5">
+
+          <div class="w-12 h-12 rounded-2xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-display text-xl flex-shrink-0">
+            {{ guest.full_name|make_list|first|upper }}
+          </div>
+
+          <div class="min-w-0">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Guest</p>
+            <p class="font-display text-xl leading-tight text-ink-50 truncate">{{ guest.full_name }}</p>
+          </div>
+
+        </div>
+
+        <!-- details list -->
+        <div class="space-y-3 pt-4 border-t border-white/5">
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Event</span>
+            <span class="text-sm text-ink-200 text-right truncate">{{ guest.event.name }}</span>
+          </div>
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Seat</span>
+            <span class="font-display text-2xl leading-none text-lime2-500">{{ guest.seat_number|default:"—" }}</span>
+          </div>
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Checked in</span>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-lime2-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+              Just now
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- status footer -->
+      <div class="border-t border-white/5 p-4 text-center bg-lime2-500/[.04]">
+        <span class="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-lime2-500">
+          <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+          Entry granted
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ===================== FOOTNOTE ===================== -->
+    <p class="mt-6 text-center font-mono text-[10px] uppercase tracking-widest text-ink-500 animate-slide-up" style="animation-delay: 0.5s">
+      Powered by <span class="text-flame-500">EventFlow</span>
+    </p>
+
+  </main>
+
 </body>
 </html>

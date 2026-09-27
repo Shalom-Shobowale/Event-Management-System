@@ -1,45 +1,156 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Already Checked In</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.4s ease-in-out; }
-    </style>
-</head>
-<body class="min-h-screen bg-surface-50 flex items-center justify-center p-4 font-sans">
-    <div class="text-center max-w-sm">
-        <div class="w-20 h-20 rounded-full bg-warning-50 flex items-center justify-center mx-auto mb-6 animate-shake">
-            <svg class="w-10 h-10 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-        </div>
-        <h1 class="text-3xl font-extrabold text-warning-600 mb-2">Already Checked In</h1>
-        <p class="text-surface-600 mb-6">This guest has already been checked in.</p>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Already checked in · {{ guest.full_name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-        <div class="bg-white rounded-2xl shadow-lg border border-surface-100 p-6 text-left">
-            <div class="space-y-3">
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Guest</span>
-                    <span class="text-sm font-semibold">{{ guest.full_name }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Event</span>
-                    <span class="text-sm font-medium">{{ guest.event.name }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">Seat</span>
-                    <span class="text-sm font-bold text-brand-600">{{ guest.seat_number }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-xs text-surface-500 uppercase tracking-wider font-medium">First Check-in</span>
-                    <span class="text-sm font-medium text-warning-600">{{ guest.checked_in_at|date:"H:i" }}</span>
-                </div>
-            </div>
-        </div>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+
+  <style>
+    /* shake animation — reserved for the warning icon */
+    @keyframes ef-shake {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px) rotate(-4deg); }
+      40%      { transform: translateX(6px) rotate(4deg); }
+      60%      { transform: translateX(-4px) rotate(-2deg); }
+      80%      { transform: translateX(4px) rotate(2deg); }
+    }
+    .animate-shake { animation: ef-shake 0.55s cubic-bezier(.36,.07,.19,.97); }
+
+    /* flame glow that pulses behind the icon */
+    @keyframes ef-alert-pulse {
+      0%, 100% { opacity: .6; transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.15); }
+    }
+    .alert-glow { animation: ef-alert-pulse 2.6s ease-in-out infinite; }
+
+    /* row reveal — fades the detail card in after the shake */
+    @keyframes ef-reveal {
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-reveal { animation: ef-reveal .5s cubic-bezier(.2,.7,.2,1) .35s both; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-shake, .alert-glow, .animate-reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
+
+    html.dark, html.dark body {
+      background: #05050d !important;
+      color: #f6f6f8 !important;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink-950 text-ink-50 antialiased font-sans flex items-center justify-center p-4 sm:p-6">
+
+  <!-- ambient grid -->
+  <div class="fixed inset-0 bg-grid pointer-events-none"></div>
+  <!-- glows — flame on top-left, violet on bottom-right -->
+  <div class="fixed -top-40 -left-40 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none opacity-70"></div>
+  <div class="fixed -bottom-40 -right-40 w-[560px] h-[560px] rounded-full glow-violet pointer-events-none opacity-70"></div>
+
+  <main class="relative w-full max-w-sm fade-up">
+
+    <!-- ===================== ALERT ICON ===================== -->
+    <div class="relative flex justify-center mb-6">
+
+      <!-- pulsing glow behind the icon -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-flame-600/20 blur-2xl alert-glow"></div>
+
+      <!-- icon chip -->
+      <div class="relative w-20 h-20 rounded-3xl bg-flame-600/15 border border-flame-600/30 grid place-items-center text-flame-400 animate-shake">
+        <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+      </div>
     </div>
+
+    <!-- ===================== HEADING ===================== -->
+    <div class="text-center mb-8">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-3">
+        Duplicate scan
+      </p>
+      <h1 class="font-display text-4xl leading-[1.05] tracking-tight text-ink-50">
+        Already<br />
+        <span class="italic text-flame-500">checked in.</span>
+      </h1>
+      <p class="mt-4 text-sm text-ink-400 max-w-xs mx-auto">
+        This guest was checked in earlier. If someone else is presenting the same ticket, don't let them through.
+      </p>
+    </div>
+
+    <!-- ===================== GUEST DETAILS ===================== -->
+    <div class="relative rounded-2xl border border-flame-600/30 bg-ink-900 overflow-hidden animate-reveal">
+
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="p-6">
+
+        <!-- guest header -->
+        <div class="flex items-center gap-4 mb-5">
+
+          <div class="w-12 h-12 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-xl flex-shrink-0">
+            {{ guest.full_name|make_list|first|upper }}
+          </div>
+
+          <div class="min-w-0">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Guest</p>
+            <p class="font-display text-xl leading-tight text-ink-50 truncate">{{ guest.full_name }}</p>
+          </div>
+
+        </div>
+
+        <!-- details list -->
+        <div class="space-y-3 pt-4 border-t border-white/5">
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Event</span>
+            <span class="text-sm text-ink-200 text-right truncate">{{ guest.event.name }}</span>
+          </div>
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Seat</span>
+            <span class="font-display text-2xl leading-none text-flame-500">{{ guest.seat_number|default:"—" }}</span>
+          </div>
+
+          <div class="flex items-center justify-between gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500">First check-in</span>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-flame-400">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {{ guest.checked_in_at|date:"H:i" }}
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- status footer -->
+      <div class="border-t border-white/5 p-4 text-center bg-flame-600/[.04]">
+        <span class="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-flame-500">
+          <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+          Not a valid new entry
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ===================== FOOTNOTE ===================== -->
+    <p class="mt-6 text-center font-mono text-[10px] uppercase tracking-widest text-ink-500">
+      Powered by <span class="text-flame-500">EventFlow</span>
+    </p>
+
+  </main>
+
 </body>
 </html>

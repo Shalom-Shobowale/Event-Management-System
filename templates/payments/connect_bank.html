@@ -1,0 +1,66 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Connect bank account{% endblock %}
+{% block page_eyebrow %}Payments{% endblock %}
+{% block page_title %}Connect bank account{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <div class="rounded-2xl border border-white/10 bg-ink-900 p-6">
+    <h2 class="font-display text-2xl mb-2">Payout account</h2>
+    <p class="text-sm text-ink-400 mb-6">
+      Connect a Nigerian bank account so guests can pay you directly for paid events.
+      Your share is settled to this account the next business day.
+    </p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mb-4 p-3 rounded-lg text-sm
+                    {% if message.tags == 'error' %}
+                      border border-flame-600/30 bg-flame-600/10 text-flame-400
+                    {% else %}
+                      border border-lime2-500/30 bg-lime2-500/10 text-lime2-500
+                    {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <div>
+        <label for="id_bank" class="ef-label">Bank</label>
+        <select id="id_bank" name="bank_code" required class="ef-input ef-select"
+                onchange="document.getElementById('id_bank_name').value = this.options[this.selectedIndex].text;">
+          <option value="">— Select your bank —</option>
+          {% for bank in banks %}
+            <option value="{{ bank.code }}">{{ bank.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="hidden" id="id_bank_name" name="bank_name" />
+      </div>
+
+      <div>
+        <label for="id_account_number" class="ef-label">Account number</label>
+        <input id="id_account_number" type="text" name="account_number"
+               required maxlength="10" pattern="\d{10}"
+               class="ef-input font-mono"
+               placeholder="0123456789" />
+        <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+          10 digits, Nigerian bank account
+        </p>
+      </div>
+
+      <button type="submit"
+              class="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition">
+        Connect account
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

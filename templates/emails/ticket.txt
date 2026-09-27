@@ -1,0 +1,17 @@
+{% autoescape off %}
+You're in, {{ guest.full_name }}.
+
+Here's your ticket for {{ event.name }}.
+
+    When:  {{ event.date|date:"l, M j, Y · g:i A" }}
+    Where: {{ event.venue }}
+    {% if guest.seat_number %}Seat:  {{ guest.seat_number }}{% endif %}
+
+Open your QR code here:
+
+    {{ ticket_url }}
+
+No account needed — the link works forever. Show the QR code at the door.
+
+Have a question? Reply to this email and the organizer will get back to you.
+{% endautoescape %}

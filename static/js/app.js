@@ -4,21 +4,40 @@
 // Dark Mode
 // ========================================
 
+// function initializeDarkMode() {
+//   try {
+//     const saved = localStorage.getItem("darkMode");
+
+//     const prefersDark = window.matchMedia(
+//       "(prefers-color-scheme: dark)",
+//     ).matches;
+
+//     if (saved === "true" || (saved === null && prefersDark)) {
+//       document.documentElement.classList.add("dark");
+//     } else {
+//       document.documentElement.classList.remove("dark");
+//     }
+//   } catch (error) {
+//     console.error("Dark mode initialization failed:", error);
+//   }
+// }
+
 function initializeDarkMode() {
   try {
     const saved = localStorage.getItem("darkMode");
 
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-
-    if (saved === "true" || (saved === null && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    } else {
+    // Default to DARK if user hasn't chosen yet.
+    // Only switch to light if the user has explicitly chosen light.
+    if (saved === "false") {
       document.documentElement.classList.remove("dark");
+    } else {
+      // Default (no preference) OR explicit dark → dark mode
+      document.documentElement.classList.add("dark");
     }
   } catch (error) {
     console.error("Dark mode initialization failed:", error);
+    // On failure, default to dark
+    document.documentElement.classList.add("dark");
   }
 }
 

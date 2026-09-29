@@ -11,7 +11,7 @@ from django.urls import reverse
 
 from .models import Guest
 from event.models import Event, find_held_seat_by_code, next_available_seat
-from core.email import send_ticket_email
+from core.emails import send_ticket_email
 
 
 logger = logging.getLogger(__name__)

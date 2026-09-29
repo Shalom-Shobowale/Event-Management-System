@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from core.verification_models import EmailVerification, PhoneVerification, VendorDocument, UserNotification
-from core.email import send_verification_email
+from core.emails import send_verification_email
 
 
 @login_required

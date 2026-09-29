@@ -11,6 +11,22 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Set theme before paint to avoid flash of unstyled content.
+      (function() {
+        try {
+          var saved = localStorage.getItem("darkMode");
+          if (saved === "false") {
+            document.documentElement.classList.remove("dark");
+          } else {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {
+          // localStorage unavailable (private mode, etc.) — default to dark
+          document.documentElement.classList.add("dark");
+        }
+      })();
+   </script>
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
 
     <!-- ============================================================

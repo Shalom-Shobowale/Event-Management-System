@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create account · EventFlow</title>
+  <title>Create account · EventzUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -65,13 +65,10 @@
     .border-violet2-500\/30 { border-color:rgba(124,92,255,.30); }
     .border-violet2-500\/50 { border-color:rgba(124,92,255,.50); }
     .border-lime2-500 { border-color:var(--lime-500); }
+    .border-lime2-500\/30 { border-color:rgba(198,242,78,.30); }
     .hover\:bg-flame-500:hover { background-color:var(--flame-500); }
 
-    /* flat glows */
-    .glow-flame  { background: radial-gradient(closest-side, rgba(255,72,0,.35), transparent 70%); filter: blur(80px); }
-    .glow-violet { background: radial-gradient(closest-side, rgba(124,92,255,.35), transparent 70%); filter: blur(80px); }
-
-    /* ambient grid */
+    /* ambient grid — flat 1px lines, not a colored gradient */
     .bg-grid {
       background-image:
         linear-gradient(to right, #ffffff 1px, transparent 1px),
@@ -138,22 +135,17 @@
   </style>
 </head>
 
-
 <body class="min-h-screen bg-ink-950 text-ink-50 antialiased">
   <div class="min-h-screen grid lg:grid-cols-2">
 
     <!-- ===================== LEFT PANEL (visual) ===================== -->
     <aside class="relative hidden lg:flex flex-col justify-between p-28 overflow-hidden border-r border-white/5">
-      <!-- ambient grid -->
+      <!-- ambient grid — flat lines, kept -->
       <div class="absolute inset-0 bg-grid pointer-events-none"></div>
-      <!-- glows -->
-      <div class="absolute -top-40 -left-32 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none"></div>
-      <div class="absolute -bottom-40 -right-32 w-[560px] h-[560px] rounded-full glow-violet pointer-events-none"></div>
 
       <!-- top: logo -->
-      <div class="relative flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
-        <span class="font-display text-2xl tracking-tight">EventFlow</span>
+      <div class="relative ">
+        <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
       </div>
 
       <!-- middle: pitch -->
@@ -201,7 +193,7 @@
 
       <!-- bottom: footnote -->
       <div class="relative flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500">
-        <span>© 2026 EventFlow</span>
+        <span>© 2026 EventzUp</span>
         <span class="inline-flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"></span>
           All systems operational
@@ -215,7 +207,7 @@
       <div class="absolute top-6 left-6 right-6 flex lg:hidden items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-flame-600 grid place-items-center font-display text-lg leading-none text-ink-950">E</div>
-          <span class="font-display text-xl tracking-tight">EventFlow</span>
+          <span class="font-display text-xl tracking-tight">EventzUp</span>
         </div>
         <a href="{% url 'login' %}" class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-white transition">
           Sign in →
@@ -268,24 +260,24 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label for="id_first_name" class="ef-label">First name</label>
-              <input id="id_first_name" type="text" name="first_name" class="ef-input" placeholder="John" autocomplete="given-name" />
+              <input id="id_first_name" type="text" name="first_name" value="{{ first_name|default:"" }}" class="ef-input" placeholder="John" autocomplete="given-name" />
             </div>
             <div>
               <label for="id_last_name" class="ef-label">Last name</label>
-              <input id="id_last_name" type="text" name="last_name" class="ef-input" placeholder="Doe" autocomplete="family-name" />
+              <input id="id_last_name" type="text" name="last_name" value="{{ last_name|default:"" }}" class="ef-input" placeholder="Doe" autocomplete="family-name" />
             </div>
           </div>
 
           <!-- username -->
           <div> 
             <label for="id_username" class="ef-label">Username <span class="req">*</span></label>
-            <input id="id_username" type="text" name="username" required class="ef-input" placeholder="johndoe" autocomplete="username" />
+            <input id="id_username" type="text" name="username" value="{{ username|default:"" }}" required class="ef-input" placeholder="johndoe" autocomplete="username" />
           </div>
 
           <!-- email -->
           <div>
             <label for="id_email" class="ef-label">Email <span class="req">*</span></label>
-            <input id="id_email" type="email" name="email" required class="ef-input" placeholder="john@example.com" autocomplete="email" />
+            <input id="id_email" type="email" name="email" value="{{ email|default:"" }}" required class="ef-input" placeholder="john@example.com" autocomplete="email" />
           </div>
 
           <!-- organization -->
@@ -293,7 +285,7 @@
             <label for="id_organization" class="ef-label">
               Organization <span class="text-ink-500 normal-case tracking-normal">— optional</span>
             </label>
-            <input id="id_organization" type="text" name="organization" class="ef-input" placeholder="Your company" autocomplete="organization" />
+            <input id="id_organization" type="text" name="organization" value="{{ organization|default:"" }}" class="ef-input" placeholder="Your company" autocomplete="organization" />
           </div>
 
           <!-- password -->
@@ -317,7 +309,7 @@
             </div>
           </div>
 
-                   <!-- confirm password -->
+          <!-- confirm password -->
           <div>
             <label for="id_password2" class="ef-label">Confirm password <span class="req">*</span></label>
             <div class="relative">
@@ -340,7 +332,7 @@
 
           <!-- terms -->
           <label class="flex items-start gap-3 pt-2 cursor-pointer select-none">
-            <input type="checkbox" name="terms" class="peer sr-only" />
+            <input type="checkbox" name="terms" {% if terms %}checked{% endif %} class="peer sr-only" />
             <span class="mt-0.5 w-4 h-4 rounded border border-white/15 bg-white/5 grid place-items-center transition
                          peer-checked:bg-flame-600 peer-checked:border-flame-600">
               <svg class="w-2.5 h-2.5 text-ink-950 opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
@@ -357,7 +349,7 @@
 
           <!-- submit -->
           <button type="submit"
-                  class="group w-full inline-flex items-center justify-center gap-3 mt-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition">
+                  class="group w-full inline-flex items-center justify-center gap-3 mt-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition">
             Create account
             <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>

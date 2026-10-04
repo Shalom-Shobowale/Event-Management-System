@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EventFlow — Event management, minus the chaos</title>
+    <title>EventzUp — Event management, minus the chaos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +13,7 @@
     />
     <script>
       // Set theme before paint to avoid flash of unstyled content.
-      (function() {
+      (function () {
         try {
           var saved = localStorage.getItem("darkMode");
           if (saved === "false") {
@@ -22,360 +22,34 @@
             document.documentElement.classList.add("dark");
           }
         } catch (e) {
-          // localStorage unavailable (private mode, etc.) — default to dark
           document.documentElement.classList.add("dark");
         }
       })();
-   </script>
+    </script>
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-
-    <!-- ============================================================
-       HARD FALLBACKS — these win no matter what app.css does.
-       They guarantee the dark theme + colors + animations apply.
-       ============================================================ -->
-    <style>
-      :root {
-        --ink-950: #05050d;
-        --ink-900: #0a0a18;
-        --ink-800: #111124;
-        --ink-500: #4d4d66;
-        --ink-400: #71718a;
-        --ink-300: #a0a0b3;
-        --flame-600: #ff4800;
-        --flame-500: #ff5a1f;
-        --flame-400: #ff7a3d;
-        --violet-500: #7c5cff;
-        --violet-400: #9b84ff;
-        --lime-500: #c6f24e;
-        --lime-400: #d7ff7a;
-      }
-
-      /* ---- base ---- */
-      html,
-      body {
-        background: #05050d;
-        color: #f6f6f8;
-      }
-      body {
-        font-family: Inter, system-ui, sans-serif;
-        -webkit-font-smoothing: antialiased;
-      }
-      .font-display,
-      h1,
-      h2,
-      h3 {
-        font-family: "Instrument Serif", Georgia, serif;
-        font-weight: 400;
-        letter-spacing: -0.01em;
-      }
-      .font-mono {
-        font-family: "JetBrains Mono", ui-monospace, monospace;
-      }
-
-      /* ---- colors (reinforce Tailwind theme) ---- */
-      .bg-ink-950 {
-        background-color: var(--ink-950);
-      }
-      .bg-ink-900 {
-        background-color: var(--ink-900);
-      }
-      .bg-ink-800 {
-        background-color: var(--ink-800);
-      }
-      .text-ink-50 {
-        color: #f6f6f8;
-      }
-      .text-ink-100 {
-        color: #e9e9ee;
-      }
-      .text-ink-200 {
-        color: #cbcbd6;
-      }
-      .text-ink-300 {
-        color: var(--ink-300);
-      }
-      .text-ink-400 {
-        color: var(--ink-400);
-      }
-      .text-ink-500 {
-        color: var(--ink-500);
-      }
-      .text-ink-700 {
-        color: #1e1e33;
-      }
-      .text-flame-400 {
-        color: var(--flame-400);
-      }
-      .text-flame-500 {
-        color: var(--flame-500);
-      }
-      .text-flame-600 {
-        color: var(--flame-600);
-      }
-      .text-violet2-400 {
-        color: var(--violet-400);
-      }
-      .text-violet2-500 {
-        color: var(--violet-500);
-      }
-      .text-lime2-500 {
-        color: var(--lime-500);
-      }
-
-      .bg-flame-600 {
-        background-color: var(--flame-600);
-      }
-      .bg-flame-600\/10 {
-        background-color: rgba(255, 72, 0, 0.1);
-      }
-      .bg-flame-600\/15 {
-        background-color: rgba(255, 72, 0, 0.15);
-      }
-      .bg-flame-600\/20 {
-        background-color: rgba(255, 72, 0, 0.2);
-      }
-      .bg-violet2-500 {
-        background-color: var(--violet-500);
-      }
-      .bg-violet2-500\/15 {
-        background-color: rgba(124, 92, 255, 0.15);
-      }
-      .bg-lime2-500 {
-        background-color: var(--lime-500);
-      }
-      .bg-lime2-500\/15 {
-        background-color: rgba(198, 242, 78, 0.15);
-      }
-
-      .border-flame-600 {
-        border-color: var(--flame-600);
-      }
-      .border-flame-600\/30 {
-        border-color: rgba(255, 72, 0, 0.3);
-      }
-      .border-flame-600\/50 {
-        border-color: rgba(255, 72, 0, 0.5);
-      }
-      .border-violet2-500 {
-        border-color: var(--violet-500);
-      }
-      .border-violet2-500\/60 {
-        border-color: rgba(124, 92, 255, 0.6);
-      }
-      .border-violet2-500\/50 {
-        border-color: rgba(124, 92, 255, 0.5);
-      }
-      .border-lime2-500 {
-        border-color: var(--lime-500);
-      }
-      .border-lime2-500\/50 {
-        border-color: rgba(198, 242, 78, 0.5);
-      }
-      .border-lime2-500\/25 {
-        border-color: rgba(198, 242, 78, 0.25);
-      }
-
-      /* hover states for buttons */
-      .hover\:bg-flame-500:hover {
-        background-color: var(--flame-500);
-      }
-      .hover\:text-flame-400:hover {
-        color: var(--flame-400);
-      }
-      .hover\:text-flame-500:hover {
-        color: var(--flame-500);
-      }
-      .hover\:border-flame-600\/40:hover {
-        border-color: rgba(255, 72, 0, 0.4);
-      }
-      .hover\:border-flame-600\/50:hover {
-        border-color: rgba(255, 72, 0, 0.5);
-      }
-      .hover\:border-violet2-500\/50:hover {
-        border-color: rgba(124, 92, 255, 0.5);
-      }
-      .hover\:border-lime2-500\/50:hover {
-        border-color: rgba(198, 242, 78, 0.5);
-      }
-
-      /* ---- animations (plain CSS — no Tailwind needed) ---- */
-      @keyframes ef-marquee {
-        0% {
-          transform: translate3d(0, 0, 0);
-        }
-        100% {
-          transform: translate3d(-50%, 0, 0);
-        }
-      }
-      .ef-marquee {
-        display: flex;
-        width: max-content;
-        animation: ef-marquee 40s linear infinite;
-        will-change: transform;
-      }
-      .ef-marquee:hover {
-        animation-play-state: paused;
-      }
-      .ef-marquee > * {
-        flex-shrink: 0;
-      }
-
-      @keyframes ef-float {
-        0%,
-        100% {
-          transform: translateY(0) rotate(var(--r, 0deg));
-        }
-        50% {
-          transform: translateY(-10px) rotate(var(--r, 0deg));
-        }
-      }
-      .animate-float {
-        animation: ef-float 7s ease-in-out infinite;
-      }
-      .animate-float-slow {
-        animation: ef-float 10s ease-in-out infinite;
-      }
-
-      @keyframes ef-scan {
-        0% {
-          top: 0%;
-        }
-        50% {
-          top: 100%;
-        }
-        100% {
-          top: 0%;
-        }
-      }
-      .animate-scan {
-        animation: ef-scan 2.4s ease-in-out infinite;
-      }
-
-      @keyframes ef-pulse-ring {
-        0% {
-          transform: scale(0.8);
-          opacity: 0.7;
-        }
-        100% {
-          transform: scale(2.2);
-          opacity: 0;
-        }
-      }
-      .animate-pulse-ring {
-        animation: ef-pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-
-      @keyframes ef-fade-up {
-        0% {
-          opacity: 0;
-          transform: translateY(28px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .word {
-        display: inline-block;
-        opacity: 0;
-        animation: ef-fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-      }
-      .d1 {
-        animation-delay: 0.05s;
-      }
-      .d2 {
-        animation-delay: 0.15s;
-      }
-      .d3 {
-        animation-delay: 0.25s;
-      }
-      .d4 {
-        animation-delay: 0.35s;
-      }
-      .d5 {
-        animation-delay: 0.45s;
-      }
-      .d6 {
-        animation-delay: 0.55s;
-      }
-
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition:
-          opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
-          transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      .reveal.in {
-        opacity: 1;
-        transform: none;
-      }
-
-      /* flat soft glows */
-      .glow-flame {
-        background: radial-gradient(
-          closest-side,
-          rgba(255, 72, 0, 0.35),
-          transparent 70%
-        );
-        filter: blur(80px);
-      }
-      .glow-violet {
-        background: radial-gradient(
-          closest-side,
-          rgba(124, 92, 255, 0.35),
-          transparent 70%
-        );
-        filter: blur(80px);
-      }
-
-      /* ambient grid */
-      .bg-grid {
-        background-image:
-          linear-gradient(to right, #ffffff 1px, transparent 1px),
-          linear-gradient(to bottom, #ffffff 1px, transparent 1px);
-        background-size: 64px 64px;
-        opacity: 0.05;
-      }
-
-      /* reduce motion respect */
-      @media (prefers-reduced-motion: reduce) {
-        .ef-marquee,
-        .animate-float,
-        .animate-float-slow,
-        .animate-scan,
-        .animate-pulse-ring,
-        .word {
-          animation: none !important;
-        }
-        .reveal {
-          opacity: 1 !important;
-          transform: none !important;
-        }
-      }
-    </style>
+    <script src="{% static 'js/app.js' %}?v=10" defer></script>
   </head>
 
   <body
-    class="bg-ink-950 text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white"
+    class="bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white"
   >
     <!-- ===================== NAV ===================== -->
-    <nav
-      class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-xl"
-    >
+    <nav class="fixed top-0 inset-x-0 z-50 border-b bg-white/80 border-ink-200 dark:bg-ink-950/70 dark:border-white/5 backdrop-blur-xl transition-colors">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <!-- logo -->
-          <a href="/" class="flex items-center gap-3">
-            <div
-              class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950"
-            >
-              E
-            </div>
-            <span class="font-display text-2xl tracking-tight">EventFlow</span>
+          <a href="/" class="flex items-center">
+            <img
+              src="/media/event_banners/logoz1.png"
+              alt="EventzUp"
+              class="logo-dark-bg h-8 w-auto"
+            />
+            <img
+              src="/media/event_banners/Logoz2.png"
+              alt="EventzUp"
+              class="logo-light-bg h-8 w-auto"
+            />
           </a>
 
-          <!-- desktop nav -->
           <div class="hidden md:flex items-center gap-1 text-sm text-ink-300">
             <a
               href="#features"
@@ -399,8 +73,42 @@
             >
           </div>
 
-          <!-- desktop actions -->
           <div class="hidden md:flex items-center gap-2">
+            <!-- theme toggle -->
+            <button
+              type="button"
+              id="dark-mode-toggle"
+              class="p-2 rounded-lg text-ink-400 hover:text-white hover:bg-white/5 transition"
+              aria-label="Toggle theme"
+            >
+              <svg
+                class="w-5 h-5 dark:hidden"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                />
+              </svg>
+              <svg
+                class="w-5 h-5 hidden dark:block"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </button>
+
             <a
               href="{% url 'login' %}"
               class="px-4 py-2 text-sm text-ink-200 hover:text-white transition"
@@ -408,7 +116,7 @@
             >
             <a
               href="{% url 'register' %}"
-              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 rounded-lg transition"
             >
               Get started
               <svg
@@ -427,7 +135,6 @@
             </a>
           </div>
 
-          <!-- mobile hamburger -->
           <button
             type="button"
             id="landing-menu-btn"
@@ -466,7 +173,6 @@
           </button>
         </div>
 
-        <!-- mobile menu -->
         <div
           id="landing-menu"
           class="hidden md:hidden pb-5 pt-2 border-t border-white/5"
@@ -527,16 +233,9 @@
     <!-- ======================= HERO ======================= -->
     <section class="relative min-h-screen pt-32 pb-20 overflow-hidden">
       <div class="absolute inset-0 bg-grid pointer-events-none"></div>
-      <div
-        class="absolute -top-40 -right-32 w-[720px] h-[720px] rounded-full glow-violet pointer-events-none"
-      ></div>
-      <div
-        class="absolute -bottom-60 -left-32 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none"
-      ></div>
 
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-12 gap-12 items-center">
-          <!-- LEFT: copy -->
           <div class="lg:col-span-7">
             <div
               class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-flame-600/30 bg-flame-600/10 text-xs font-mono uppercase tracking-widest text-flame-400 mb-8"
@@ -568,7 +267,7 @@
             <p
               class="mt-8 text-lg text-ink-300 max-w-xl leading-relaxed reveal"
             >
-              Create the event, share one link, and let EventFlow handle
+              Create the event, share one link, and let EventzUp handle
               registration, QR tickets, seat assignment and door check-in — in
               real time, on any device.
             </p>
@@ -578,7 +277,7 @@
             >
               <a
                 href="{% url 'register' %}"
-                class="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition"
+                class="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition"
               >
                 Create your first event
                 <svg
@@ -625,9 +324,7 @@
             </div>
           </div>
 
-          <!-- RIGHT: floating ticket stack -->
           <div class="lg:col-span-5 relative h-[520px] hidden lg:block">
-            <!-- main ticket -->
             <div
               class="absolute top-8 right-0 w-[360px] animate-float"
               style="--r: 3deg"
@@ -681,7 +378,6 @@
               </div>
             </div>
 
-            <!-- live check-in card -->
             <div
               class="absolute bottom-4 left-0 w-[280px] animate-float-slow"
               style="--r: -2deg"
@@ -719,10 +415,8 @@
         </div>
       </div>
 
-      <!-- ============ MARQUEE (plain CSS, guaranteed to work) ============ -->
       <div class="relative mt-20 border-y border-white/5 py-5 overflow-hidden">
         <div class="ef-marquee">
-          <!-- track A -->
           <div
             class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-400"
           >
@@ -753,7 +447,6 @@
             <span class="text-ink-200">Workshops</span>
             <span class="text-flame-500">●</span>
           </div>
-          <!-- track B -->
           <div
             class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-400"
             aria-hidden="true"
@@ -809,7 +502,6 @@
         <div
           class="grid grid-cols-1 md:grid-cols-6 gap-4 md:auto-rows-[minmax(180px,auto)]"
         >
-          <!-- BIG scanner tile -->
           <div
             class="reveal md:col-span-4 md:row-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-8 overflow-hidden"
           >
@@ -858,7 +550,6 @@
             </div>
           </div>
 
-          <!-- guest mgmt -->
           <div
             class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
           >
@@ -887,7 +578,6 @@
             </p>
           </div>
 
-          <!-- analytics -->
           <div
             class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
           >
@@ -916,7 +606,6 @@
             </p>
           </div>
 
-          <!-- seat mapping -->
           <div
             class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
           >
@@ -941,7 +630,6 @@
             </p>
           </div>
 
-          <!-- mobile scanner -->
           <div
             class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
           >
@@ -969,7 +657,6 @@
             </p>
           </div>
 
-          <!-- vendors -->
           <div
             class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
           >
@@ -1041,26 +728,12 @@
           <article
             class="reveal group relative rounded-3xl overflow-hidden border border-white/10 bg-ink-900 hover:border-white/20 transition-all duration-500 hover:-translate-y-1"
           >
-            <!-- Invisible overlay link — the whole card navigates to the event page -->
             <a
               href="{% url 'event_public' event.id %}"
               class="absolute inset-0 z-10"
               aria-label="View {{ event.name }} and reserve a seat"
             ></a>
 
-            <!-- colored halo behind card on hover -->
-            <div
-              class="absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-              style="
-                background: radial-gradient(
-                  400px circle at 50% 0%,
-                  rgba(255, 72, 0, 0.1),
-                  transparent 60%
-                );
-              "
-            ></div>
-
-            <!-- image with inset frame -->
             <div class="relative p-3">
               <div
                 class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-ink-800"
@@ -1069,6 +742,7 @@
                 <img
                   src="{{ event.banner.url }}"
                   alt="{{ event.name }}"
+                  loading="lazy"
                   class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                 />
                 {% else %}
@@ -1086,12 +760,8 @@
                 </div>
                 {% endif %}
 
-                <!-- darker gradient for legibility -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent opacity-90"
-                ></div>
+                <div class="absolute inset-0 bg-ink-950/40"></div>
 
-                <!-- category chip -->
                 <div
                   class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-950/80 backdrop-blur border border-white/10"
                 >
@@ -1103,7 +773,6 @@
                   </span>
                 </div>
 
-                <!-- date stub -->
                 <div class="absolute top-3 right-3 text-right">
                   <div
                     class="px-2.5 py-1 rounded-lg bg-white/95 text-ink-950 shadow-lg shadow-black/30"
@@ -1123,7 +792,6 @@
                   </div>
                 </div>
 
-                <!-- time + venue -->
                 <div
                   class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-100"
                 >
@@ -1163,7 +831,6 @@
               </div>
             </div>
 
-            <!-- body -->
             <div class="px-6 pb-6 pt-2">
               <h3
                 class="font-display text-2xl leading-tight tracking-tight group-hover:text-white transition"
@@ -1208,9 +875,9 @@
 
                   {% if event.is_paid %}
                   <span class="text-ink-600">·</span>
-                  <span class="text-sm font-medium text-flame-500">
-                    ₦{{ event.price|floatformat:0 }}
-                  </span>
+                  <span class="text-sm font-medium text-flame-500"
+                    >₦{{ event.price|floatformat:0 }}</span
+                  >
                   {% else %}
                   <span class="text-ink-600">·</span>
                   <span class="text-sm font-medium text-ink-300">Free</span>
@@ -1238,8 +905,7 @@
               </div>
             </div>
           </article>
-        {% empty %}
-          <!-- empty state — unchanged -->
+          {% empty %}
           <div
             class="col-span-full flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-white/10 bg-ink-900/50 text-center"
           >
@@ -1354,13 +1020,6 @@
     <!-- ======================= CTA ======================= -->
     <section class="relative py-32 border-t border-white/5 overflow-hidden">
       <div
-        class="absolute left-1/2 -translate-x-1/2 bottom-0 w-[800px] h-[400px] rounded-full glow-flame pointer-events-none"
-      ></div>
-      <div
-        class="absolute right-0 top-0 w-[400px] h-[400px] rounded-full glow-violet pointer-events-none"
-      ></div>
-
-      <div
         class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal"
       >
         <p
@@ -1376,7 +1035,7 @@
         </h2>
         <p class="mt-6 text-lg text-ink-300">
           Join organizers who swapped spreadsheets and last-minute chaos for
-          EventFlow. Free to start — no card, no setup fee.
+          EventzUp. Free to start — no card, no setup fee.
         </p>
 
         <div
@@ -1384,7 +1043,7 @@
         >
           <a
             href="{% url 'register' %}"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition"
           >
             Start free
             <svg
@@ -1412,17 +1071,21 @@
     </section>
 
     <!-- ======================= FOOTER ======================= -->
-    <footer class="border-t border-white/5 bg-ink-950">
+    <footer class="border-t border-ink-200 bg-white dark:bg-ink-950 dark:border-white/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-2 md:grid-cols-5">
           <div class="col-span-2">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950"
-              >
-                E
-              </div>
-              <span class="font-display text-2xl">EventFlow</span>
+            <div class="flex items-center">
+              <img
+                src="/media/event_banners/logo-dark-bg.png"
+                alt="EventzUp"
+                class="logo-dark-bg h-12 w-auto"
+              />
+              <img
+                src="/media/event_banners/logo-light-bg.png"
+                alt="EventzUp"
+                class="logo-light-bg h-12 w-auto"
+              />
             </div>
             <p class="mt-4 text-sm text-ink-400 max-w-sm leading-relaxed">
               The modern operating system for events. Create, register, scan,
@@ -1546,7 +1209,7 @@
                 class="flex-1 bg-transparent px-3 py-2.5 text-sm placeholder-ink-500 focus:outline-none"
               />
               <button
-                class="px-4 bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-medium transition"
+                class="px-4 bg-flame-600 hover:bg-flame-500 text-white text-sm font-medium transition"
               >
                 Join
               </button>
@@ -1557,7 +1220,7 @@
         <div
           class="border-t border-white/5 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-500"
         >
-          <p>© 2026 EventFlow. All rights reserved.</p>
+          <p>© 2026 EventzUp. All rights reserved.</p>
           <div class="flex gap-6">
             <a href="#" class="hover:text-ink-300 transition">Privacy</a>
             <a href="#" class="hover:text-ink-300 transition">Terms</a>
@@ -1566,8 +1229,6 @@
         </div>
       </div>
     </footer>
-
-    <script src="{% static 'js/app.js' %}"></script>
 
     <script>
       (function () {
@@ -1589,7 +1250,6 @@
 
         btn.addEventListener("click", toggle);
 
-        // close on link click (nice for anchor navigation)
         menu.querySelectorAll("a").forEach(function (a) {
           a.addEventListener("click", function () {
             menu.classList.add("hidden");
@@ -1605,7 +1265,6 @@
 
     <script>
       (function () {
-        // Scroll reveal
         const els = document.querySelectorAll(".reveal");
         if ("IntersectionObserver" in window) {
           const io = new IntersectionObserver(

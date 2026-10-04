@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}EventFlow{% endblock %} · EventFlow</title>
+  <title>{% block title %}EventzUp{% endblock %} · EventzUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -41,8 +41,9 @@
 
     <!-- Logo -->
     <div class="relative flex items-center gap-3 px-6 h-16 border-b border-white/5 flex-shrink-0">
-      <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
-      <span class="font-display text-2xl tracking-tight">EventFlow</span>
+      {% comment %} <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-white">E</div>
+      <span class="font-display text-2xl tracking-tight">EventzUp</span> {% endcomment %}
+      <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
     </div>
 
     <!-- Navigation -->
@@ -296,7 +297,7 @@
           </button>
 
           <a href="{% url 'create_event' %}"
-             class="hidden sm:inline-flex items-center gap-2 ml-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition">
+             class="hidden sm:inline-flex items-center gap-2 ml-2 px-4 py-2 text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 rounded-lg transition">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>

@@ -30,10 +30,19 @@ def landing(request):
     })
 
 
-
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
+
+    # Blank defaults for the initial GET render
+    context = {
+        'first_name': '',
+        'last_name': '',
+        'username': '',
+        'email': '',
+        'organization': '',
+    }
+
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
@@ -43,21 +52,30 @@ def register_view(request):
         password2 = request.POST.get('password2', '')
         organization = request.POST.get('organization', '').strip()
 
+        # Preserve typed values on any failure
+        context.update({
+            'first_name': first_name,
+            'last_name': last_name,
+            'username': username,
+            'email': email,
+            'organization': organization,
+        })
+
         if not all([username, email, password, password2]):
             messages.error(request, 'All required fields must be filled.')
-            return render(request, 'auth/register.html')
+            return render(request, 'auth/register.html', context)
 
         if password != password2:
             messages.error(request, 'Passwords do not match.')
-            return render(request, 'auth/register.html')
+            return render(request, 'auth/register.html', context)
 
         if Host.objects.filter(username=username).exists():
             messages.error(request, 'Username already taken.')
-            return render(request, 'auth/register.html')
+            return render(request, 'auth/register.html', context)
 
         if Host.objects.filter(email=email).exists():
             messages.error(request, 'Email already registered.')
-            return render(request, 'auth/register.html')
+            return render(request, 'auth/register.html', context)
 
         user = Host.objects.create_user(
             username=username,
@@ -68,11 +86,10 @@ def register_view(request):
             organization=organization,
         )
         login(request, user)
-        messages.success(request, 'Welcome to EventFlow!')
+        messages.success(request, 'Welcome to EventzUp!')
         return redirect('dashboard')
 
-    return render(request, 'auth/register.html')
-
+    return render(request, 'auth/register.html', context)
 
 def login_view(request):
     if request.user.is_authenticated:

@@ -83,7 +83,7 @@
             </a>
           {% endif %}
           <button type="submit"
-                  class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition">
+                  class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-flame-600 hover:bg-flame-500 text-white text-sm font-semibold transition">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -100,7 +100,7 @@
     <a href="?"
        class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono uppercase tracking-widest transition
               {% if not selected_category %}
-                bg-flame-600 text-ink-950
+                bg-flame-600 text-white
               {% else %}
                 border border-white/10 text-ink-400 hover:border-flame-600/50 hover:text-flame-400
               {% endif %}">
@@ -110,7 +110,7 @@
       <a href="?category={{ value }}"
          class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono uppercase tracking-widest transition
                 {% if selected_category == value %}
-                  bg-flame-600 text-ink-950
+                  bg-flame-600 text-white
                 {% else %}
                   border border-white/10 text-ink-400 hover:border-flame-600/50 hover:text-flame-400
                 {% endif %}">

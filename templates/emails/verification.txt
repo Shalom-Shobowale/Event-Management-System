@@ -1,7 +1,7 @@
 {% autoescape off %}
 Hi{% if user.first_name %} {{ user.first_name }}{% endif %},
 
-Use this code to verify your EventFlow account:
+Use this code to verify your EventzUp account:
 
     {{ code }}
 

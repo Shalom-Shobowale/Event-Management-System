@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}EventFlow{% endblock %}</title>
+  <title>{% block title %}EventzUp{% endblock %}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#05050d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;">
 
@@ -22,13 +22,14 @@
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="vertical-align:middle;">
-                    <div style="display:inline-block;width:32px;height:32px;background:#ff4800;border-radius:8px;color:#05050d;font-family:Georgia,serif;font-size:20px;font-weight:bold;text-align:center;line-height:32px;">
+                    {% comment %} <div style="display:inline-block;width:32px;height:32px;background:#ff4800;border-radius:8px;color:#05050d;font-family:Georgia,serif;font-size:20px;font-weight:bold;text-align:center;line-height:32px;">
                       E
                     </div>
                   </td>
                   <td style="padding-left:10px;color:#f6f6f8;font-family:Georgia,serif;font-size:22px;letter-spacing:-0.01em;">
-                    EventFlow
-                  </td>
+                    EventzUp
+                  </td> {% endcomment %}
+                  <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
                 </tr>
               </table>
             </td>
@@ -52,7 +53,7 @@
                 {% block footer %}{% endblock %}
               </p>
               <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4d4d66;">
-                Sent by EventFlow
+                Sent by EventzUp
               </p>
             </td>
           </tr>
@@ -62,7 +63,7 @@
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;margin-top:20px;">
           <tr>
             <td align="center" style="color:#4d4d66;font-size:11px;line-height:1.5;">
-              © {% now "Y" %} EventFlow. All rights reserved.
+              © {% now "Y" %} EventzUp. All rights reserved.
             </td>
           </tr>
         </table>

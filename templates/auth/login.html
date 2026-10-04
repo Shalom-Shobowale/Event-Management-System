@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in · EventFlow</title>
+  <title>Sign in · EventzUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -23,7 +23,7 @@
         document.documentElement.classList.add("dark");
       }
     })();
- </script>
+  </script>
   <link rel="stylesheet" href="{% static 'css/app.css' %}" />
   <script src="{% static 'js/app.js' %}" defer></script>
 
@@ -68,11 +68,7 @@
     .border-lime2-500\/30 { border-color:rgba(198,242,78,.30); }
     .hover\:bg-flame-500:hover { background-color:var(--flame-500); }
 
-    /* flat glows */
-    .glow-flame  { background: radial-gradient(closest-side, rgba(255,72,0,.35), transparent 70%); filter: blur(80px); }
-    .glow-violet { background: radial-gradient(closest-side, rgba(124,92,255,.35), transparent 70%); filter: blur(80px); }
-
-    /* ambient grid */
+    /* ambient grid — flat 1px lines, not a colored gradient */
     .bg-grid {
       background-image:
         linear-gradient(to right, #ffffff 1px, transparent 1px),
@@ -144,16 +140,12 @@
 
     <!-- ===================== LEFT PANEL (visual) ===================== -->
     <aside class="relative hidden lg:flex flex-col justify-between p-28 overflow-hidden border-r border-white/5">
-      <!-- ambient grid -->
+      <!-- ambient grid — flat lines, kept -->
       <div class="absolute inset-0 bg-grid pointer-events-none"></div>
-      <!-- glows -->
-      <div class="absolute -top-40 -left-32 w-[560px] h-[560px] rounded-full glow-flame pointer-events-none"></div>
-      <div class="absolute -bottom-40 -right-32 w-[560px] h-[560px] rounded-full glow-violet pointer-events-none"></div>
 
       <!-- top: logo -->
-      <div class="relative flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
-        <span class="font-display text-2xl tracking-tight">EventFlow</span>
+      <div class="relative ">
+        <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
       </div>
 
       <!-- middle: pitch -->
@@ -198,7 +190,7 @@
 
       <!-- bottom: footnote -->
       <div class="relative flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500">
-        <span>© 2026 EventFlow</span>
+        <span>© 2026 EventzUp</span>
         <span class="inline-flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"></span>
           All systems operational
@@ -211,8 +203,8 @@
       <!-- mobile-only top bar -->
       <div class="absolute top-6 left-6 right-6 flex lg:hidden items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-flame-600 grid place-items-center font-display text-lg leading-none text-ink-950">E</div>
-          <span class="font-display text-xl tracking-tight">EventFlow</span>
+          <div class="w-8 h-8 rounded-lg bg-flame-600 grid place-items-center font-display text-lg leading-none text-white">E</div>
+          <span class="font-display text-xl tracking-tight">EventzUp</span>
         </div>
         <a href="{% url 'register' %}" class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-white transition">
           Sign up →
@@ -322,7 +314,7 @@
           <!-- submit -->
           <button
             type="submit"
-            class="group w-full inline-flex items-center justify-center gap-3 mt-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition"
+            class="group w-full inline-flex items-center justify-center gap-3 mt-2 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition"
           >
             Sign in
             <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">

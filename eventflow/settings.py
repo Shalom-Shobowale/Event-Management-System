@@ -31,7 +31,7 @@ if not SECRET_KEY:
 
 # ---- Allowed hosts ----
 if DEBUG:
-    ALLOWED_HOSTS = ['event-management-system-a9be.onrender.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+    ALLOWED_HOSTS = ["ALLOWED_HOSTS",'127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
 else:
     _hosts_raw = os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip()
     ALLOWED_HOSTS = [
@@ -229,7 +229,7 @@ ANYMAIL = {
 
 DEFAULT_FROM_EMAIL = os.environ.get(
     'DEFAULT_FROM_EMAIL',
-    'EventFlow <noreply@resend.dev>'
+    'EventzUp <noreply@resend.dev>'
 )
 
 # Base URL — used to build absolute links in emails.
@@ -241,7 +241,7 @@ if not SITE_URL:
     else:
         raise ImproperlyConfigured(
             'SITE_URL environment variable must be set in production '
-            '(e.g. "https://eventflow.ng"). Used to build absolute links in emails.'
+            '(e.g. "https://eventzup.ng"). Used to build absolute links in emails.'
         )
 
 

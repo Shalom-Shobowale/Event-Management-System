@@ -10,31 +10,29 @@
 
   <!-- ===================== HEADER ===================== -->
   <div class="mb-8 fade-up d1">
-    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
-      {{ event.name }}
-    </p>
-    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">{{ event.name }}</p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
       Ask vendors<br />
-      <span class="italic text-ink-400">for their best price.</span>
+      <span class="italic text-ink-500 dark:text-ink-400">for their best price.</span>
     </h2>
-    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+    <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
       Describe what you need. Vendors in this category will send you proposals you can compare side by side.
     </p>
   </div>
 
   <!-- ===================== EVENT SUMMARY ===================== -->
-  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 mb-6 overflow-hidden fade-up d2">
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 mb-6 overflow-hidden fade-up d2">
     <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
     <div class="flex items-center gap-4">
-      <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-xl flex-shrink-0">
+      <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-display text-xl flex-shrink-0">
         {{ event.name|make_list|first|upper }}
       </div>
 
       <div class="flex-1 min-w-0">
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">For event</p>
-        <h3 class="font-display text-xl leading-tight text-ink-50 truncate">{{ event.name }}</h3>
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-ink-400">
+        <h3 class="font-display text-xl leading-tight text-ink-900 dark:text-ink-50 truncate">{{ event.name }}</h3>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-ink-500 dark:text-ink-400">
           <span class="inline-flex items-center gap-1.5">
             <svg class="w-3 h-3 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -42,9 +40,9 @@
             </svg>
             {{ event.date|date:"M d, Y" }}
           </span>
-          <span class="text-ink-600">·</span>
+          <span class="text-ink-400 dark:text-ink-600">·</span>
           <span class="inline-flex items-center gap-1.5">
-            <svg class="w-3 h-3 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3 h-3 text-violet2-500 dark:text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                     d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/>
               <circle cx="12" cy="10" r="2.5"/>
@@ -61,20 +59,19 @@
     {% csrf_token %}
 
     <!-- ============ 01 SERVICE REQUIREMENTS ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">01</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The basics</p>
-          <h3 class="font-display text-2xl leading-none">Service requirements</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Service requirements</h3>
         </div>
       </div>
 
       <div class="space-y-5">
 
-        <!-- title -->
         <div>
           <label for="id_title" class="ef-label">Title <span class="req">*</span></label>
           <input id="id_title" type="text" name="title" required
@@ -83,7 +80,6 @@
                  autocomplete="off" />
         </div>
 
-        <!-- category -->
         <div>
           <label for="id_category" class="ef-label">Service category</label>
           <select id="id_category" name="category" class="ef-input ef-select">
@@ -93,7 +89,6 @@
           </select>
         </div>
 
-        <!-- description -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label for="id_description" class="ef-label" style="margin-bottom:0;">Description <span class="req">*</span></label>
@@ -108,20 +103,19 @@
     </div>
 
     <!-- ============ 02 BUDGET & TIMELINE ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-mono text-xs">02</span>
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-mono text-xs">02</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Constraints</p>
-          <h3 class="font-display text-2xl leading-none">Budget &amp; timeline</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Budget &amp; timeline</h3>
         </div>
       </div>
 
       <div class="space-y-5">
 
-        <!-- budget range -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label for="id_budget_min" class="ef-label">Budget min (₦)</label>
@@ -137,7 +131,6 @@
           </div>
         </div>
 
-        <!-- required date + guest count -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label for="id_required_date" class="ef-label">Required date <span class="req">*</span></label>
@@ -151,16 +144,15 @@
           </div>
         </div>
 
-        <!-- urgent toggle -->
         <label class="ef-toggle">
           <input type="checkbox" name="is_urgent" class="peer sr-only" />
           <span class="ef-toggle-box">
-            <svg class="w-3 h-3 text-ink-950 opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+            <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </span>
           <span class="flex-1">
-            <span class="block text-sm font-medium text-ink-100">Mark as urgent</span>
+            <span class="block text-sm font-medium text-ink-900 dark:text-ink-100">Mark as urgent</span>
             <span class="block text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">
               Vendors see this first — best for last-minute requests
             </span>
@@ -173,7 +165,7 @@
     <!-- ============ 03 ACTIONS ============ -->
     <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
       <a href="{% url 'event_dashboard' event.id %}"
-         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
         Cancel
       </a>
       <button type="submit"
@@ -191,124 +183,23 @@
   <!-- ============ TIP ============ -->
   <div class="mt-6 relative rounded-2xl border border-violet2-500/25 bg-violet2-500/[.04] p-4 overflow-hidden fade-up d3">
     <div class="flex items-start gap-3">
-      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
         </svg>
       </div>
-      <div class="text-xs text-ink-300 leading-relaxed">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 block mb-1">Tip</span>
+      <div class="text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400 block mb-1">Tip</span>
         The more specific your description, the more accurate the proposals. Mention what "great" looks like to you, not just what you want.
       </div>
     </div>
   </div>
 
 </div>
+{% endblock %}
 
-<!-- ===================== PAGE STYLES ===================== -->
-<style>
-  .ef-input {
-    width: 100%;
-    padding: .8rem 1rem;
-    background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .75rem;
-    color: #f6f6f8;
-    font-size: .875rem;
-    transition: border-color .2s, background .2s, box-shadow .2s;
-    outline: none;
-    font-family: inherit;
-  }
-  .ef-input::placeholder { color: rgba(255,255,255,.28); }
-  .ef-input:hover { border-color: rgba(255,255,255,.15); }
-  .ef-input:focus {
-    border-color: #ff4800;
-    background: rgba(255,72,0,.04);
-    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
-  }
-  .ef-textarea { min-height: 110px; line-height: 1.55; resize: none; }
-
-  .ef-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-    padding-right: 2.5rem;
-  }
-  .ef-select option { background:#0a0a18; color:#f6f6f8; }
-
-  .ef-label {
-    display: block;
-    font-size: .75rem;
-    font-family: "JetBrains Mono", monospace;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #71718a;
-    margin-bottom: .5rem;
-  }
-  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
-
-  .ef-toggle {
-    display: flex;
-    align-items: flex-start;
-    gap: .875rem;
-    padding: .875rem 1rem;
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .75rem;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    user-select: none;
-  }
-  .ef-toggle:hover { border-color: rgba(255,255,255,.15); background: rgba(255,255,255,.02); }
-  .ef-toggle-box {
-    flex-shrink: 0;
-    margin-top: .1rem;
-    width: 1.125rem; height: 1.125rem;
-    border-radius: .375rem;
-    border: 1px solid rgba(255,255,255,.15);
-    background: rgba(255,255,255,.05);
-    display: grid;
-    place-items: center;
-    transition: background-color .2s, border-color .2s;
-  }
-  .peer:checked ~ .ef-toggle-box {
-    background: #ff4800;
-    border-color: #ff4800;
-  }
-  .peer:focus-visible ~ .ef-toggle-box {
-    box-shadow: 0 0 0 4px rgba(255,72,0,.2);
-  }
-
-  input:-webkit-autofill, input:-webkit-autofill:focus,
-  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f6f6f8;
-    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
-    transition: background-color 5000s ease-in-out 0s;
-  }
-
-  /* datetime/date picker icon color on dark */
-  .dark input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.7);
-    cursor: pointer;
-  }
-
-  /* light mode */
-  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
-  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
-  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
-  html:not(.dark) .ef-toggle { border-color: rgba(0,0,0,.08); }
-  html:not(.dark) .ef-toggle:hover { background: rgba(0,0,0,.02); }
-  html:not(.dark) .ef-toggle-box { border-color: rgba(0,0,0,.15); background: #fff; }
-  html:not(.dark) input:-webkit-autofill,
-  html:not(.dark) textarea:-webkit-autofill {
-    -webkit-text-fill-color: #0a0a18;
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
-  }
-</style>
-
-<!-- ===================== SCRIPT ===================== -->
+{% block extra_scripts %}
 <script>
   (function () {
     const desc = document.getElementById('id_description');
@@ -323,5 +214,4 @@
     desc.addEventListener('input', update);
   })();
 </script>
-
 {% endblock %}

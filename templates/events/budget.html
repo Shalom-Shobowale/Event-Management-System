@@ -15,17 +15,17 @@
         <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
           {{ event.name }}
         </p>
-        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
           Where the<br />
-          <span class="italic text-ink-400">money is going.</span>
+          <span class="italic text-ink-500 dark:text-ink-400">money is going.</span>
         </h2>
-        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+        <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
           Every expense, every category, every naira — tracked against your budget.
         </p>
       </div>
 
       <a href="{% url 'add_expense' event.id %}"
-         class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition self-start">
+         class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white text-sm font-semibold transition self-start">
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
@@ -37,15 +37,14 @@
   <!-- ===================== BUDGET OVERVIEW ===================== -->
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6 fade-up d2">
 
-    <!-- total budget -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Total budget</p>
-      <p class="font-display text-4xl leading-none text-ink-50">
+      <p class="font-display text-4xl leading-none text-ink-900 dark:text-ink-50">
         ₦{{ budget.total_budget|default:0|floatformat:0|intcomma }}
       </p>
       <a href="{% url 'update_budget' event.id %}"
-         class="inline-flex items-center gap-1.5 mt-3 font-mono text-[10px] uppercase tracking-widest text-violet2-400 hover:text-violet2-300 transition">
+         class="inline-flex items-center gap-1.5 mt-3 font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400 hover:text-violet2-500 dark:hover:text-violet2-300 transition">
         Edit budget
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -53,35 +52,33 @@
       </a>
     </div>
 
-    <!-- spent -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Spent</p>
-      <p class="font-display text-4xl leading-none text-flame-500">
+      <p class="font-display text-4xl leading-none text-flame-600 dark:text-flame-500">
         ₦{{ budget.spent|default:0|floatformat:0|intcomma }}
       </p>
 
       {% if budget.utilization_percent is not None %}
       <div class="flex items-center gap-2 mt-3">
-        <div class="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
+        <div class="flex-1 h-1 rounded-full bg-ink-200 dark:bg-white/5 overflow-hidden">
           <div class="h-full rounded-full transition-all duration-500
             {% if budget.utilization_percent >= 90 %}bg-flame-600
             {% elif budget.utilization_percent >= 60 %}bg-flame-500
             {% else %}bg-lime2-500{% endif %}"
                style="width: {{ budget.utilization_percent }}%"></div>
         </div>
-        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-400 whitespace-nowrap">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400 whitespace-nowrap">
           {{ budget.utilization_percent }}%
         </span>
       </div>
       {% endif %}
     </div>
 
-    <!-- pending -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Pending</p>
-      <p class="font-display text-4xl leading-none text-flame-400">
+      <p class="font-display text-4xl leading-none text-flame-600 dark:text-flame-400">
         ₦{{ budget.pending|default:0|floatformat:0|intcomma }}
       </p>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-3 inline-flex items-center gap-1.5">
@@ -90,11 +87,10 @@
       </p>
     </div>
 
-    <!-- remaining -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-5 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Remaining</p>
-      <p class="font-display text-4xl leading-none text-lime2-500">
+      <p class="font-display text-4xl leading-none text-lime2-600 dark:text-lime2-500">
         ₦{{ budget.remaining|default:0|floatformat:0|intcomma }}
       </p>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-3">
@@ -109,13 +105,13 @@
     <!-- ============ EXPENSES LIST ============ -->
     <div class="lg:col-span-2 space-y-6">
 
-      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden fade-up d3">
         <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
-        <div class="flex items-center justify-between p-5 border-b border-white/5">
+        <div class="flex items-center justify-between p-5 border-b border-ink-200 dark:border-white/5">
           <div>
             <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Line items</p>
-            <h3 class="font-display text-2xl leading-none">Expenses</h3>
+            <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Expenses</h3>
           </div>
           <a href="{% url 'add_expense' event.id %}"
              class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-flame-600 hover:bg-flame-500 text-white text-xs font-semibold transition">
@@ -127,32 +123,29 @@
         </div>
 
         {% if expenses %}
-          <div class="divide-y divide-white/5">
+          <div class="divide-y divide-ink-200 dark:divide-white/5">
             {% for expense in expenses %}
-            <div class="p-4 hover:bg-white/[.02] transition-colors">
+            <div class="p-4 hover:bg-ink-50 dark:hover:bg-white/[.02] transition-colors">
 
               <div class="flex items-start gap-3">
 
-                <!-- category initial -->
-                <div class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-lg flex-shrink-0">
+                <div class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-display text-lg flex-shrink-0">
                   {{ expense.category|slice:":1"|upper }}
                 </div>
 
-                <!-- title + meta -->
                 <div class="flex-1 min-w-0">
-                  <p class="font-medium text-sm text-ink-100 truncate">{{ expense.title }}</p>
+                  <p class="font-medium text-sm text-ink-900 dark:text-ink-100 truncate">{{ expense.title }}</p>
                   <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-0.5">
-                    {{ expense.category }} <span class="text-ink-600">·</span> {{ expense.created_at|date:"M d" }}
+                    {{ expense.category }} <span class="text-ink-400 dark:text-ink-600">·</span> {{ expense.created_at|date:"M d" }}
                   </p>
                 </div>
 
-                <!-- amount + status -->
                 <div class="text-right flex-shrink-0">
-                  <p class="font-display text-xl leading-none text-ink-50">
+                  <p class="font-display text-xl leading-none text-ink-900 dark:text-ink-50">
                     ₦{{ expense.amount|default:0|floatformat:0|intcomma }}
                   </p>
                   <span class="inline-flex items-center gap-1 mt-1 font-mono text-[10px] uppercase tracking-widest
-                    {% if expense.paid %}text-lime2-500{% else %}text-flame-400{% endif %}">
+                    {% if expense.paid %}text-lime2-600 dark:text-lime2-500{% else %}text-flame-600 dark:text-flame-400{% endif %}">
                     {% if expense.paid %}
                       <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
@@ -167,10 +160,9 @@
 
               </div>
 
-              <!-- actions row -->
               <div class="flex items-center justify-end gap-2 mt-3">
                 <a href="{% url 'edit_expense' expense.id %}"
-                   class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-xs font-medium text-ink-300 transition">
+                   class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-xs font-medium text-ink-600 dark:text-ink-300 transition">
                   Edit
                   <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -180,7 +172,7 @@
 
                 <button type="button"
                         onclick="openDeleteModal('{% url 'delete_expense' expense.id %}', '{{ expense.title|escapejs }}')"
-                        class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-flame-600/50 hover:bg-flame-600/5 text-xs font-medium text-ink-300 hover:text-flame-400 transition">
+                        class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 dark:border-white/10 hover:border-flame-600/50 hover:bg-flame-600/5 text-xs font-medium text-ink-600 dark:text-ink-300 hover:text-flame-600 dark:hover:text-flame-400 transition">
                   Delete
                   <svg class="w-3 h-3 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -194,16 +186,15 @@
           </div>
 
         {% else %}
-          <!-- empty state -->
           <div class="p-12 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+            <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-600 dark:text-flame-400">
               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                       d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <h3 class="font-display text-2xl">No expenses recorded yet</h3>
-            <p class="mt-2 text-sm text-ink-400 max-w-sm mx-auto">
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">No expenses recorded yet</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400 max-w-sm mx-auto">
               Start tracking what you spend — even small items add up.
             </p>
             <a href="{% url 'add_expense' event.id %}"
@@ -223,13 +214,12 @@
     <!-- ============ SIDEBAR ============ -->
     <div class="space-y-6">
 
-      <!-- by category -->
-      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d3">
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden fade-up d3">
         <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
         <div class="p-5">
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Breakdown</p>
-          <h3 class="font-display text-2xl leading-none mb-5">By category</h3>
+          <h3 class="font-display text-2xl leading-none mb-5 text-ink-900 dark:text-ink-50">By category</h3>
 
           {% if category_totals %}
             <div class="space-y-3">
@@ -237,9 +227,9 @@
               <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5 min-w-0">
                   <span class="w-2 h-2 rounded-full bg-violet2-500 flex-shrink-0"></span>
-                  <span class="text-sm text-ink-200 truncate">{{ item.category }}</span>
+                  <span class="text-sm text-ink-700 dark:text-ink-200 truncate">{{ item.category }}</span>
                 </div>
-                <span class="font-display text-lg leading-none text-ink-50 whitespace-nowrap">
+                <span class="font-display text-lg leading-none text-ink-900 dark:text-ink-50 whitespace-nowrap">
                   ₦{{ item.total|default:0|floatformat:0|intcomma }}
                 </span>
               </div>
@@ -251,20 +241,18 @@
         </div>
       </div>
 
-      <!-- budget tips -->
       <div class="relative rounded-2xl border border-flame-600/25 bg-flame-600/[.04] p-5 overflow-hidden fade-up d4">
-        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full glow-flame pointer-events-none opacity-60"></div>
         <div class="relative">
           <div class="inline-flex items-center gap-2 mb-3">
-            <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-400">
+            <span class="w-5 h-5 rounded-md bg-flame-600/20 border border-flame-600/40 grid place-items-center text-flame-600 dark:text-flame-400">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </span>
-            <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400">Budget tips</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-flame-600 dark:text-flame-400">Budget tips</p>
           </div>
-          <h3 class="font-display text-xl leading-tight">Receipts save money.</h3>
-          <p class="mt-2 text-xs text-ink-300 leading-relaxed">
+          <h3 class="font-display text-xl leading-tight text-ink-900 dark:text-ink-50">Receipts save money.</h3>
+          <p class="mt-2 text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
             Track every expense — vendor payments, deposits, materials. Keep
             receipts organized so your records are accurate when you reconcile.
           </p>
@@ -279,14 +267,13 @@
 <div id="deleteModal"
      class="fixed inset-0 hidden z-50 items-center justify-center bg-ink-950/70 backdrop-blur-sm p-4"
      onclick="if (event.target === this) closeDeleteModal()">
-  <div class="relative w-full max-w-md rounded-2xl border border-white/10 bg-ink-900 overflow-hidden"
+  <div class="relative w-full max-w-md rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden"
        style="animation: ef-result-pop .25s cubic-bezier(.2,.7,.2,1);">
     <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
     <div class="p-6">
 
-      <!-- icon -->
-      <div class="w-12 h-12 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 mb-4">
+      <div class="w-12 h-12 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 mb-4">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
@@ -294,12 +281,12 @@
       </div>
 
       <p class="font-mono text-[10px] uppercase tracking-widest text-flame-500 mb-1">Confirm delete</p>
-      <h3 class="font-display text-2xl leading-tight text-ink-50">
+      <h3 class="font-display text-2xl leading-tight text-ink-900 dark:text-ink-50">
         Delete this expense?
       </h3>
-      <p class="mt-3 text-sm text-ink-300 leading-relaxed">
+      <p class="mt-3 text-sm text-ink-600 dark:text-ink-300 leading-relaxed">
         You're about to delete
-        <strong id="expenseName" class="text-ink-100 font-medium"></strong>.
+        <strong id="expenseName" class="text-ink-900 dark:text-ink-100 font-medium"></strong>.
         This can't be undone.
       </p>
 
@@ -308,7 +295,7 @@
         <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3">
           <button type="button"
                   onclick="closeDeleteModal()"
-                  class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+                  class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
             Cancel
           </button>
           <button type="submit"
@@ -325,16 +312,9 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
-<!-- ===================== PAGE STYLES ===================== -->
-<style>
-  @keyframes ef-result-pop {
-    0%   { opacity: 0; transform: translateY(8px) scale(.98); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
-  }
-</style>
-
-<!-- ===================== SCRIPT ===================== -->
+{% block extra_scripts %}
 <script>
   function openDeleteModal(url, title) {
     const modal = document.getElementById("deleteModal");
@@ -346,7 +326,6 @@
     modal.classList.remove("hidden");
     modal.classList.add("flex");
 
-    // Escape key closes
     document.addEventListener("keydown", escClose);
   }
 
@@ -361,5 +340,4 @@
     if (e.key === "Escape") closeDeleteModal();
   }
 </script>
-
 {% endblock %}

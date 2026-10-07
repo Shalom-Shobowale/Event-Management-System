@@ -14,18 +14,18 @@
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
       <div>
         <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Confirmed work</p>
-        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+        <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
           Jobs you've<br />
-          <span class="italic text-ink-400">locked in.</span>
+          <span class="italic text-ink-500 dark:text-ink-400">locked in.</span>
         </h2>
-        <p class="mt-4 text-sm text-ink-400 max-w-xl">
+        <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
           Every booking a host has awarded to you. Confirm the ones still pending
           and open any booking for the full brief.
         </p>
       </div>
 
       <a href="{% url 'vendor_proposals' %}"
-         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-sm font-medium text-ink-100 transition self-start">
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-ink-200 dark:border-white/10 hover:border-violet2-500/40 hover:bg-violet2-500/5 text-sm font-medium text-ink-900 dark:text-ink-100 transition self-start">
         My proposals
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -38,38 +38,34 @@
 
     <div class="space-y-4 fade-up d2">
       {% for booking in bookings %}
-      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden hover:border-white/20 transition-colors">
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden hover:border-ink-300 dark:hover:border-white/20 transition-colors">
 
-        <!-- colored top edge color-coded by status -->
         <div class="absolute top-0 left-0 right-0 h-0.5
           {% if booking.status == 'confirmed' %}bg-lime2-500
           {% elif booking.status == 'pending' %}bg-flame-500
           {% elif booking.status == 'completed' %}bg-violet2-500
-          {% else %}bg-ink-600{% endif %}"></div>
+          {% else %}bg-ink-400 dark:bg-ink-600{% endif %}"></div>
 
         <div class="p-5 sm:p-6">
 
-          <!-- top row -->
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
             <div class="flex items-start gap-4 min-w-0 flex-1">
-              <!-- avatar -->
-              <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-display text-xl flex-shrink-0">
+              <div class="w-12 h-12 rounded-xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-display text-xl flex-shrink-0">
                 {{ booking.event.name|make_list|first|upper }}
               </div>
 
               <div class="min-w-0 flex-1">
-                <h3 class="font-display text-xl leading-tight text-ink-50 truncate">
+                <h3 class="font-display text-xl leading-tight text-ink-900 dark:text-ink-50 truncate">
                   {{ booking.service_name }}
                 </h3>
 
-                <p class="text-sm text-ink-300 mt-1 truncate">
+                <p class="text-sm text-ink-600 dark:text-ink-300 mt-1 truncate">
                   {{ booking.event.name }}
                 </p>
 
-                <!-- meta row -->
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs">
-                  <span class="inline-flex items-center gap-1.5 text-ink-400">
+                  <span class="inline-flex items-center gap-1.5 text-ink-500 dark:text-ink-400">
                     <svg class="w-3 h-3 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -80,28 +76,26 @@
               </div>
             </div>
 
-            <!-- price -->
             <div class="text-right flex-shrink-0 sm:min-w-[130px]">
               <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Agreed</p>
-              <p class="font-display text-3xl leading-none text-flame-500">
+              <p class="font-display text-3xl leading-none text-flame-600 dark:text-flame-500">
                 ₦{{ booking.agreed_price|default:0|floatformat:0|intcomma }}
               </p>
             </div>
 
           </div>
 
-          <!-- footer row: status + actions -->
-          <div class="flex flex-wrap items-center justify-between gap-3 mt-5 pt-4 border-t border-white/5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-5 pt-4 border-t border-ink-200 dark:border-white/5">
 
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase tracking-widest
               {% if booking.status == 'confirmed' %}
-                bg-lime2-500/15 border border-lime2-500/30 text-lime2-500
+                bg-lime2-500/15 border border-lime2-500/30 text-lime2-600 dark:text-lime2-500
               {% elif booking.status == 'pending' %}
-                bg-flame-500/15 border border-flame-500/30 text-flame-400
+                bg-flame-500/15 border border-flame-500/30 text-flame-600 dark:text-flame-400
               {% elif booking.status == 'completed' %}
-                bg-violet2-500/15 border border-violet2-500/30 text-violet2-400
+                bg-violet2-500/15 border border-violet2-500/30 text-violet2-600 dark:text-violet2-400
               {% else %}
-                bg-white/5 border border-white/10 text-ink-400
+                bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 text-ink-500 dark:text-ink-400
               {% endif %}">
               {% if booking.status == 'confirmed' %}
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +125,7 @@
               {% endif %}
 
               <a href="{% url 'booking_detail' booking.id %}"
-                 class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 hover:border-white/25 hover:bg-white/5 text-xs font-medium text-ink-100 transition">
+                 class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-xs font-medium text-ink-700 dark:text-ink-100 transition">
                 View
                 <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,16 +144,15 @@
 
   {% else %}
 
-    <!-- empty state -->
-    <div class="relative rounded-2xl border border-dashed border-white/10 bg-ink-900/50 p-12 text-center fade-up d2">
-      <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-400">
+    <div class="relative rounded-2xl border border-dashed border-ink-300 dark:border-white/10 bg-ink-50 dark:bg-ink-900/50 p-12 text-center fade-up d2">
+      <div class="w-16 h-16 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center mx-auto mb-5 text-flame-600 dark:text-flame-400">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
       </div>
-      <h3 class="font-display text-3xl">No bookings yet</h3>
-      <p class="mt-3 text-sm text-ink-400 max-w-sm mx-auto">
+      <h3 class="font-display text-3xl text-ink-900 dark:text-ink-50">No bookings yet</h3>
+      <p class="mt-3 text-sm text-ink-500 dark:text-ink-400 max-w-sm mx-auto">
         Once a host awards you a job, the confirmed booking will appear here for
         you to manage.
       </p>
@@ -172,7 +165,7 @@
           </svg>
         </a>
         <a href="{% url 'vendor_proposals' %}"
-           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
           View my proposals
         </a>
       </div>

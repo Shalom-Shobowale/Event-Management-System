@@ -145,6 +145,7 @@ urlpatterns = [
     path('events/<uuid:event_id>/budget/update/', event_views.update_budget, name='update_budget'),
     path('events/<uuid:event_id>/budget/expense/', event_views.add_expense, name='add_expense'),
     path('expenses/<uuid:expense_id>/edit/', event_views.edit_expense, name='edit_expense'),
+    path('expenses/<uuid:expense_id>/delete/', event_views.delete_expense, name='delete_expense'),
 
     # ========== PAYMENTS ==========
     path('payments/webhook/', payments_views.paystack_webhook, name='paystack_webhook'),

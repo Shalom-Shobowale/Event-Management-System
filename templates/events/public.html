@@ -8,17 +8,15 @@
 <div class="max-w-5xl mx-auto px-4 py-12">
 
   <!-- ===================== HERO ===================== -->
-  <div class="relative rounded-3xl overflow-hidden border border-white/10 bg-ink-900 fade-up d1">
+  <div class="relative rounded-3xl overflow-hidden border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 fade-up d1">
 
     <!-- banner -->
-    <div class="relative h-64 md:h-80 bg-ink-800 overflow-hidden">
+    <div class="relative h-64 md:h-80 bg-ink-100 dark:bg-ink-800 overflow-hidden">
       {% if event.banner %}
         <img src="{{ event.banner.url }}" alt="{{ event.name }}"
              class="w-full h-full object-cover" />
       {% else %}
         <div class="absolute inset-0 bg-grid pointer-events-none"></div>
-        <div class="absolute -top-24 -left-16 w-96 h-96 rounded-full glow-flame pointer-events-none"></div>
-        <div class="absolute -bottom-24 -right-16 w-96 h-96 rounded-full glow-violet pointer-events-none"></div>
       {% endif %}
       <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent"></div>
 
@@ -34,14 +32,14 @@
     <!-- body -->
     <div class="relative px-6 md:px-10 py-10 -mt-20">
 
-      <h1 class="font-display text-4xl md:text-6xl leading-[1.05] tracking-tight text-ink-50">
+      <h1 class="font-display text-4xl md:text-6xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
         {{ event.name }}
       </h1>
 
       <!-- meta row -->
       <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
 
-        <div class="inline-flex items-center gap-2 text-ink-200">
+        <div class="inline-flex items-center gap-2 text-ink-700 dark:text-ink-200">
           <svg class="w-4 h-4 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
             <rect x="3" y="5" width="18" height="16" rx="2"/>
             <path d="M3 10h18M8 3v4M16 3v4"/>
@@ -49,16 +47,16 @@
           <span>{{ event.date|date:"l, M j, Y" }}</span>
         </div>
 
-        <div class="inline-flex items-center gap-2 text-ink-200">
-          <svg class="w-4 h-4 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+        <div class="inline-flex items-center gap-2 text-ink-700 dark:text-ink-200">
+          <svg class="w-4 h-4 text-violet2-500 dark:text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 7v5l3 2"/>
           </svg>
           <span>{{ event.date|date:"g:i A" }}</span>
         </div>
 
-        <div class="inline-flex items-center gap-2 text-ink-200">
-          <svg class="w-4 h-4 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+        <div class="inline-flex items-center gap-2 text-ink-700 dark:text-ink-200">
+          <svg class="w-4 h-4 text-violet2-500 dark:text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
             <path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/>
             <circle cx="12" cy="10" r="2.5"/>
           </svg>
@@ -68,12 +66,12 @@
 
       <!-- host byline -->
       <div class="mt-6 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 text-sm font-medium">
+        <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 text-sm font-medium">
           {{ event.host.first_name|default:event.host.username|make_list|first|upper }}
         </div>
         <div>
           <p class="text-[10px] font-mono uppercase tracking-widest text-ink-500">Hosted by</p>
-          <p class="text-sm text-ink-100">{{ event.host.get_full_name|default:event.host.username }}</p>
+          <p class="text-sm text-ink-900 dark:text-ink-100">{{ event.host.get_full_name|default:event.host.username }}</p>
         </div>
       </div>
     </div>
@@ -84,48 +82,46 @@
 
     <!-- ABOUT -->
     <div class="lg:col-span-2 space-y-6">
-      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d2">
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden fade-up d2">
         <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
         <div class="p-6">
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">About</p>
-          <h2 class="font-display text-2xl leading-none mb-4">What to expect</h2>
-          <div class="text-ink-300 leading-relaxed whitespace-pre-line">{{ event.description|default:"No description provided." }}</div>
+          <h2 class="font-display text-2xl leading-none mb-4 text-ink-900 dark:text-ink-50">What to expect</h2>
+          <div class="text-ink-600 dark:text-ink-300 leading-relaxed whitespace-pre-line">{{ event.description|default:"No description provided." }}</div>
         </div>
       </div>
 
-      <!-- details -->
-      <div class="relative rounded-2xl border border-white/10 bg-ink-900 overflow-hidden fade-up d2">
+      <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 overflow-hidden fade-up d2">
         <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
         <div class="p-6">
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Details</p>
-          <h2 class="font-display text-2xl leading-none mb-4">The essentials</h2>
+          <h2 class="font-display text-2xl leading-none mb-4 text-ink-900 dark:text-ink-50">The essentials</h2>
 
           <dl class="grid grid-cols-2 gap-y-5 gap-x-6">
             <div>
               <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Date</dt>
-              <dd class="text-ink-100">{{ event.date|date:"l, M j, Y" }}</dd>
+              <dd class="text-ink-900 dark:text-ink-100">{{ event.date|date:"l, M j, Y" }}</dd>
             </div>
             <div>
               <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Time</dt>
-              <dd class="text-ink-100">{{ event.date|date:"g:i A" }}</dd>
+              <dd class="text-ink-900 dark:text-ink-100">{{ event.date|date:"g:i A" }}</dd>
             </div>
             <div>
               <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Venue</dt>
-              <dd class="text-ink-100">{{ event.venue }}</dd>
+              <dd class="text-ink-900 dark:text-ink-100">{{ event.venue }}</dd>
             </div>
             <div>
               <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Seating</dt>
-              <dd class="text-ink-100">{{ event.get_seat_arrangement_display }}</dd>
+              <dd class="text-ink-900 dark:text-ink-100">{{ event.get_seat_arrangement_display }}</dd>
             </div>
           </dl>
 
-            {# ⚑ Report row — only renders for signed-in users #}
-            <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between gap-3">
-                <p class="font-mono text-[10px] uppercase tracking-widest text-ink-600">
-                Something wrong with this event?
-                </p>
-                {% include "reports/_report_button.html" with target_type="event" target_id=event.id target_label=event.name %}
-            </div>
+          <div class="mt-6 pt-5 border-t border-ink-200 dark:border-white/5 flex items-center justify-between gap-3">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-600">
+              Something wrong with this event?
+            </p>
+            {% include "reports/_report_button.html" with target_type="event" target_id=event.id target_label=event.name %}
+          </div>
         </div>
       </div>
     </div>
@@ -134,29 +130,26 @@
     <div class="space-y-6 lg:sticky lg:top-24 lg:self-start">
 
       <div class="relative rounded-2xl border border-flame-600/30 bg-flame-600/[.04] overflow-hidden fade-up d2">
-        <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full glow-flame pointer-events-none opacity-50"></div>
-
         <div class="relative p-6">
-          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-400 mb-1">Tickets</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-flame-600 dark:text-flame-400 mb-1">Tickets</p>
 
           {% if event.is_paid %}
-            <p class="font-display text-4xl leading-none text-ink-50">
+            <p class="font-display text-4xl leading-none text-ink-900 dark:text-ink-50">
               ₦{{ event.price|floatformat:0|intcomma }}
             </p>
-            <p class="text-xs text-ink-400 mt-1">per guest</p>
+            <p class="text-xs text-ink-500 dark:text-ink-400 mt-1">per guest</p>
           {% else %}
-            <p class="font-display text-4xl leading-none text-lime2-500">Free</p>
-            <p class="text-xs text-ink-400 mt-1">No payment required</p>
+            <p class="font-display text-4xl leading-none text-lime2-600 dark:text-lime2-500">Free</p>
+            <p class="text-xs text-ink-500 dark:text-ink-400 mt-1">No payment required</p>
           {% endif %}
 
-          <!-- seats available -->
           {% if event.max_capacity %}
           <div class="mt-5">
-            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-400 mb-2">
+            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400 mb-2">
               <span>Seats filling</span>
-              <span class="text-ink-200">{{ event.registered_guests }} / {{ event.max_capacity }}</span>
+              <span class="text-ink-700 dark:text-ink-200">{{ event.registered_guests }} / {{ event.max_capacity }}</span>
             </div>
-            <div class="h-1 rounded-full bg-white/5 overflow-hidden">
+            <div class="h-1 rounded-full bg-ink-200 dark:bg-white/5 overflow-hidden">
               {% widthratio event.registered_guests event.max_capacity 100 as pct %}
               <div class="h-full bg-flame-500" style="width: {{ pct }}%"></div>
             </div>
@@ -166,15 +159,14 @@
           </div>
           {% endif %}
 
-          <!-- CTA -->
           <div class="mt-6">
             {% if is_full %}
-              <div class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-ink-800 text-ink-400 text-sm font-semibold cursor-not-allowed">
+              <div class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400 text-sm font-semibold cursor-not-allowed">
                 Event is full
               </div>
             {% else %}
               <a href="{% url 'event_register' event.id %}"
-                 class="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 font-semibold transition">
+                 class="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition">
                 Reserve your seat
                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -190,20 +182,19 @@
         </div>
       </div>
 
-      <!-- trust row -->
-      <div class="rounded-2xl border border-white/10 bg-ink-900 p-5 fade-up d3">
+      <div class="rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-5 fade-up d3">
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-3">Why EventzUp</p>
         <ul class="space-y-2.5 text-sm">
-          <li class="flex items-start gap-2.5 text-ink-300">
-            <span class="text-lime2-500 mt-0.5">✓</span>
+          <li class="flex items-start gap-2.5 text-ink-600 dark:text-ink-300">
+            <span class="text-lime2-600 dark:text-lime2-500 mt-0.5">✓</span>
             <span>Instant QR ticket by email</span>
           </li>
-          <li class="flex items-start gap-2.5 text-ink-300">
-            <span class="text-lime2-500 mt-0.5">✓</span>
+          <li class="flex items-start gap-2.5 text-ink-600 dark:text-ink-300">
+            <span class="text-lime2-600 dark:text-lime2-500 mt-0.5">✓</span>
             <span>No account creation</span>
           </li>
-          <li class="flex items-start gap-2.5 text-ink-300">
-            <span class="text-lime2-500 mt-0.5">✓</span>
+          <li class="flex items-start gap-2.5 text-ink-600 dark:text-ink-300">
+            <span class="text-lime2-600 dark:text-lime2-500 mt-0.5">✓</span>
             <span>Secure payment via Paystack</span>
           </li>
         </ul>

@@ -9,107 +9,91 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <script>
-        // Set theme before paint to avoid flash of unstyled content.
-        (function() {
-            try {
-            var saved = localStorage.getItem("darkMode");
-            if (saved === "false") {
-                document.documentElement.classList.remove("dark");
-            } else {
-                document.documentElement.classList.add("dark");
-            }
-            } catch (e) {
-            // localStorage unavailable (private mode, etc.) — default to dark
-            document.documentElement.classList.add("dark");
-            }
-        })();
-    </script>
+  <script>
+    // Set theme before paint to avoid flash of unstyled content.
+    (function() {
+      try {
+        var saved = localStorage.getItem("darkMode");
+        if (saved === "false") {
+          document.documentElement.classList.remove("dark");
+        } else {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-
-  <style>
-    /* Public pages — force dark theme + palette regardless of app.css */
-    html, body {
-      background: #05050d;
-      color: #f6f6f8;
-    }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    .font-display, h1, h2, h3 {
-      font-family: "Instrument Serif", Georgia, serif;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
-    .font-mono {
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-    }
-    .bg-grid {
-      background-image:
-        linear-gradient(to right, #ffffff 1px, transparent 1px),
-        linear-gradient(to bottom, #ffffff 1px, transparent 1px);
-      background-size: 64px 64px;
-      opacity: 0.05;
-    }
-    .glow-flame {
-      background: radial-gradient(closest-side, rgba(255,72,0,.35), transparent 70%);
-      filter: blur(80px);
-    }
-    .glow-violet {
-      background: radial-gradient(closest-side, rgba(124,92,255,.35), transparent 70%);
-      filter: blur(80px);
-    }
-  </style>
 
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-ink-950 text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white">
+<body class="bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white transition-colors">
 
   <!-- ===================== PUBLIC NAV ===================== -->
-  <nav class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+    <nav class="fixed top-0 inset-x-0 z-50 border-b bg-white/80 border-ink-200 dark:bg-ink-950/70 dark:border-white/5 backdrop-blur-xl transition-colors">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="/" class="flex items-center">
+            <img src="{% static 'images/logoz1.png' %}" alt="EventzUp" class="logo-dark-bg h-8 w-auto" />
+            <img src="{% static 'images/Logoz2.png' %}" alt="EventzUp" class="logo-light-bg h-8 w-auto" />
+          </a>
 
-        <!-- logo -->
-        <a href="/" class="flex items-center gap-3">
-          {% comment %} <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
-          <span class="font-display text-2xl tracking-tight">EventzUp</span> {% endcomment %}
-          <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
-        </a>
+          <div class="hidden md:flex items-center gap-1 text-sm">
+            <a href="#features" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Features</a>
+            <a href="#how" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">How it works</a>
+            <a href="#events" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Events</a>
+            <a href="#pricing" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Pricing</a>
+          </div>
 
-        <!-- nav links -->
-        <div class="hidden md:flex items-center gap-1 text-sm text-ink-300">
-          <a href="/#features" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">Features</a>
-          <a href="/#how" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">How it works</a>
-          <a href="/#events" class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition">Events</a>
-        </div>
-
-        <!-- actions -->
-        <div class="flex items-center gap-2">
-          {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}"
-               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition">
-              Dashboard
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          <div class="hidden md:flex items-center gap-2">
+            <button type="button" id="dark-mode-toggle" class="p-2 rounded-lg text-ink-500 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-400 dark:hover:text-white dark:hover:bg-white/5 transition" aria-label="Toggle theme">
+              <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
-            </a>
-          {% else %}
-            <a href="{% url 'login' %}" class="px-4 py-2 text-sm text-ink-200 hover:text-white transition">Sign in</a>
-            <a href="{% url 'register' %}"
-               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 rounded-lg transition">
+              <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </button>
+            <a href="{% url 'login' %}" class="px-4 py-2 text-sm text-ink-700 hover:text-ink-900 dark:text-ink-200 dark:hover:text-white transition">Sign in</a>
+            <a href="{% url 'register' %}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 rounded-lg transition">
               Get started
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
-          {% endif %}
+          </div>
+
+          <button type="button" id="landing-menu-btn" class="md:hidden p-2 rounded-lg text-ink-500 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5 transition" aria-label="Open menu" aria-expanded="false">
+            <svg id="landing-menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="landing-menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="landing-menu" class="hidden md:hidden pb-5 pt-2 border-t border-ink-200 dark:border-white/5">
+          <div class="space-y-1">
+            <a href="#features" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Features</a>
+            <a href="#how" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">How it works</a>
+            <a href="#events" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Events</a>
+            <a href="#pricing" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Pricing</a>
+          </div>
+          <div class="mt-3 pt-3 border-t border-ink-200 dark:border-white/5 space-y-2">
+            <a href="{% url 'login' %}" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Sign in</a>
+            <a href="{% url 'register' %}" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 transition">
+              Get started
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
   <!-- ===================== CONTENT ===================== -->
   <main class="pt-24 pb-16 min-h-screen">
@@ -117,12 +101,12 @@
   </main>
 
   <!-- ===================== FOOTER ===================== -->
-  <footer class="border-t border-white/5 bg-ink-950">
+  <footer class="border-t border-ink-200 dark:border-white/5 bg-white dark:bg-ink-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-ink-950">E</div>
-          <span class="font-display text-2xl">EventzUp</span>
+          <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-white">E</div>
+          <span class="font-display text-2xl text-ink-900 dark:text-ink-50">EventzUp</span>
         </div>
         <p class="text-xs text-ink-500">© 2026 EventzUp. All rights reserved.</p>
       </div>

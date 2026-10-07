@@ -1,5 +1,5 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -7,28 +7,26 @@
     <title>{% block title %}EventzUp{% endblock %} - Smart Event Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <script>
-        // Set theme before paint to avoid flash of unstyled content.
-        (function() {
-            try {
-            var saved = localStorage.getItem("darkMode");
-            if (saved === "false") {
-                document.documentElement.classList.remove("dark");
-            } else {
-                document.documentElement.classList.add("dark");
-            }
-            } catch (e) {
-            // localStorage unavailable (private mode, etc.) — default to dark
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+      // Set theme before paint to avoid flash of unstyled content.
+      (function() {
+        try {
+          var saved = localStorage.getItem("darkMode");
+          if (saved === "false") {
+            document.documentElement.classList.remove("dark");
+          } else {
             document.documentElement.classList.add("dark");
-            }
-        })();
+          }
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
     </script>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 font-sans antialiased transition-colors duration-300">
+<body class="bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans antialiased transition-colors duration-300">
     {% block body %}{% endblock %}
 
     <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>

@@ -11,11 +11,11 @@
   <!-- header -->
   <div class="mb-8 fade-up d1">
     <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Join the marketplace</p>
-    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
       Put your business<br />
-      <span class="italic text-ink-400">in front of hosts.</span>
+      <span class="italic text-ink-500 dark:text-ink-400">in front of hosts.</span>
     </h2>
-    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+    <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
       Create a vendor profile to receive quote requests and bookings from
       event organizers. You can edit every detail later.
     </p>
@@ -25,14 +25,14 @@
     {% csrf_token %}
 
     <!-- ===================== BUSINESS INFORMATION ===================== -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">01</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The basics</p>
-          <h3 class="font-display text-2xl leading-none">Business information</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Business information</h3>
         </div>
       </div>
 
@@ -64,11 +64,11 @@
             <label class="ef-toggle">
               <input type="checkbox" name="categories" value="{{ value }}" class="peer sr-only" />
               <span class="ef-toggle-box">
-                <svg class="w-3 h-3 text-ink-950 opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+                <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
               </span>
-              <span class="flex-1 text-sm font-medium text-ink-100">{{ label }}</span>
+              <span class="flex-1 text-sm font-medium text-ink-900 dark:text-ink-100">{{ label }}</span>
             </label>
             {% endfor %}
           </div>
@@ -90,14 +90,14 @@
     </div>
 
     <!-- ===================== CONTACT & LOCATION ===================== -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs">02</span>
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 font-mono text-xs">02</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">How to reach you</p>
-          <h3 class="font-display text-2xl leading-none">Contact &amp; location</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Contact &amp; location</h3>
         </div>
       </div>
 
@@ -137,14 +137,14 @@
     </div>
 
     <!-- ===================== PROFILE IMAGES ===================== -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-mono text-xs">03</span>
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-mono text-xs">03</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Look &amp; feel</p>
-          <h3 class="font-display text-2xl leading-none">Profile images</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Profile images</h3>
         </div>
       </div>
 
@@ -160,20 +160,20 @@
                ondragleave="this.classList.remove('is-drag');"
                ondrop="event.preventDefault(); this.classList.remove('is-drag'); handleDrop(event, 'logo-input', 'logo-preview', 'logo-filename');">
             <div class="ef-dropzone-inner">
-              <div class="w-12 h-12 rounded-xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 mx-auto mb-4">
+              <div class="w-12 h-12 rounded-xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 mx-auto mb-4">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
               </div>
-              <p class="text-sm font-medium text-ink-100">Click to upload</p>
+              <p class="text-sm font-medium text-ink-900 dark:text-ink-100">Click to upload</p>
               <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-ink-500">PNG or JPG · 400×400</p>
             </div>
             <input type="file" name="logo" id="logo-input" accept="image/*" class="hidden"
                    onchange="previewImage(this, 'logo-preview', 'logo-filename')" />
           </div>
 
-          <div id="logo-preview" class="mt-4 hidden relative rounded-xl overflow-hidden border border-white/10">
+          <div id="logo-preview" class="mt-4 hidden relative rounded-xl overflow-hidden border border-ink-200 dark:border-white/10">
             <img id="logo-img" class="w-full h-40 object-cover block" alt="Logo preview" />
             <button type="button" onclick="clearImage('logo-input', 'logo-preview', 'logo-filename')"
                     class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-ink-950/80 backdrop-blur border border-white/10 grid place-items-center text-ink-200 hover:text-flame-500 hover:border-flame-600/50 transition">
@@ -195,20 +195,20 @@
                ondragleave="this.classList.remove('is-drag');"
                ondrop="event.preventDefault(); this.classList.remove('is-drag'); handleDrop(event, 'cover-input', 'cover-preview', 'cover-filename');">
             <div class="ef-dropzone-inner">
-              <div class="w-12 h-12 rounded-xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 mx-auto mb-4">
+              <div class="w-12 h-12 rounded-xl bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 mx-auto mb-4">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
               </div>
-              <p class="text-sm font-medium text-ink-100">Click to upload</p>
+              <p class="text-sm font-medium text-ink-900 dark:text-ink-100">Click to upload</p>
               <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-ink-500">PNG or JPG · 1600×600</p>
             </div>
             <input type="file" name="cover" id="cover-input" accept="image/*" class="hidden"
                    onchange="previewImage(this, 'cover-preview', 'cover-filename')" />
           </div>
 
-          <div id="cover-preview" class="mt-4 hidden relative rounded-xl overflow-hidden border border-white/10">
+          <div id="cover-preview" class="mt-4 hidden relative rounded-xl overflow-hidden border border-ink-200 dark:border-white/10">
             <img id="cover-img" class="w-full h-40 object-cover block" alt="Cover preview" />
             <button type="button" onclick="clearImage('cover-input', 'cover-preview', 'cover-filename')"
                     class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-ink-950/80 backdrop-blur border border-white/10 grid place-items-center text-ink-200 hover:text-flame-500 hover:border-flame-600/50 transition">
@@ -226,7 +226,7 @@
     <!-- ===================== ACTIONS ===================== -->
     <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
       <a href="{% url 'dashboard' %}"
-         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
         Cancel
       </a>
       <button type="submit"
@@ -240,131 +240,6 @@
 
   </form>
 </div>
-
-<!-- ===================== STYLES (scoped to this page) ===================== -->
-<style>
-  /* input + select + textarea — matches login/register/create-event */
-  .ef-input {
-    width: 100%;
-    padding: .8rem 1rem;
-    background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .75rem;
-    color: #f6f6f8;
-    font-size: .875rem;
-    transition: border-color .2s, background .2s, box-shadow .2s;
-    outline: none;
-    font-family: inherit;
-  }
-  .ef-input::placeholder { color: rgba(255,255,255,.28); }
-  .ef-input:hover { border-color: rgba(255,255,255,.15); }
-  .ef-input:focus {
-    border-color: #ff4800;
-    background: rgba(255,72,0,.04);
-    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
-  }
-  .ef-textarea { min-height: 100px; line-height: 1.5; }
-
-  /* select */
-  .ef-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-    padding-right: 2.5rem;
-  }
-  .ef-select option { background:#0a0a18; color:#f6f6f8; }
-
-  /* labels */
-  .ef-label {
-    display: block;
-    font-size: .75rem;
-    font-family: "JetBrains Mono", monospace;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #71718a;
-    margin-bottom: .5rem;
-  }
-  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
-
-  /* toggle (also used for category checkboxes) */
-  .ef-toggle {
-    display: flex;
-    align-items: center;
-    gap: .625rem;
-    padding: .625rem .875rem;
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .625rem;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    user-select: none;
-  }
-  .ef-toggle:hover { border-color: rgba(255,255,255,.15); background: rgba(255,255,255,.02); }
-  .ef-toggle-box {
-    flex-shrink: 0;
-    width: 1rem; height: 1rem;
-    border-radius: .375rem;
-    border: 1px solid rgba(255,255,255,.15);
-    background: rgba(255,255,255,.05);
-    display: grid;
-    place-items: center;
-    transition: background-color .2s, border-color .2s;
-  }
-  .ef-toggle .peer:checked ~ .ef-toggle-box {
-    background: #ff4800;
-    border-color: #ff4800;
-  }
-  .ef-toggle:has(.peer:checked) {
-    border-color: rgba(255,72,0,.4);
-    background: rgba(255,72,0,.05);
-  }
-  .ef-toggle:has(.peer:checked) .text-ink-100 {
-    color: #ff7a3d;
-  }
-  .peer:focus-visible ~ .ef-toggle-box {
-    box-shadow: 0 0 0 4px rgba(255,72,0,.2);
-  }
-
-  /* dropzone */
-  .ef-dropzone {
-    display: block;
-    padding: 2rem 1.5rem;
-    border: 2px dashed rgba(255,255,255,.12);
-    border-radius: .875rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color .2s, background-color .2s;
-  }
-  .ef-dropzone:hover { border-color: rgba(198,242,78,.5); background: rgba(198,242,78,.03); }
-  .ef-dropzone.is-drag { border-color: #c6f24e; background: rgba(198,242,78,.06); }
-
-  /* autofill fix */
-  input:-webkit-autofill, input:-webkit-autofill:focus,
-  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f6f6f8;
-    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
-    transition: background-color 5000s ease-in-out 0s;
-  }
-
-  /* light-mode adjustments */
-  html:not(.dark) .ef-input {
-    background: #ffffff;
-    border-color: rgba(0,0,0,.08);
-    color: #0a0a18;
-  }
-  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
-  html:not(.dark) .ef-select option { background: #ffffff; color: #0a0a18; }
-  html:not(.dark) .ef-toggle { border-color: rgba(0,0,0,.08); }
-  html:not(.dark) .ef-toggle:hover { background: rgba(0,0,0,.02); }
-  html:not(.dark) .ef-toggle-box { border-color: rgba(0,0,0,.15); background: #fff; }
-  html:not(.dark) .ef-dropzone { border-color: rgba(0,0,0,.12); }
-  html:not(.dark) input:-webkit-autofill,
-  html:not(.dark) textarea:-webkit-autofill {
-    -webkit-text-fill-color: #0a0a18;
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
-  }
-</style>
 
 <!-- ===================== SCRIPT ===================== -->
 <script>
@@ -382,7 +257,7 @@
     desc.addEventListener('input', update);
   })();
 
-  // ---- shared image preview (same shape as previewBanner) ----
+  // ---- shared image preview ----
   function previewImage(input, previewId, filenameId) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];

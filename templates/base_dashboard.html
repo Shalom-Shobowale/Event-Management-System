@@ -19,31 +19,36 @@
           document.documentElement.classList.add("dark");
         }
       } catch (e) {
-        // localStorage unavailable (private mode, etc.) — default to dark
         document.documentElement.classList.add("dark");
       }
     })();
   </script>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
-  {% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script> {% endcomment %}
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 z-50">
 
   <!-- ===================== SIDEBAR ===================== -->
   <aside
     id="sidebar"
-    class="fixed inset-y-0 left-0 z-40 w-64 bg-ink-900 border-r border-white/5 transform transition-transform duration-300 lg:translate-x-0 -translate-x-full flex flex-col"
+    class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-ink-900 border-r border-ink-200 dark:border-white/5 transform transition-transform duration-300 lg:translate-x-0 -translate-x-full flex flex-col"
   >
     <!-- ambient grid -->
     <div class="absolute inset-0 bg-grid pointer-events-none"></div>
 
     <!-- Logo -->
-    <div class="relative flex items-center gap-3 px-6 h-16 border-b border-white/5 flex-shrink-0">
-      {% comment %} <div class="w-9 h-9 rounded-lg bg-flame-600 grid place-items-center font-display text-xl leading-none text-white">E</div>
-      <span class="font-display text-2xl tracking-tight">EventzUp</span> {% endcomment %}
-      <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
+    <div class="relative flex items-center gap-3 px-6 h-16 border-b border-ink-200 dark:border-white/5 flex-shrink-0">
+      <img
+        src="{% static 'images/logoz1.png' %}"
+        alt="EventzUp"
+        class="logo-dark-bg h-8 w-auto"
+      />
+      <img
+        src="{% static 'images/Logoz2.png' %}"
+        alt="EventzUp"
+        class="logo-light-bg h-8 w-auto"
+      />
     </div>
 
     <!-- Navigation -->
@@ -52,9 +57,9 @@
       <p class="px-3 pt-2 pb-2 text-[10px] font-mono uppercase tracking-widest text-ink-500">Organize</p>
 
       <a href="{% url 'dashboard' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_dashboard %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
@@ -62,9 +67,9 @@
       </a>
 
       <a href="{% url 'event_list' %}"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_my_events %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
@@ -72,18 +77,18 @@
       </a>
 
       <a href="{% url 'create_event' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_create %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
         </svg>
         Create event
       </a>
 
       <a href="{% url 'analytics' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_analytics %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
         </svg>
@@ -91,9 +96,9 @@
       </a>
 
       <a href="{% url 'scanner' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_scanner %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
         </svg>
@@ -103,9 +108,9 @@
       <p class="px-3 pt-6 pb-2 text-[10px] font-mono uppercase tracking-widest text-ink-500">Marketplace</p>
 
       <a href="{% url 'vendor_marketplace' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_marketplace %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
         </svg>
@@ -113,9 +118,9 @@
       </a>
 
       <a href="{% url 'conversations' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_messages %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
         </svg>
@@ -123,9 +128,9 @@
       </a>
 
       <a href="{% url 'my_quote_requests' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_quotes %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
@@ -133,18 +138,18 @@
       </a>
 
       <a href="{% url 'saved_vendors' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_saved %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
         </svg>
         Saved vendors
       </a>
 
       <a href="{% url 'vendor_register' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_vendor_register %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
         </svg>
         Become a vendor
@@ -154,9 +159,9 @@
       <p class="px-3 pt-6 pb-2 text-[10px] font-mono uppercase tracking-widest text-ink-500">Vendor</p>
 
       <a href="{% url 'vendor_dashboard' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_vendor_dash %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
@@ -164,18 +169,18 @@
       </a>
 
       <a href="{% url 'browse_rfqs' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_browse_rfqs %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         Browse RFQs
       </a>
 
       <a href="{% url 'vendor_proposals' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_proposals %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
         </svg>
@@ -183,18 +188,18 @@
       </a>
 
       <a href="{% url 'vendor_bookings' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_vendor_bookings %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         Vendor bookings
       </a>
       <a href="{% url 'upgrade_plan' %}"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_upgrade %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
@@ -205,9 +210,9 @@
       <p class="px-3 pt-6 pb-2 text-[10px] font-mono uppercase tracking-widest text-ink-500">Account</p>
 
       <a href="{% url 'profile' %}"
-         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-300 transition-colors
+         class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                 {% block nav_profile %}{% endblock %}">
-        <svg class="w-5 h-5 text-ink-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
         </svg>
@@ -216,19 +221,19 @@
     </nav>
 
     <!-- User section -->
-    <div class="relative p-3 border-t border-white/5 flex-shrink-0">
-      <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors">
-        <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/30 grid place-items-center text-flame-400 text-sm font-semibold flex-shrink-0">
+    <div class="relative p-3 border-t border-ink-200 dark:border-white/5 flex-shrink-0">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-ink-100 dark:hover:bg-white/5 transition-colors">
+        <div class="w-9 h-9 rounded-full bg-flame-600/15 border border-flame-600/30 grid place-items-center text-flame-600 dark:text-flame-400 text-sm font-semibold flex-shrink-0">
           {{ user.first_name|default:user.username|make_list|first|upper }}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium truncate text-ink-100">
+          <p class="text-sm font-medium truncate text-ink-900 dark:text-ink-100">
             {{ user.get_full_name|default:user.username }}
           </p>
           <p class="text-xs text-ink-500 truncate">{{ user.email }}</p>
         </div>
         <a href="{% url 'logout' %}"
-           class="p-2 rounded-lg text-ink-400 hover:text-flame-500 hover:bg-flame-600/10 transition-colors"
+           class="p-2 rounded-lg text-ink-500 dark:text-ink-400 hover:text-flame-600 dark:hover:text-flame-500 hover:bg-flame-600/10 transition-colors"
            title="Sign out">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -241,20 +246,19 @@
 
   <!-- Mobile overlay -->
   <div id="sidebar-overlay"
-       class="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm hidden lg:hidden"
-       ></div>
+       class="fixed inset-0 z-30 bg-ink-900/40 dark:bg-black/60 backdrop-blur-sm hidden lg:hidden"></div>
 
   <!-- ===================== MAIN CONTENT ===================== -->
   <div class="lg:ml-64 min-h-screen">
 
     <!-- Top bar -->
-    <header class="sticky top-0 z-20 h-16 bg-ink-950/70 backdrop-blur-xl border-b border-white/5">
+    <header class="sticky top-0 z-20 h-16 bg-white/80 dark:bg-ink-950/70 backdrop-blur-xl border-b border-ink-200 dark:border-white/5">
       <div class="flex items-center justify-between h-full px-4 lg:px-8">
 
         <!-- Left -->
         <div class="flex items-center gap-4">
           <button id="sidebar-toggle"
-                  class="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors text-ink-300">
+                  class="lg:hidden p-2 rounded-lg hover:bg-ink-100 dark:hover:bg-white/5 transition-colors text-ink-600 dark:text-ink-300">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
@@ -264,7 +268,7 @@
             <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">
               {% block page_eyebrow %}Workspace{% endblock %}
             </p>
-            <h1 class="font-display text-xl leading-tight tracking-tight">
+            <h1 class="font-display text-xl leading-tight tracking-tight text-ink-900 dark:text-ink-50">
               {% block page_title %}Dashboard{% endblock %}
             </h1>
           </div>
@@ -274,7 +278,7 @@
         <div class="flex items-center gap-2">
 
           <a href="{% url 'notification_center' %}"
-             class="relative p-2 rounded-lg hover:bg-white/5 transition-colors text-ink-400 hover:text-ink-100"
+             class="relative p-2 rounded-lg hover:bg-ink-100 dark:hover:bg-white/5 transition-colors text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-100"
              title="Notifications">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -284,7 +288,7 @@
           </a>
 
           <button id="dark-mode-toggle"
-                  class="p-2 rounded-lg hover:bg-white/5 transition-colors text-ink-400 hover:text-ink-100"
+                  class="p-2 rounded-lg hover:bg-ink-100 dark:hover:bg-white/5 transition-colors text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-100"
                   title="Toggle theme">
             <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -316,23 +320,21 @@
   <!-- ===================== TOASTS ===================== -->
   <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
 
+  {% if messages %}
+  <div id="django-messages" hidden>
+    {% for message in messages %}
+      <div
+        class="django-message"
+        data-message="{{ message|escape }}"
+        data-type="{{ message.tags }}"
+      ></div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-  <!-- messages -> toasts (uses showToast from app.js) -->
- {% if messages %}
-<div id="django-messages" hidden>
-  {% for message in messages %}
-    <div
-      class="django-message"
-      data-message="{{ message|escape }}"
-      data-type="{{ message.tags }}"
-    ></div>
-  {% endfor %}
-</div>
-{% endif %}
-
-
-  {% include "reports/_report_modal.html" %}
-  <script src="{% static 'js/app.js' %}?v=3"></script>
-  {% block extra_scripts %}{% endblock %}
+{% include "reports/_report_modal.html" %}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script src="{% static 'js/app.js' %}?v=3"></script>
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>

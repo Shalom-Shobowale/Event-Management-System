@@ -10,26 +10,23 @@
 
   <!-- ===================== HEADER ===================== -->
   <div class="mb-8 fade-up d1">
-    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
-      {{ rfq.event.name }}
-    </p>
-    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">{{ rfq.event.name }}</p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
       Send your<br />
-      <span class="italic text-ink-400">best offer.</span>
+      <span class="italic text-ink-500 dark:text-ink-400">best offer.</span>
     </h2>
-    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+    <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
       Read the request carefully, pick a service, and write a cover letter that
       answers exactly what the host needs.
     </p>
   </div>
 
   <!-- ===================== RFQ SUMMARY ===================== -->
-  <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 mb-6 overflow-hidden fade-up d2">
+  <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 mb-6 overflow-hidden fade-up d2">
     <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
-    <!-- title row -->
     <div class="flex items-start gap-4">
-      <div class="w-12 h-12 rounded-xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+      <div class="w-12 h-12 rounded-xl bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 flex-shrink-0">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -37,23 +34,22 @@
       </div>
       <div class="flex-1 min-w-0">
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1">Request for quotation</p>
-        <h3 class="font-display text-2xl leading-tight text-ink-50">{{ rfq.title }}</h3>
-        <p class="text-sm text-ink-400 mt-1 inline-flex items-center gap-1.5 flex-wrap">
+        <h3 class="font-display text-2xl leading-tight text-ink-900 dark:text-ink-50">{{ rfq.title }}</h3>
+        <p class="text-sm text-ink-500 dark:text-ink-400 mt-1 inline-flex items-center gap-1.5 flex-wrap">
           <span>{{ rfq.event.name }}</span>
-          <span class="text-ink-600">·</span>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-violet2-500/10 border border-violet2-500/25 font-mono text-[10px] uppercase tracking-widest text-violet2-400">
+          <span class="text-ink-400 dark:text-ink-600">·</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-violet2-500/10 border border-violet2-500/25 font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400">
             {{ rfq.category }}
           </span>
         </p>
       </div>
     </div>
 
-    <!-- meta grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-ink-200 dark:border-white/5">
 
       <div>
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Required date</p>
-        <p class="text-sm text-ink-100 inline-flex items-center gap-1.5">
+        <p class="text-sm text-ink-900 dark:text-ink-100 inline-flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5 text-flame-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -64,15 +60,15 @@
 
       <div>
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Budget range</p>
-        <p class="font-display text-lg leading-none text-lime2-500">
+        <p class="font-display text-lg leading-none text-lime2-600 dark:text-lime2-500">
           ₦{{ rfq.budget_min|default:0|floatformat:0|intcomma }}<span class="text-ink-500 mx-1">–</span>₦{{ rfq.budget_max|default:0|floatformat:0|intcomma }}
         </p>
       </div>
 
       <div>
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-1.5">Guests</p>
-        <p class="text-sm text-ink-100 inline-flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <p class="text-sm text-ink-900 dark:text-ink-100 inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-violet2-500 dark:text-violet2-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
@@ -83,9 +79,9 @@
     </div>
 
     {% if rfq.description %}
-      <div class="mt-5 pt-5 border-t border-white/5">
+      <div class="mt-5 pt-5 border-t border-ink-200 dark:border-white/5">
         <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mb-2">What they need</p>
-        <p class="text-sm text-ink-300 leading-relaxed whitespace-pre-wrap">{{ rfq.description }}</p>
+        <p class="text-sm text-ink-600 dark:text-ink-300 leading-relaxed whitespace-pre-wrap">{{ rfq.description }}</p>
       </div>
     {% endif %}
 
@@ -95,21 +91,19 @@
   <form method="post" class="space-y-6 fade-up d3">
     {% csrf_token %}
 
-    <!-- ============ 01 YOUR PITCH ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">01</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Why you</p>
-          <h3 class="font-display text-2xl leading-none">Your pitch</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Your pitch</h3>
         </div>
       </div>
 
       <div class="space-y-5">
 
-        <!-- service -->
         <div>
           <label for="id_service" class="ef-label">Select service</label>
           <select id="id_service" name="service" class="ef-input ef-select">
@@ -123,7 +117,6 @@
           </p>
         </div>
 
-        <!-- cover letter -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label for="id_cover_letter" class="ef-label" style="margin-bottom:0;">Cover letter <span class="req">*</span></label>
@@ -137,21 +130,19 @@
       </div>
     </div>
 
-    <!-- ============ 02 PRICING ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 font-mono text-xs">02</span>
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-mono text-xs">02</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The numbers</p>
-          <h3 class="font-display text-2xl leading-none">Pricing &amp; scope</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Pricing &amp; scope</h3>
         </div>
       </div>
 
       <div class="space-y-5">
 
-        <!-- price + duration -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label for="id_proposed_price" class="ef-label">Proposed price ($) <span class="req">*</span></label>
@@ -166,7 +157,6 @@
           </div>
         </div>
 
-        <!-- includes -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label for="id_includes" class="ef-label" style="margin-bottom:0;">What's included</label>
@@ -180,10 +170,9 @@
       </div>
     </div>
 
-    <!-- ============ ACTIONS ============ -->
     <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d4">
       <a href="{% url 'vendor_proposals' %}"
-         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
         Cancel
       </a>
       <button type="submit"
@@ -198,87 +187,25 @@
 
   </form>
 
-  <!-- ============ TIP ============ -->
   <div class="mt-6 relative rounded-2xl border border-violet2-500/25 bg-violet2-500/[.04] p-4 overflow-hidden fade-up d4">
     <div class="flex items-start gap-3">
-      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
         </svg>
       </div>
-      <div class="text-xs text-ink-300 leading-relaxed">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 block mb-1">Tip</span>
+      <div class="text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400 block mb-1">Tip</span>
         Don't just lower your price — spell out what makes it worth it. Hosts award specificity, not cheapness.
       </div>
     </div>
   </div>
 
 </div>
+{% endblock %}
 
-<!-- ===================== PAGE STYLES ===================== -->
-<style>
-  .ef-input {
-    width: 100%;
-    padding: .8rem 1rem;
-    background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .75rem;
-    color: #f6f6f8;
-    font-size: .875rem;
-    transition: border-color .2s, background .2s, box-shadow .2s;
-    outline: none;
-    font-family: inherit;
-  }
-  .ef-input::placeholder { color: rgba(255,255,255,.28); }
-  .ef-input:hover { border-color: rgba(255,255,255,.15); }
-  .ef-input:focus {
-    border-color: #ff4800;
-    background: rgba(255,72,0,.04);
-    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
-  }
-  .ef-textarea { min-height: 110px; line-height: 1.6; resize: none; }
-
-  .ef-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-    padding-right: 2.5rem;
-  }
-  .ef-select option { background:#0a0a18; color:#f6f6f8; }
-
-  .ef-label {
-    display: block;
-    font-size: .75rem;
-    font-family: "JetBrains Mono", monospace;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #71718a;
-    margin-bottom: .5rem;
-  }
-  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
-
-  input:-webkit-autofill, input:-webkit-autofill:focus,
-  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f6f6f8;
-    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
-    transition: background-color 5000s ease-in-out 0s;
-  }
-
-  /* light mode */
-  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
-  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
-  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
-  html:not(.dark) input:-webkit-autofill,
-  html:not(.dark) textarea:-webkit-autofill {
-    -webkit-text-fill-color: #0a0a18;
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
-  }
-</style>
-
-<!-- ===================== SCRIPT ===================== -->
+{% block extra_scripts %}
 <script>
   (function () {
     function attachCounter(inputId, counterId) {
@@ -297,5 +224,4 @@
     attachCounter('id_includes', 'includes-count');
   })();
 </script>
-
 {% endblock %}

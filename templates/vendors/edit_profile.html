@@ -1,313 +1,276 @@
-{% extends "base_dashboard.html" %} 
-{% block title %}Edit Vendor Profile{% endblock %} 
-{% block page_title %}Edit Vendor Profile{% endblock %} 
+{% extends "base_dashboard.html" %}
+
+{% block title %}Edit vendor profile{% endblock %}
+{% block page_eyebrow %}Vendor{% endblock %}
+{% block page_title %}Edit vendor profile{% endblock %}
+
 {% block content %}
 <div class="max-w-3xl mx-auto">
-  <div class="mb-6">
-    <h2 class="text-xl font-bold">Edit Vendor Profile</h2>
-    <p class="text-sm text-surface-500 mt-1">
-      Update your business information
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="mb-8 fade-up d1">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">Your business</p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
+      Update your<br />
+      <span class="italic text-ink-500 dark:text-ink-400">vendor profile.</span>
+    </h2>
+    <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
+      This is what hosts see when they find you on the marketplace. Keep it sharp.
     </p>
   </div>
 
-  <form method="post" enctype="multipart/form-data" class="space-y-6">
+  <form method="post" enctype="multipart/form-data" class="space-y-6 fade-up d2">
     {% csrf_token %}
 
-    <!-- Basic Info -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Business Information</h3>
-      <div class="space-y-4">
+    <!-- ============ 01 BUSINESS INFO ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">01</span>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Business Name <span class="text-error-500">*</span></label
-          >
-          <input
-            type="text"
-            name="business_name"
-            value="{{ vendor.business_name }}"
-            required
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The basics</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Business information</h3>
         </div>
+      </div>
+
+      <div class="space-y-5">
+
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Description</label
-          >
-          <textarea
-            name="description"
-            rows="4"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm resize-none"
-          >
-{{ vendor.description }}</textarea
-          >
+          <label for="id_business_name" class="ef-label">Business name <span class="req">*</span></label>
+          <input id="id_business_name" type="text" name="business_name"
+                 value="{{ vendor.business_name }}" required
+                 class="ef-input" autocomplete="organization" />
         </div>
+
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Categories</label
-          >
-          <select
-            name="categories"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          >
+          <label for="id_description" class="ef-label">Description</label>
+          <textarea id="id_description" name="description" rows="4"
+                    class="ef-input ef-textarea resize-none"
+                    placeholder="What do you offer? Who do you usually work with?">{{ vendor.description }}</textarea>
+        </div>
+
+        <div>
+          <label for="id_categories" class="ef-label">Primary category</label>
+          <select id="id_categories" name="categories" class="ef-input ef-select">
             {% for value, label in categories %}
-            <option
-              value="{{ value }}"
-              {%
-              if
-              vendor.categories=""
-              ="value"
-              %}selected{%
-              endif
-              %}
-            >
-              {{ label }}
-            </option>
+              <option value="{{ value }}" {% if value in vendor.categories %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Your main service category
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ 02 CONTACT ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 font-mono text-xs">02</span>
+        <div>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">How to reach you</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Contact information</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="id_email" class="ef-label">Email</label>
+          <input id="id_email" type="email" name="email" value="{{ vendor.email }}"
+                 class="ef-input" autocomplete="email" />
+        </div>
+        <div>
+          <label for="id_phone" class="ef-label">Phone</label>
+          <input id="id_phone" type="tel" name="phone" value="{{ vendor.phone }}"
+                 class="ef-input" placeholder="+234 800 000 0000" autocomplete="tel" />
         </div>
       </div>
     </div>
 
-    <!-- Contact Info -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Contact Information</h3>
-      <div class="grid grid-cols-2 gap-4">
+    <!-- ============ 03 LOCATION ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-mono text-xs">03</span>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Email</label
-          >
-          <input
-            type="email"
-            name="email"
-            value="{{ vendor.email }}"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Where you work</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Location</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label for="id_city" class="ef-label">City</label>
+          <input id="id_city" type="text" name="city" value="{{ vendor.city }}"
+                 class="ef-input" autocomplete="address-level2" />
         </div>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Phone</label
-          >
-          <input
-            type="text"
-            name="phone"
-            value="{{ vendor.phone }}"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <label for="id_state" class="ef-label">State</label>
+          <input id="id_state" type="text" name="state" value="{{ vendor.state }}"
+                 class="ef-input" autocomplete="address-level1" />
+        </div>
+        <div>
+          <label for="id_country" class="ef-label">Country</label>
+          <input id="id_country" type="text" name="country" value="{{ vendor.country }}"
+                 class="ef-input" autocomplete="country-name" />
         </div>
       </div>
     </div>
 
-    <!-- Location -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Location</h3>
-      <div class="grid grid-cols-3 gap-4">
+    <!-- ============ 04 BUSINESS DETAILS ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-flame-500/15 border border-flame-500/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">04</span>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >City</label
-          >
-          <input
-            type="text"
-            name="city"
-            value="{{ vendor.city }}"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Track record</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Business details</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="id_years_in_business" class="ef-label">Years in business</label>
+          <input id="id_years_in_business" type="number" name="years_in_business"
+                 value="{{ vendor.years_in_business }}" min="0"
+                 class="ef-input" />
         </div>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >State</label
-          >
-          <input
-            type="text"
-            name="state"
-            value="{{ vendor.state }}"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
-        </div>
-        <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Country</label
-          >
-          <input
-            type="text"
-            name="country"
-            value="{{ vendor.country }}"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <label for="id_team_size" class="ef-label">Team size</label>
+          <input id="id_team_size" type="number" name="team_size"
+                 value="{{ vendor.team_size }}" min="1"
+                 class="ef-input" />
         </div>
       </div>
     </div>
 
-    <!-- Business Details -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Business Details</h3>
-      <div class="grid grid-cols-2 gap-4">
+    <!-- ============ 05 ONLINE PRESENCE ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 font-mono text-xs">05</span>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Years in Business</label
-          >
-          <input
-            type="number"
-            name="years_in_business"
-            value="{{ vendor.years_in_business }}"
-            min="0"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
-        </div>
-        <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Team Size</label
-          >
-          <input
-            type="number"
-            name="team_size"
-            value="{{ vendor.team_size }}"
-            min="1"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Find you online</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Online presence</h3>
         </div>
       </div>
-    </div>
 
-    <!-- Social & Web -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Online Presence</h3>
-      <div class="space-y-4">
+      <div class="space-y-5">
+
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Website</label
-          >
-          <input
-            type="url"
-            name="website"
-            value="{{ vendor.website }}"
-            placeholder="https://"
-            class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-          />
+          <label for="id_website" class="ef-label">Website</label>
+          <input id="id_website" type="url" name="website" value="{{ vendor.website }}"
+                 class="ef-input" placeholder="https://" autocomplete="url" />
         </div>
-        <div class="grid grid-cols-2 gap-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label
-              class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-              >Instagram</label
-            >
-            <input
-              type="url"
-              name="instagram"
-              value="{{ vendor.instagram }}"
-              placeholder="https://instagram.com/"
-              class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-            />
+            <label for="id_instagram" class="ef-label">Instagram</label>
+            <input id="id_instagram" type="url" name="instagram" value="{{ vendor.instagram }}"
+                   class="ef-input" placeholder="https://instagram.com/" />
           </div>
           <div>
-            <label
-              class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-              >Facebook</label
-            >
-            <input
-              type="url"
-              name="facebook"
-              value="{{ vendor.facebook }}"
-              placeholder="https://facebook.com/"
-              class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none text-sm"
-            />
+            <label for="id_facebook" class="ef-label">Facebook</label>
+            <input id="id_facebook" type="url" name="facebook" value="{{ vendor.facebook }}"
+                   class="ef-input" placeholder="https://facebook.com/" />
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- Images -->
-    <div
-      class="bg-white dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-6"
-    >
-      <h3 class="font-semibold mb-4">Images</h3>
-      <div class="grid grid-cols-2 gap-4">
+    <!-- ============ 06 IMAGES ============ -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-lime2-500"></div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-8 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 font-mono text-xs">06</span>
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Logo</label
-          >
+          <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Look &amp; feel</p>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Images</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <div>
+          <p class="ef-label">Logo</p>
           {% if vendor.logo %}
-          <div class="mb-2">
-            <img
-              src="{{ vendor.logo.url }}"
-              class="w-20 h-20 rounded-lg object-cover"
-              alt=""
-            />
-          </div>
+            <div class="mb-3 rounded-xl border border-ink-200 dark:border-white/10 overflow-hidden bg-ink-50 dark:bg-ink-950/50 p-3 inline-block">
+              <img src="{{ vendor.logo.url }}" class="w-20 h-20 rounded-lg object-cover" alt="" />
+            </div>
           {% endif %}
-          <input
-            type="file"
-            name="logo"
-            accept="image/*"
-            class="w-full text-sm text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
-          />
+          <input type="file" name="logo" accept="image/*"
+                 class="block w-full text-sm text-ink-500 dark:text-ink-400
+                        file:mr-4 file:border-0 file:rounded-lg
+                        file:bg-flame-600/15 file:text-flame-600 dark:file:text-flame-400
+                        file:px-4 file:py-2.5 file:text-sm file:font-medium
+                        hover:file:bg-flame-600/25 file:transition
+                        file:cursor-pointer" />
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Square image · 400×400 recommended
+          </p>
         </div>
+
         <div>
-          <label
-            class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
-            >Cover Image</label
-          >
+          <p class="ef-label">Cover image</p>
           {% if vendor.cover_image %}
-          <div class="mb-2">
-            <img
-              src="{{ vendor.cover_image.url }}"
-              class="w-full h-20 rounded-lg object-cover"
-              alt=""
-            />
-          </div>
+            <div class="mb-3 rounded-xl border border-ink-200 dark:border-white/10 overflow-hidden bg-ink-50 dark:bg-ink-950/50 p-2">
+              <img src="{{ vendor.cover_image.url }}" class="w-full h-20 rounded-md object-cover" alt="" />
+            </div>
           {% endif %}
-          <input
-            type="file"
-            name="cover_image"
-            accept="image/*"
-            class="w-full text-sm text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
-          />
+          <input type="file" name="cover_image" accept="image/*"
+                 class="block w-full text-sm text-ink-500 dark:text-ink-400
+                        file:mr-4 file:border-0 file:rounded-lg
+                        file:bg-flame-600/15 file:text-flame-600 dark:file:text-flame-400
+                        file:px-4 file:py-2.5 file:text-sm file:font-medium
+                        hover:file:bg-flame-600/25 file:transition
+                        file:cursor-pointer" />
+          <p class="mt-2 text-[11px] font-mono uppercase tracking-widest text-ink-500">
+            Wide banner · 1600×600 recommended
+          </p>
         </div>
+
       </div>
     </div>
 
-    <div class="flex items-center justify-between">
+    <!-- ============ ACTIONS ============ -->
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-between gap-3 pt-2 fade-up d3">
 
-      <a
-      href="{% url 'upload_vendor_document' %}"
-      class="text-sm font-medium text-warning-600 hover:underline"
-      >Upload Vendor Document</a>
+      <a href="{% url 'upload_vendor_document' %}"
+         class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-violet2-500/40 hover:border-violet2-500/60 hover:bg-violet2-500/10 text-violet2-600 dark:text-violet2-400 text-sm font-medium transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Upload verification document
+      </a>
 
-      <div class="flex items-center gap-3">
-        <a
-          href="{% url 'vendor_dashboard' %}"
-          class="px-6 py-3 text-sm font-medium text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
-          >Cancel</a
-        >
-        <button
-          type="submit"
-          class="px-6 py-3 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors"
-        >
-          Save Changes
+      <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
+        <a href="{% url 'vendor_dashboard' %}"
+           class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
+          Cancel
+        </a>
+        <button type="submit"
+                class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-flame-600 hover:bg-flame-500 text-white text-sm font-semibold transition">
+          Save changes
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
         </button>
       </div>
+
     </div>
+
   </form>
+
 </div>
 {% endblock %}

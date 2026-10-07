@@ -15,6 +15,7 @@ from .models import Seat
 from django.db import transaction
 
 from decimal import Decimal, InvalidOperation
+from django.views.decorators.http import require_POST
 
 @login_required
 def create_event(request):
@@ -122,6 +123,31 @@ def edit_event(request, event_id):
         'arrangements': SeatArrangement.choices,
     }
     return render(request, 'events/edit.html', context)
+
+
+@login_required
+@require_POST
+def delete_expense(request, expense_id):
+    """
+    Delete an expense. Only the event host can delete.
+
+    Production notes:
+    - @require_POST: destruction is destructive; reject GET.
+    - Ownership check: verify the expense belongs to an event hosted
+      by the requesting user. Never trust the id alone.
+    - 404 for unauthorized users (don't reveal existence).
+    """
+    expense = get_object_or_404(
+        Expense.objects.select_related('event'),
+        id=expense_id,
+        event__host=request.user,  
+    )
+
+    event_id = expense.event_id
+    expense.delete()
+
+    messages.success(request, "Expense deleted.")
+    return redirect('event_budget', event_id=event_id)
 
 @login_required
 def delete_event(request, event_id):

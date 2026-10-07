@@ -12,7 +12,6 @@
       rel="stylesheet"
     />
     <script>
-      // Set theme before paint to avoid flash of unstyled content.
       (function () {
         try {
           var saved = localStorage.getItem("darkMode");
@@ -31,198 +30,65 @@
   </head>
 
   <body
-    class="bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white"
+    class="bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans antialiased selection:bg-flame-600 selection:text-white transition-colors"
   >
     <!-- ===================== NAV ===================== -->
     <nav class="fixed top-0 inset-x-0 z-50 border-b bg-white/80 border-ink-200 dark:bg-ink-950/70 dark:border-white/5 backdrop-blur-xl transition-colors">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <a href="/" class="flex items-center">
-            <img
-              src="/media/event_banners/logoz1.png"
-              alt="EventzUp"
-              class="logo-dark-bg h-8 w-auto"
-            />
-            <img
-              src="/media/event_banners/Logoz2.png"
-              alt="EventzUp"
-              class="logo-light-bg h-8 w-auto"
-            />
+            <img src="{% static 'images/logoz1.png' %}" alt="EventzUp" class="logo-dark-bg h-8 w-auto" />
+            <img src="{% static 'images/Logoz2.png' %}" alt="EventzUp" class="logo-light-bg h-8 w-auto" />
           </a>
 
-          <div class="hidden md:flex items-center gap-1 text-sm text-ink-300">
-            <a
-              href="#features"
-              class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition"
-              >Features</a
-            >
-            <a
-              href="#how"
-              class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition"
-              >How it works</a
-            >
-            <a
-              href="#events"
-              class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition"
-              >Events</a
-            >
-            <a
-              href="#pricing"
-              class="px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition"
-              >Pricing</a
-            >
+          <div class="hidden md:flex items-center gap-1 text-sm">
+            <a href="#features" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Features</a>
+            <a href="#how" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">How it works</a>
+            <a href="#events" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Events</a>
+            <a href="#pricing" class="px-3 py-2 rounded-lg transition text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5">Pricing</a>
           </div>
 
           <div class="hidden md:flex items-center gap-2">
-            <!-- theme toggle -->
-            <button
-              type="button"
-              id="dark-mode-toggle"
-              class="p-2 rounded-lg text-ink-400 hover:text-white hover:bg-white/5 transition"
-              aria-label="Toggle theme"
-            >
-              <svg
-                class="w-5 h-5 dark:hidden"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.8"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                />
+            <button type="button" id="dark-mode-toggle" class="p-2 rounded-lg text-ink-500 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-400 dark:hover:text-white dark:hover:bg-white/5 transition" aria-label="Toggle theme">
+              <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
-              <svg
-                class="w-5 h-5 hidden dark:block"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.8"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                />
+              <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
             </button>
-
-            <a
-              href="{% url 'login' %}"
-              class="px-4 py-2 text-sm text-ink-200 hover:text-white transition"
-              >Sign in</a
-            >
-            <a
-              href="{% url 'register' %}"
-              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 rounded-lg transition"
-            >
+            <a href="{% url 'login' %}" class="px-4 py-2 text-sm text-ink-700 hover:text-ink-900 dark:text-ink-200 dark:hover:text-white transition">Sign in</a>
+            <a href="{% url 'register' %}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 rounded-lg transition">
               Get started
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
           </div>
 
-          <button
-            type="button"
-            id="landing-menu-btn"
-            class="md:hidden p-2 rounded-lg text-ink-300 hover:text-white hover:bg-white/5 transition"
-            aria-label="Open menu"
-            aria-expanded="false"
-          >
-            <svg
-              id="landing-menu-icon-open"
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+          <button type="button" id="landing-menu-btn" class="md:hidden p-2 rounded-lg text-ink-500 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-300 dark:hover:text-white dark:hover:bg-white/5 transition" aria-label="Open menu" aria-expanded="false">
+            <svg id="landing-menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <svg
-              id="landing-menu-icon-close"
-              class="w-5 h-5 hidden"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg id="landing-menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div
-          id="landing-menu"
-          class="hidden md:hidden pb-5 pt-2 border-t border-white/5"
-        >
+        <div id="landing-menu" class="hidden md:hidden pb-5 pt-2 border-t border-ink-200 dark:border-white/5">
           <div class="space-y-1">
-            <a
-              href="#features"
-              class="block px-3 py-2.5 rounded-lg text-sm text-ink-200 hover:text-white hover:bg-white/5 transition"
-              >Features</a
-            >
-            <a
-              href="#how"
-              class="block px-3 py-2.5 rounded-lg text-sm text-ink-200 hover:text-white hover:bg-white/5 transition"
-              >How it works</a
-            >
-            <a
-              href="#events"
-              class="block px-3 py-2.5 rounded-lg text-sm text-ink-200 hover:text-white hover:bg-white/5 transition"
-              >Events</a
-            >
-            <a
-              href="#pricing"
-              class="block px-3 py-2.5 rounded-lg text-sm text-ink-200 hover:text-white hover:bg-white/5 transition"
-              >Pricing</a
-            >
+            <a href="#features" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Features</a>
+            <a href="#how" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">How it works</a>
+            <a href="#events" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Events</a>
+            <a href="#pricing" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Pricing</a>
           </div>
-
-          <div class="mt-3 pt-3 border-t border-white/5 space-y-2">
-            <a
-              href="{% url 'login' %}"
-              class="block px-3 py-2.5 rounded-lg text-sm text-ink-200 hover:text-white hover:bg-white/5 transition"
-              >Sign in</a
-            >
-            <a
-              href="{% url 'register' %}"
-              class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-ink-950 bg-flame-600 hover:bg-flame-500 transition"
-            >
+          <div class="mt-3 pt-3 border-t border-ink-200 dark:border-white/5 space-y-2">
+            <a href="{% url 'login' %}" class="block px-3 py-2.5 rounded-lg text-sm text-ink-700 hover:text-ink-900 hover:bg-ink-100 dark:text-ink-200 dark:hover:text-white dark:hover:bg-white/5 transition">Sign in</a>
+            <a href="{% url 'register' %}" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white bg-flame-600 hover:bg-flame-500 transition">
               Get started
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
           </div>
@@ -237,135 +103,74 @@
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-12 gap-12 items-center">
           <div class="lg:col-span-7">
-            <div
-              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-flame-600/30 bg-flame-600/10 text-xs font-mono uppercase tracking-widest text-flame-400 mb-8"
-            >
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-flame-600/30 bg-flame-600/10 text-xs font-mono uppercase tracking-widest text-flame-500 dark:text-flame-400 mb-8">
               <span class="relative flex h-1.5 w-1.5">
-                <span
-                  class="absolute inset-0 rounded-full bg-flame-500 animate-pulse-ring"
-                ></span>
-                <span
-                  class="relative inline-flex rounded-full h-1.5 w-1.5 bg-flame-500"
-                ></span>
+                <span class="absolute inset-0 rounded-full bg-flame-500 animate-pulse-ring"></span>
+                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-flame-500"></span>
               </span>
               Live · Public beta
             </div>
 
-            <h1
-              class="font-display text-6xl sm:text-7xl lg:text-[6.5rem] leading-[0.95] tracking-tight"
-            >
+            <h1 class="font-display text-6xl sm:text-7xl lg:text-[6.5rem] leading-[0.95] tracking-tight text-ink-900 dark:text-ink-50">
               <span class="word d1">Events</span>
               <span class="word d2">that</span><br class="hidden sm:block" />
-              <span class="word d3 italic text-flame-500"
-                >run&nbsp;themselves.</span
-              ><br />
-              <span class="word d4 text-ink-400">Guests</span>
-              <span class="word d5 text-ink-400">that</span>
-              <span class="word d6 text-ink-400">just&nbsp;arrive.</span>
+              <span class="word d3 italic text-flame-500">run&nbsp;themselves.</span><br />
+              <span class="word d4 text-ink-500 dark:text-ink-400">Guests</span>
+              <span class="word d5 text-ink-500 dark:text-ink-400">that</span>
+              <span class="word d6 text-ink-500 dark:text-ink-400">just&nbsp;arrive.</span>
             </h1>
 
-            <p
-              class="mt-8 text-lg text-ink-300 max-w-xl leading-relaxed reveal"
-            >
+            <p class="mt-8 text-lg text-ink-600 dark:text-ink-300 max-w-xl leading-relaxed reveal">
               Create the event, share one link, and let EventzUp handle
               registration, QR tickets, seat assignment and door check-in — in
               real time, on any device.
             </p>
 
-            <div
-              class="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 reveal"
-            >
-              <a
-                href="{% url 'register' %}"
-                class="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition"
-              >
+            <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 reveal">
+              <a href="{% url 'register' %}" class="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition">
                 Create your first event
-                <svg
-                  class="w-4 h-4 transition-transform group-hover:translate-x-1"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </a>
-              <a
-                href="#how"
-                class="inline-flex items-center gap-3 px-6 py-3.5 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 transition"
-              >
-                <svg
-                  class="w-4 h-4 text-violet2-400"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+              <a href="#how" class="inline-flex items-center gap-3 px-6 py-3.5 rounded-xl border border-ink-200 hover:border-ink-300 hover:bg-ink-100 dark:border-white/10 dark:hover:border-white/25 dark:hover:bg-white/5 text-ink-800 dark:text-ink-100 transition">
+                <svg class="w-4 h-4 text-violet2-500 dark:text-violet2-400" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>
                 Watch 60-sec demo
               </a>
             </div>
 
-            <div
-              class="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 text-xs font-mono uppercase tracking-widest text-ink-400 reveal"
-            >
-              <div class="flex items-center gap-2">
-                <span class="text-lime2-500">✓</span> No card required
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-lime2-500">✓</span> Live in 2 minutes
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-lime2-500">✓</span> Unlimited guests
-              </div>
+            <div class="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 text-xs font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400 reveal">
+              <div class="flex items-center gap-2"><span class="text-lime2-600 dark:text-lime2-500">✓</span> No card required</div>
+              <div class="flex items-center gap-2"><span class="text-lime2-600 dark:text-lime2-500">✓</span> Live in 2 minutes</div>
+              <div class="flex items-center gap-2"><span class="text-lime2-600 dark:text-lime2-500">✓</span> Unlimited guests</div>
             </div>
           </div>
 
           <div class="lg:col-span-5 relative h-[520px] hidden lg:block">
-            <div
-              class="absolute top-8 right-0 w-[360px] animate-float"
-              style="--r: 3deg"
-            >
-              <div
-                class="rounded-2xl bg-ink-900 border border-white/10 p-6 shadow-2xl shadow-black/60"
-              >
-                <div
-                  class="flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-ink-400"
-                >
+            <div class="absolute top-8 right-0 w-[360px] animate-float" style="--r: 3deg">
+              <div class="rounded-2xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-white/10 p-6 shadow-2xl shadow-ink-300/40 dark:shadow-black/60">
+                <div class="flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400">
                   <span>Ticket · #0042</span>
-                  <span
-                    class="px-2 py-0.5 rounded-full bg-violet2-500/15 text-violet2-400 border border-violet2-500/30"
-                    >VIP</span
-                  >
+                  <span class="px-2 py-0.5 rounded-full bg-violet2-500/15 text-violet2-600 dark:text-violet2-400 border border-violet2-500/30">VIP</span>
                 </div>
                 <div class="mt-4">
-                  <p class="font-display text-3xl leading-none">
-                    Sofia Almeida
-                  </p>
-                  <p class="mt-1 text-xs text-ink-400">sofia@studio.co</p>
+                  <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">Sofia Almeida</p>
+                  <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">sofia@studio.co</p>
                 </div>
                 <div class="mt-6 flex items-end justify-between">
-                  <div class="space-y-1 text-xs text-ink-300">
-                    <p>
-                      <span class="text-ink-500">Event</span> · Design Summit
-                      '26
-                    </p>
+                  <div class="space-y-1 text-xs text-ink-700 dark:text-ink-300">
+                    <p><span class="text-ink-500">Event</span> · Design Summit '26</p>
                     <p><span class="text-ink-500">Seat</span> · A-14 · Row 3</p>
-                    <p>
-                      <span class="text-ink-500">Date</span> · Nov 21 · 7:00 PM
-                    </p>
+                    <p><span class="text-ink-500">Date</span> · Nov 21 · 7:00 PM</p>
                   </div>
-                  <div
-                    class="w-16 h-16 rounded-lg bg-white grid place-items-center"
-                  >
+                  <div class="w-16 h-16 rounded-lg bg-ink-900 dark:bg-white grid place-items-center">
                     <svg
-                      class="w-12 h-12"
+                      class="w-12 h-12 text-white dark:text-ink-950"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#0a0a18"
+                      stroke="currentColor"
                       stroke-width="1.5"
                     >
                       <rect x="3" y="3" width="7" height="7" />
@@ -378,104 +183,82 @@
               </div>
             </div>
 
-            <div
-              class="absolute bottom-4 left-0 w-[280px] animate-float-slow"
-              style="--r: -2deg"
-            >
-              <div
-                class="rounded-2xl bg-ink-900/95 backdrop-blur border border-white/10 p-5 shadow-xl shadow-black/50"
-              >
+            <div class="absolute bottom-4 left-0 w-[280px] animate-float-slow" style="--r: -2deg">
+              <div class="rounded-2xl bg-white/95 dark:bg-ink-900/95 backdrop-blur border border-ink-200 dark:border-white/10 p-5 shadow-xl shadow-ink-300/40 dark:shadow-black/50">
                 <div class="flex items-center justify-between">
-                  <p
-                    class="text-xs font-mono uppercase tracking-widest text-ink-400"
-                  >
-                    Door · 1
-                  </p>
-                  <span
-                    class="inline-flex items-center gap-1 text-[10px] font-mono text-lime2-500"
-                  >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"
-                    ></span>
+                  <p class="text-xs font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400">Door · 1</p>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-mono text-lime2-600 dark:text-lime2-500">
+                    <span class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"></span>
                     LIVE
                   </span>
                 </div>
-                <p class="font-display text-4xl mt-3">
-                  1,423<span class="text-ink-500 text-2xl">/1,847</span>
-                </p>
-                <div class="mt-3 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                <p class="font-display text-4xl mt-3 text-ink-900 dark:text-ink-50">1,423<span class="text-ink-400 dark:text-ink-500 text-2xl">/1,847</span></p>
+                <div class="mt-3 h-1.5 rounded-full bg-ink-100 dark:bg-white/5 overflow-hidden">
                   <div class="h-full w-[77%] bg-lime2-500"></div>
                 </div>
-                <p class="mt-3 text-[11px] text-ink-400">
-                  77.1% checked in · avg 4.2s scan
-                </p>
+                <p class="mt-3 text-[11px] text-ink-500 dark:text-ink-400">77.1% checked in · avg 4.2s scan</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="relative mt-20 border-y border-white/5 py-5 overflow-hidden">
+      <div class="relative mt-20 border-y border-ink-200 dark:border-white/5 py-5 overflow-hidden">
         <div class="ef-marquee">
-          <div
-            class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-400"
-          >
-            <span class="text-ink-200">Weddings</span>
+          <div class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-500 dark:text-ink-400">
+            <span class="text-ink-800 dark:text-ink-200">Weddings</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Birthday parties</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Conferences</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Corporate galas</span>
+            <span class="text-ink-800 dark:text-ink-200">Birthday parties</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Conferences</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Corporate galas</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Product launches</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Festivals</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Anniversaries</span>
+            <span class="text-ink-800 dark:text-ink-200">Product launches</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Festivals</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Anniversaries</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Bridal showers</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Graduations</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Networking nights</span>
+            <span class="text-ink-800 dark:text-ink-200">Bridal showers</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Graduations</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Networking nights</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Charity dinners</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Pop-up markets</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Workshops</span>
+            <span class="text-ink-800 dark:text-ink-200">Charity dinners</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Pop-up markets</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Workshops</span>
             <span class="text-flame-500">●</span>
           </div>
-          <div
-            class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-400"
-            aria-hidden="true"
-          >
-            <span class="text-ink-200">Weddings</span>
+          <div class="flex items-center gap-10 pr-10 text-sm font-mono uppercase tracking-[0.2em] text-ink-500 dark:text-ink-400" aria-hidden="true">
+            <span class="text-ink-800 dark:text-ink-200">Weddings</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Birthday parties</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Conferences</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Corporate galas</span>
+            <span class="text-ink-800 dark:text-ink-200">Birthday parties</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Conferences</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Corporate galas</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Product launches</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Festivals</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Anniversaries</span>
+            <span class="text-ink-800 dark:text-ink-200">Product launches</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Festivals</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Anniversaries</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Bridal showers</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Graduations</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Networking nights</span>
+            <span class="text-ink-800 dark:text-ink-200">Bridal showers</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Graduations</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Networking nights</span>
             <span class="text-flame-500">●</span>
-            <span class="text-ink-200">Charity dinners</span>
-            <span class="text-violet2-400">●</span>
-            <span class="text-ink-200">Pop-up markets</span>
-            <span class="text-lime2-500">●</span>
-            <span class="text-ink-200">Workshops</span>
+            <span class="text-ink-800 dark:text-ink-200">Charity dinners</span>
+            <span class="text-violet2-500 dark:text-violet2-400">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Pop-up markets</span>
+            <span class="text-lime2-600 dark:text-lime2-500">●</span>
+            <span class="text-ink-800 dark:text-ink-200">Workshops</span>
             <span class="text-flame-500">●</span>
           </div>
         </div>
@@ -486,274 +269,193 @@
     <section id="features" class="relative py-32">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-2xl mb-16 reveal">
-          <p
-            class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4"
-          >
-            01 / Features
-          </p>
-          <h2
-            class="font-display text-5xl sm:text-6xl leading-[1.02] tracking-tight"
-          >
+          <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4">01 / Features</p>
+          <h2 class="font-display text-5xl sm:text-6xl leading-[1.02] tracking-tight text-ink-900 dark:text-ink-50">
             Everything the door needs.<br />
-            <span class="italic text-ink-400">Nothing it doesn't.</span>
+            <span class="italic text-ink-500 dark:text-ink-400">Nothing it doesn't.</span>
           </h2>
         </div>
 
-        <div
-          class="grid grid-cols-1 md:grid-cols-6 gap-4 md:auto-rows-[minmax(180px,auto)]"
-        >
-          <div
-            class="reveal md:col-span-4 md:row-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-8 overflow-hidden"
-          >
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 md:auto-rows-[minmax(180px,auto)]">
+          <div class="reveal md:col-span-4 md:row-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-8 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-violet2-500"></div>
             <div class="relative">
-              <div
-                class="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-violet2-400"
-              >
+              <div class="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-violet2-600 dark:text-violet2-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-violet2-500"></span>
                 Signature
               </div>
-              <h3 class="mt-3 font-display text-4xl leading-tight">
-                Smart QR validation
-              </h3>
-              <p class="mt-3 text-ink-300 max-w-lg">
-                One scan. Instant yes or no. Duplicate prevention,
-                offline-tolerant, with audio feedback so door staff never look
-                down.
+              <h3 class="mt-3 font-display text-4xl leading-tight text-ink-900 dark:text-ink-50">Smart QR validation</h3>
+              <p class="mt-3 text-ink-600 dark:text-ink-300 max-w-lg">
+                One scan. Instant yes or no. Duplicate prevention, offline-tolerant, with audio feedback so door staff never look down.
               </p>
 
-              <div
-                class="mt-8 rounded-2xl border border-white/10 bg-ink-950/60 p-5 grid grid-cols-[1fr_auto] gap-6 items-center"
-              >
+              <div class="mt-8 rounded-2xl border border-ink-200 dark:border-white/10 bg-ink-50 dark:bg-ink-950/60 p-5 grid grid-cols-[1fr_auto] gap-6 items-center">
                 <div>
-                  <p
-                    class="font-mono text-[10px] uppercase tracking-widest text-ink-500"
-                  >
-                    Scanning
-                  </p>
-                  <p class="font-display text-2xl mt-1">Guest · #0042</p>
-                  <p class="text-xs text-lime2-500 mt-1">✓ Valid — Seat A-14</p>
-                  <div class="mt-4 h-1 rounded-full bg-white/5 overflow-hidden">
+                  <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Scanning</p>
+                  <p class="font-display text-2xl mt-1 text-ink-900 dark:text-ink-50">Guest · #0042</p>
+                  <p class="text-xs text-lime2-600 dark:text-lime2-500 mt-1">✓ Valid — Seat A-14</p>
+                  <div class="mt-4 h-1 rounded-full bg-ink-200 dark:bg-white/5 overflow-hidden">
                     <div class="h-full w-2/3 bg-violet2-500"></div>
                   </div>
                 </div>
-                <div
-                  class="relative w-24 h-24 rounded-xl border-2 border-violet2-500/60 grid place-items-center overflow-hidden"
-                >
-                  <div class="w-16 h-16 bg-white/90 rounded-md"></div>
-                  <div
-                    class="absolute left-0 right-0 h-0.5 bg-violet2-400 animate-scan"
-                    style="box-shadow: 0 0 12px 2px rgba(124, 92, 255, 0.9)"
-                  ></div>
+                <div class="relative w-24 h-24 rounded-xl border-2 border-violet2-500/60 grid place-items-center overflow-hidden">
+                  <div class="relative w-24 h-24 rounded-xl border-2 border-violet2-500/60 grid place-items-center overflow-hidden">
+                    <!-- QR surface: always light, in both themes -->
+                    <div class="w-16 h-16 bg-white rounded-md p-1.5">
+                      <!-- Simple QR pattern using CSS grid of tiny squares -->
+                      <svg viewBox="0 0 21 21" class="w-full h-full text-ink-950" fill="currentColor" aria-hidden="true">
+                        <!-- Top-left finder -->
+                        <rect x="0" y="0" width="7" height="7" />
+                        <rect x="1" y="1" width="5" height="5" fill="white" />
+                        <rect x="2" y="2" width="3" height="3" />
+                        <!-- Top-right finder -->
+                        <rect x="14" y="0" width="7" height="7" />
+                        <rect x="15" y="1" width="5" height="5" fill="white" />
+                        <rect x="16" y="2" width="3" height="3" />
+                        <!-- Bottom-left finder -->
+                        <rect x="0" y="14" width="7" height="7" />
+                        <rect x="1" y="15" width="5" height="5" fill="white" />
+                        <rect x="2" y="16" width="3" height="3" />
+                        <!-- Random data modules -->
+                        <rect x="9" y="0" width="1" height="1" />
+                        <rect x="11" y="0" width="1" height="1" />
+                        <rect x="9" y="2" width="1" height="1" />
+                        <rect x="10" y="3" width="1" height="1" />
+                        <rect x="12" y="4" width="1" height="1" />
+                        <rect x="9" y="5" width="1" height="1" />
+                        <rect x="11" y="6" width="1" height="1" />
+                        <rect x="0" y="9" width="1" height="1" />
+                        <rect x="2" y="9" width="1" height="1" />
+                        <rect x="4" y="9" width="1" height="1" />
+                        <rect x="6" y="9" width="1" height="1" />
+                        <rect x="1" y="10" width="1" height="1" />
+                        <rect x="3" y="11" width="1" height="1" />
+                        <rect x="5" y="11" width="1" height="1" />
+                        <rect x="9" y="9" width="1" height="1" />
+                        <rect x="11" y="9" width="1" height="1" />
+                        <rect x="13" y="9" width="1" height="1" />
+                        <rect x="15" y="9" width="1" height="1" />
+                        <rect x="17" y="9" width="1" height="1" />
+                        <rect x="19" y="9" width="1" height="1" />
+                        <rect x="10" y="10" width="1" height="1" />
+                        <rect x="12" y="11" width="1" height="1" />
+                        <rect x="14" y="11" width="1" height="1" />
+                        <rect x="16" y="11" width="1" height="1" />
+                        <rect x="18" y="11" width="1" height="1" />
+                        <rect x="9" y="13" width="1" height="1" />
+                        <rect x="11" y="13" width="1" height="1" />
+                        <rect x="13" y="13" width="1" height="1" />
+                        <rect x="15" y="13" width="1" height="1" />
+                        <rect x="17" y="13" width="1" height="1" />
+                        <rect x="19" y="13" width="1" height="1" />
+                        <rect x="10" y="14" width="1" height="1" />
+                        <rect x="12" y="15" width="1" height="1" />
+                        <rect x="14" y="16" width="1" height="1" />
+                        <rect x="16" y="17" width="1" height="1" />
+                        <rect x="18" y="18" width="1" height="1" />
+                        <rect x="20" y="19" width="1" height="1" />
+                        <rect x="9" y="17" width="1" height="1" />
+                        <rect x="11" y="19" width="1" height="1" />
+                        <rect x="13" y="20" width="1" height="1" />
+                        <rect x="15" y="19" width="1" height="1" />
+                        <rect x="17" y="20" width="1" height="1" />
+                      </svg>
+                    </div>
+                    <!-- Scanning line: always visible -->
+                    <div class="absolute left-0 right-0 h-0.5 bg-violet2-400 animate-scan" style="box-shadow: 0 0 12px 2px rgba(124, 92, 255, 0.9)"></div>
+                  </div>
+                  <div class="absolute left-0 right-0 h-0.5 bg-violet2-400 animate-scan" style="box-shadow: 0 0 12px 2px rgba(124, 92, 255, 0.9)"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div
-            class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
-          >
+          <div class="reveal md:col-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-7 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-flame-600"></div>
-            <div
-              class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 mb-5"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+            <div class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <h3 class="font-display text-2xl">Guest management</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              No accounts to create. Import, tag, assign seats — export in one
-              click.
-            </p>
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">Guest management</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">No accounts to create. Import, tag, assign seats — export in one click.</p>
           </div>
 
-          <div
-            class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
-          >
+          <div class="reveal md:col-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-7 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-lime2-500"></div>
-            <div
-              class="w-10 h-10 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 mb-5"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3 17l6-6 4 4 8-8"
-                />
+            <div class="w-10 h-10 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 8-8" />
               </svg>
             </div>
-            <h3 class="font-display text-2xl">Live analytics</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              Peak check-in windows, no-show rate, seat heatmap — updating by
-              the second.
-            </p>
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">Live analytics</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Peak check-in windows, no-show rate, seat heatmap — updating by the second.</p>
           </div>
 
-          <div
-            class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
-          >
+          <div class="reveal md:col-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-7 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-violet2-500"></div>
-            <div
-              class="w-10 h-10 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 mb-5"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
+            <div class="w-10 h-10 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <rect x="4" y="4" width="16" height="16" rx="2" />
                 <path d="M9 4v16M15 4v16M4 9h16M4 15h16" />
               </svg>
             </div>
-            <h3 class="font-display text-2xl">Seat mapping</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              VIP, tables, rows — configured in a drag-and-drop editor.
-            </p>
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">Seat mapping</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">VIP, tables, rows — configured in a drag-and-drop editor.</p>
           </div>
 
-          <div
-            class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
-          >
+          <div class="reveal md:col-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-7 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-flame-600"></div>
-            <div
-              class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 mb-5"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                />
+            <div class="w-10 h-10 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 class="font-display text-2xl">Mobile scanner</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              Turn any phone into a door scanner. No hardware to buy.
-            </p>
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">Mobile scanner</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Turn any phone into a door scanner. No hardware to buy.</p>
           </div>
 
-          <div
-            class="reveal md:col-span-2 relative rounded-3xl border border-white/10 bg-ink-900 p-7 overflow-hidden"
-          >
+          <div class="reveal md:col-span-2 relative rounded-3xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-7 overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-lime2-500"></div>
-            <div
-              class="w-10 h-10 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-500 mb-5"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4M3 17l9 4 9-4"
-                />
+            <div class="w-10 h-10 rounded-lg bg-lime2-500/15 border border-lime2-500/25 grid place-items-center text-lime2-600 dark:text-lime2-500 mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4M3 17l9 4 9-4" />
               </svg>
             </div>
-            <h3 class="font-display text-2xl">Vendor marketplace</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              Caterers, DJs, photographers — sourced inside the same flow.
-            </p>
+            <h3 class="font-display text-2xl text-ink-900 dark:text-ink-50">Vendor marketplace</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Caterers, DJs, photographers — sourced inside the same flow.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ======================= EVENTS ======================= -->
-    <section id="events" class="relative py-24 border-t border-white/5">
+    <section id="events" class="relative py-24 border-t border-ink-200 dark:border-white/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal"
-        >
+        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal">
           <div>
-            <p
-              class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4"
-            >
-              02 / Upcoming
-            </p>
-            <h2 class="font-display text-5xl leading-none tracking-tight">
-              On the calendar.
-            </h2>
+            <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4">02 / Upcoming</p>
+            <h2 class="font-display text-5xl leading-none tracking-tight text-ink-900 dark:text-ink-50">On the calendar.</h2>
           </div>
-          <a
-            href="{% url 'event_browse' %}"
-            class="text-sm text-ink-300 hover:text-white transition inline-flex items-center gap-2"
-          >
+          <a href="{% url 'event_browse' %}" class="text-sm text-ink-600 hover:text-ink-900 dark:text-ink-300 dark:hover:text-white transition inline-flex items-center gap-2">
             Browse all events
-            <svg
-              class="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {% for event in events %}
-          <article
-            class="reveal group relative rounded-3xl overflow-hidden border border-white/10 bg-ink-900 hover:border-white/20 transition-all duration-500 hover:-translate-y-1"
-          >
-            <a
-              href="{% url 'event_public' event.id %}"
-              class="absolute inset-0 z-10"
-              aria-label="View {{ event.name }} and reserve a seat"
-            ></a>
+          <article class="reveal group relative rounded-3xl overflow-hidden border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 hover:border-ink-300 dark:hover:border-white/20 transition-all duration-500 hover:-translate-y-1">
+            <a href="{% url 'event_public' event.id %}" class="absolute inset-0 z-10" aria-label="View {{ event.name }} and reserve a seat"></a>
 
             <div class="relative p-3">
-              <div
-                class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-ink-800"
-              >
+              <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-ink-100 dark:bg-ink-800">
                 {% if event.banner %}
-                <img
-                  src="{{ event.banner.url }}"
-                  alt="{{ event.name }}"
-                  loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-                />
+                <img src="{{ event.banner.url }}" alt="{{ event.name }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]" />
                 {% else %}
-                <div class="w-full h-full grid place-items-center text-ink-600">
-                  <svg
-                    class="w-10 h-10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.2"
-                  >
+                <div class="w-full h-full grid place-items-center text-ink-400 dark:text-ink-600">
+                  <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                     <rect x="3" y="5" width="18" height="16" rx="2" />
                     <path d="M3 10h18M8 3v4M16 3v4" />
                   </svg>
@@ -762,66 +464,32 @@
 
                 <div class="absolute inset-0 bg-ink-950/40"></div>
 
-                <div
-                  class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-950/80 backdrop-blur border border-white/10"
-                >
+                <div class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-950/80 backdrop-blur border border-white/10">
                   <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
-                  <span
-                    class="text-[10px] font-mono uppercase tracking-widest text-ink-200"
-                  >
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-ink-200">
                     {% if event.category %}{{ event.category }}{% else %}Event{% endif %}
                   </span>
                 </div>
 
                 <div class="absolute top-3 right-3 text-right">
-                  <div
-                    class="px-2.5 py-1 rounded-lg bg-white/95 text-ink-950 shadow-lg shadow-black/30"
-                  >
-                    <p
-                      class="font-mono text-[9px] uppercase tracking-widest leading-none"
-                      style="color: #05050d"
-                    >
-                      {{ event.date|date:"M" }}
-                    </p>
-                    <p
-                      class="font-display text-xl leading-none mt-0.5"
-                      style="color: #05050d"
-                    >
-                      {{ event.date|date:"d" }}
-                    </p>
+                  <div class="px-2.5 py-1 rounded-lg bg-white/95 text-ink-950 shadow-lg shadow-black/30">
+                    <p class="font-mono text-[9px] uppercase tracking-widest leading-none" style="color: #05050d">{{ event.date|date:"M" }}</p>
+                    <p class="font-display text-xl leading-none mt-0.5" style="color: #05050d">{{ event.date|date:"d" }}</p>
                   </div>
                 </div>
 
-                <div
-                  class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-100"
-                >
+                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-100">
                   <span class="inline-flex items-center gap-1.5">
-                    <svg
-                      class="w-3 h-3 text-flame-500"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
+                    <svg class="w-3 h-3 text-flame-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="12" cy="12" r="9" />
                       <path d="M12 7v5l3 2" />
                     </svg>
                     {{ event.date|date:"g:i A" }}
                   </span>
                   {% if event.venue %}
-                  <span
-                    class="inline-flex items-center gap-1.5 truncate max-w-[60%]"
-                  >
-                    <svg
-                      class="w-3 h-3 text-violet2-400"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"
-                      />
+                  <span class="inline-flex items-center gap-1.5 truncate max-w-[60%]">
+                    <svg class="w-3 h-3 text-violet2-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z" />
                       <circle cx="12" cy="10" r="2.5" />
                     </svg>
                     <span class="truncate">{{ event.venue }}</span>
@@ -832,106 +500,58 @@
             </div>
 
             <div class="px-6 pb-6 pt-2">
-              <h3
-                class="font-display text-2xl leading-tight tracking-tight group-hover:text-white transition"
-              >
-                {{ event.name }}
-              </h3>
+              <h3 class="font-display text-2xl leading-tight tracking-tight text-ink-900 dark:text-ink-50 group-hover:text-flame-500 dark:group-hover:text-white transition">{{ event.name }}</h3>
 
-              <p class="mt-2 text-sm text-ink-400 line-clamp-2 min-h-[2.5rem]">
-                {{ event.description|truncatechars:110 }}
-              </p>
+              <p class="mt-2 text-sm text-ink-500 dark:text-ink-400 line-clamp-2 min-h-[2.5rem]">{{ event.description|truncatechars:110 }}</p>
 
               {% if event.max_capacity %}
               <div class="mt-5">
-                <div
-                  class="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500 mb-2"
-                >
+                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500 mb-2">
                   <span>Seats filling</span>
-                  <span class="text-ink-300">
-                    {{ event.registered_guests|default:0 }} / {{ event.max_capacity }}
-                  </span>
+                  <span class="text-ink-700 dark:text-ink-300">{{ event.registered_guests|default:0 }} / {{ event.max_capacity }}</span>
                 </div>
-                <div class="h-1 rounded-full bg-white/5 overflow-hidden">
+                <div class="h-1 rounded-full bg-ink-200 dark:bg-white/5 overflow-hidden">
                   {% widthratio event.registered_guests|default:0 event.max_capacity 100 as pct %}
-                  <div
-                    class="h-full bg-flame-500 rounded-full transition-all duration-700 group-hover:bg-flame-400"
-                    style="width: {{ pct }}%"
-                  ></div>
+                  <div class="h-full bg-flame-500 rounded-full transition-all duration-700 group-hover:bg-flame-400" style="width: {{ pct }}%"></div>
                 </div>
               </div>
               {% endif %}
 
               <div class="mt-6 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span
-                    class="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-lime2-500"
-                  >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"
-                    ></span>
+                  <span class="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
+                    <span class="w-1.5 h-1.5 rounded-full bg-lime2-500 animate-pulse"></span>
                     Open
                   </span>
-
                   {% if event.is_paid %}
-                  <span class="text-ink-600">·</span>
-                  <span class="text-sm font-medium text-flame-500"
-                    >₦{{ event.price|floatformat:0 }}</span
-                  >
+                  <span class="text-ink-400 dark:text-ink-600">·</span>
+                  <span class="text-sm font-medium text-flame-500">₦{{ event.price|floatformat:0 }}</span>
                   {% else %}
-                  <span class="text-ink-600">·</span>
-                  <span class="text-sm font-medium text-ink-300">Free</span>
+                  <span class="text-ink-400 dark:text-ink-600">·</span>
+                  <span class="text-sm font-medium text-ink-700 dark:text-ink-300">Free</span>
                   {% endif %}
                 </div>
 
-                <span
-                  class="inline-flex items-center gap-1.5 text-sm font-medium text-flame-500 group-hover:text-flame-400 transition"
-                >
+                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-flame-500 group-hover:text-flame-400 transition">
                   Reserve
-                  <svg
-                    class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
+                  <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </span>
               </div>
             </div>
           </article>
           {% empty %}
-          <div
-            class="col-span-full flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-white/10 bg-ink-900/50 text-center"
-          >
-            <div
-              class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 mb-4"
-            >
-              <svg
-                class="w-6 h-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
+          <div class="col-span-full flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed border-ink-300 dark:border-white/10 bg-ink-50 dark:bg-ink-900/50 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 mb-4">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <rect x="3" y="5" width="18" height="16" rx="2" />
                 <path d="M3 10h18M8 3v4M16 3v4" />
               </svg>
             </div>
-            <h3 class="font-display text-3xl">Nothing on the calendar</h3>
-            <p class="mt-2 text-sm text-ink-400 max-w-sm">
-              There are no public events yet. Check back soon, or create your
-              own.
-            </p>
-            <a
-              href="{% url 'register' %}"
-              class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-ink-950 text-sm font-semibold transition"
-            >
+            <h3 class="font-display text-3xl text-ink-900 dark:text-ink-50">Nothing on the calendar</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400 max-w-sm">There are no public events yet. Check back soon, or create your own.</p>
+            <a href="{% url 'register' %}" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white text-sm font-semibold transition">
               Create an event
             </a>
           </div>
@@ -941,129 +561,64 @@
     </section>
 
     <!-- ======================= HOW IT WORKS ======================= -->
-    <section id="how" class="relative py-32 border-t border-white/5">
+    <section id="how" class="relative py-32 border-t border-ink-200 dark:border-white/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-2xl mb-20 reveal">
-          <p
-            class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4"
-          >
-            03 / How it works
-          </p>
-          <h2
-            class="font-display text-5xl sm:text-6xl leading-[1.02] tracking-tight"
-          >
-            Four steps. <span class="italic text-ink-400">Zero chaos.</span>
+          <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-4">03 / How it works</p>
+          <h2 class="font-display text-5xl sm:text-6xl leading-[1.02] tracking-tight text-ink-900 dark:text-ink-50">
+            Four steps. <span class="italic text-ink-500 dark:text-ink-400">Zero chaos.</span>
           </h2>
         </div>
 
         <div class="grid md:grid-cols-4 gap-4">
-          <div
-            class="reveal bg-ink-900 rounded-3xl p-8 border border-white/10 border-t-2 border-t-flame-600"
-          >
-            <p class="font-mono text-[11px] tracking-widest text-flame-500">
-              STEP 01
-            </p>
-            <p class="font-display text-7xl mt-6 leading-none text-ink-700">
-              01
-            </p>
-            <h3 class="mt-6 font-display text-2xl">Create</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              Add venue, capacity, seating. Pick a template — or start blank.
-            </p>
+          <div class="reveal bg-white dark:bg-ink-900 rounded-3xl p-8 border border-ink-200 dark:border-white/10 border-t-2 border-t-flame-600">
+            <p class="font-mono text-[11px] tracking-widest text-flame-500">STEP 01</p>
+            <p class="font-display text-7xl mt-6 leading-none text-ink-200 dark:text-ink-700">01</p>
+            <h3 class="mt-6 font-display text-2xl text-ink-900 dark:text-ink-50">Create</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Add venue, capacity, seating. Pick a template — or start blank.</p>
           </div>
-          <div
-            class="reveal bg-ink-900 rounded-3xl p-8 border border-white/10 border-t-2 border-t-violet2-500"
-          >
-            <p class="font-mono text-[11px] tracking-widest text-violet2-400">
-              STEP 02
-            </p>
-            <p class="font-display text-7xl mt-6 leading-none text-ink-700">
-              02
-            </p>
-            <h3 class="mt-6 font-display text-2xl">Share</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              One link. Guests register in seconds — no account required.
-            </p>
+          <div class="reveal bg-white dark:bg-ink-900 rounded-3xl p-8 border border-ink-200 dark:border-white/10 border-t-2 border-t-violet2-500">
+            <p class="font-mono text-[11px] tracking-widest text-violet2-600 dark:text-violet2-400">STEP 02</p>
+            <p class="font-display text-7xl mt-6 leading-none text-ink-200 dark:text-ink-700">02</p>
+            <h3 class="mt-6 font-display text-2xl text-ink-900 dark:text-ink-50">Share</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">One link. Guests register in seconds — no account required.</p>
           </div>
-          <div
-            class="reveal bg-ink-900 rounded-3xl p-8 border border-white/10 border-t-2 border-t-lime2-500"
-          >
-            <p class="font-mono text-[11px] tracking-widest text-lime2-500">
-              STEP 03
-            </p>
-            <p class="font-display text-7xl mt-6 leading-none text-ink-700">
-              03
-            </p>
-            <h3 class="mt-6 font-display text-2xl">Issue</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              QR ticket with seat, timing and directions sent instantly.
-            </p>
+          <div class="reveal bg-white dark:bg-ink-900 rounded-3xl p-8 border border-ink-200 dark:border-white/10 border-t-2 border-t-lime2-500">
+            <p class="font-mono text-[11px] tracking-widest text-lime2-600 dark:text-lime2-500">STEP 03</p>
+            <p class="font-display text-7xl mt-6 leading-none text-ink-200 dark:text-ink-700">03</p>
+            <h3 class="mt-6 font-display text-2xl text-ink-900 dark:text-ink-50">Issue</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">QR ticket with seat, timing and directions sent instantly.</p>
           </div>
-          <div
-            class="reveal bg-ink-900 rounded-3xl p-8 border border-white/10 border-t-2 border-t-flame-600"
-          >
-            <p class="font-mono text-[11px] tracking-widest text-flame-500">
-              STEP 04
-            </p>
-            <p class="font-display text-7xl mt-6 leading-none text-ink-700">
-              04
-            </p>
-            <h3 class="mt-6 font-display text-2xl">Scan</h3>
-            <p class="mt-2 text-sm text-ink-400">
-              Any phone becomes a scanner. Doors move, guests smile.
-            </p>
+          <div class="reveal bg-white dark:bg-ink-900 rounded-3xl p-8 border border-ink-200 dark:border-white/10 border-t-2 border-t-flame-600">
+            <p class="font-mono text-[11px] tracking-widest text-flame-500">STEP 04</p>
+            <p class="font-display text-7xl mt-6 leading-none text-ink-200 dark:text-ink-700">04</p>
+            <h3 class="mt-6 font-display text-2xl text-ink-900 dark:text-ink-50">Scan</h3>
+            <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Any phone becomes a scanner. Doors move, guests smile.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ======================= CTA ======================= -->
-    <section class="relative py-32 border-t border-white/5 overflow-hidden">
-      <div
-        class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal"
-      >
-        <p
-          class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-6"
-        >
-          Ready when you are
-        </p>
-        <h2
-          class="font-display text-6xl sm:text-7xl leading-[0.95] tracking-tight"
-        >
+    <section class="relative py-32 border-t border-ink-200 dark:border-white/5 overflow-hidden">
+      <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+        <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-6">Ready when you are</p>
+        <h2 class="font-display text-6xl sm:text-7xl leading-[0.95] tracking-tight text-ink-900 dark:text-ink-50">
           Your next event<br />
           <span class="italic text-flame-500">deserves better.</span>
         </h2>
-        <p class="mt-6 text-lg text-ink-300">
-          Join organizers who swapped spreadsheets and last-minute chaos for
-          EventzUp. Free to start — no card, no setup fee.
+        <p class="mt-6 text-lg text-ink-600 dark:text-ink-300">
+          Join organizers who swapped spreadsheets and last-minute chaos for EventzUp. Free to start — no card, no setup fee.
         </p>
 
-        <div
-          class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
-        >
-          <a
-            href="{% url 'register' %}"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition"
-          >
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="{% url 'register' %}" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-flame-600 hover:bg-flame-500 text-white font-semibold transition">
             Start free
-            <svg
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
-          <a
-            href="{% url 'vendor_register' %}"
-            class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-xl border border-white/15 hover:border-white/30 hover:bg-white/5 text-ink-100 transition"
-          >
+          <a href="{% url 'vendor_register' %}" class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-xl border border-ink-300 hover:border-ink-400 hover:bg-ink-100 dark:border-white/15 dark:hover:border-white/30 dark:hover:bg-white/5 text-ink-800 dark:text-ink-100 transition">
             Become a vendor
           </a>
         </div>
@@ -1076,155 +631,67 @@
         <div class="grid grid-cols-2 md:grid-cols-5">
           <div class="col-span-2">
             <div class="flex items-center">
-              <img
-                src="/media/event_banners/logo-dark-bg.png"
-                alt="EventzUp"
-                class="logo-dark-bg h-12 w-auto"
-              />
-              <img
-                src="/media/event_banners/logo-light-bg.png"
-                alt="EventzUp"
-                class="logo-light-bg h-12 w-auto"
-              />
+              <img src="{% static 'images/logoz1.png' %}" alt="EventzUp" class="logo-dark-bg h-8 w-auto" />
+              <img src="{% static 'images/Logoz2.png' %}" alt="EventzUp" class="logo-light-bg h-8 w-auto" />
             </div>
-            <p class="mt-4 text-sm text-ink-400 max-w-sm leading-relaxed">
-              The modern operating system for events. Create, register, scan,
-              and measure — all in one place.
+            <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-sm leading-relaxed">
+              The modern operating system for events. Create, register, scan, and measure — all in one place.
             </p>
             <div class="flex gap-3 mt-6">
-              <a
-                href="#"
-                class="w-9 h-9 rounded-lg border border-white/10 grid place-items-center text-ink-400 hover:text-white hover:border-flame-600/50 transition"
-              >
+              <a href="#" class="w-9 h-9 rounded-lg border border-ink-200 dark:border-white/10 grid place-items-center text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white hover:border-flame-600/50 transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M22 12a10 10 0 11-11.5-9.9v7H8v3h2.5v2.2c0 2.5 1.5 3.9 3.8 3.9 1.1 0 2.2-.2 2.2-.2v-2.4h-1.2c-1.2 0-1.6-.8-1.6-1.5V12H17l-.5-3h-2.3V8.4c0-.8.4-1.6 1.7-1.6H17V4.2S15.9 4 14.9 4c-2.1 0-3.4 1.3-3.4 3.6V9H9v3h2.5v9.9A10 10 0 0122 12z"
-                  />
+                  <path d="M22 12a10 10 0 11-11.5-9.9v7H8v3h2.5v2.2c0 2.5 1.5 3.9 3.8 3.9 1.1 0 2.2-.2 2.2-.2v-2.4h-1.2c-1.2 0-1.6-.8-1.6-1.5V12H17l-.5-3h-2.3V8.4c0-.8.4-1.6 1.7-1.6H17V4.2S15.9 4 14.9 4c-2.1 0-3.4 1.3-3.4 3.6V9H9v3h2.5v9.9A10 10 0 0122 12z" />
                 </svg>
               </a>
-              <a
-                href="#"
-                class="w-9 h-9 rounded-lg border border-white/10 grid place-items-center text-ink-400 hover:text-white hover:border-violet2-500/50 transition"
-              >
+              <a href="#" class="w-9 h-9 rounded-lg border border-ink-200 dark:border-white/10 grid place-items-center text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white hover:border-violet2-500/50 transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M22 5.9c-.7.3-1.5.5-2.4.6a4.2 4.2 0 001.8-2.3c-.8.5-1.7.8-2.6 1a4.2 4.2 0 00-7.2 3.8A12 12 0 012.4 4.7a4.2 4.2 0 001.3 5.6c-.7 0-1.3-.2-1.9-.5a4.2 4.2 0 003.4 4.1c-.6.2-1.3.2-2 .1a4.2 4.2 0 003.9 2.9A8.5 8.5 0 012 18.6a12 12 0 006.3 1.8c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.2z"
-                  />
+                  <path d="M22 5.9c-.7.3-1.5.5-2.4.6a4.2 4.2 0 001.8-2.3c-.8.5-1.7.8-2.6 1a4.2 4.2 0 00-7.2 3.8A12 12 0 012.4 4.7a4.2 4.2 0 001.3 5.6c-.7 0-1.3-.2-1.9-.5a4.2 4.2 0 003.4 4.1c-.6.2-1.3.2-2 .1a4.2 4.2 0 003.9 2.9A8.5 8.5 0 012 18.6a12 12 0 006.3 1.8c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.2z" />
                 </svg>
               </a>
-              <a
-                href="#"
-                class="w-9 h-9 rounded-lg border border-white/10 grid place-items-center text-ink-400 hover:text-white hover:border-lime2-500/50 transition"
-              >
+              <a href="#" class="w-9 h-9 rounded-lg border border-ink-200 dark:border-white/10 grid place-items-center text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white hover:border-lime2-500/50 transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.2 14.5h-1.9v-5.4h1.9v5.4zm-3.2-6.4a1.1 1.1 0 110-2.3 1.1 1.1 0 010 2.3zM7.7 16.5H9.6v-5.4H7.7v5.4z"
-                  />
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.2 14.5h-1.9v-5.4h1.9v5.4zm-3.2-6.4a1.1 1.1 0 110-2.3 1.1 1.1 0 010 2.3zM7.7 16.5H9.6v-5.4H7.7v5.4z" />
                 </svg>
               </a>
             </div>
           </div>
 
           <div>
-            <h3
-              class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4"
-            >
-              Product
-            </h3>
+            <h3 class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4">Product</h3>
             <ul class="space-y-3 text-sm">
-              <li>
-                <a
-                  href="#features"
-                  class="text-ink-300 hover:text-flame-500 transition"
-                  >Features</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#pricing"
-                  class="text-ink-300 hover:text-flame-500 transition"
-                  >Pricing</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#events"
-                  class="text-ink-300 hover:text-flame-500 transition"
-                  >Events</a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-ink-300 hover:text-flame-500 transition"
-                  >Changelog</a
-                >
-              </li>
+              <li><a href="#features" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Features</a></li>
+              <li><a href="#pricing" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Pricing</a></li>
+              <li><a href="#events" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Events</a></li>
+              <li><a href="#" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Changelog</a></li>
             </ul>
           </div>
 
           <div>
-            <h3
-              class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4"
-            >
-              Company
-            </h3>
+            <h3 class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4">Company</h3>
             <ul class="space-y-3 text-sm">
-              <li>
-                <a href="#" class="text-ink-300 hover:text-flame-500 transition"
-                  >About</a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-ink-300 hover:text-flame-500 transition"
-                  >Blog</a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-ink-300 hover:text-flame-500 transition"
-                  >Careers</a
-                >
-              </li>
-              <li>
-                <a
-                  href="{% url 'vendor_marketplace' %}"
-                  class="text-ink-300 hover:text-flame-500 transition"
-                  >Vendors</a
-                >
-              </li>
+              <li><a href="#" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">About</a></li>
+              <li><a href="#" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Blog</a></li>
+              <li><a href="#" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Careers</a></li>
+              <li><a href="{% url 'vendor_marketplace' %}" class="text-ink-600 dark:text-ink-300 hover:text-flame-500 transition">Vendors</a></li>
             </ul>
           </div>
 
           <div>
-            <h3
-              class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4"
-            >
-              Get updates
-            </h3>
-            <p class="text-sm text-ink-400 mb-3">Product news, no spam.</p>
-            <form
-              class="flex rounded-lg overflow-hidden border border-white/10 focus-within:border-flame-600/50 transition"
-            >
-              <input
-                type="email"
-                placeholder="you@company.com"
-                class="flex-1 bg-transparent px-3 py-2.5 text-sm placeholder-ink-500 focus:outline-none"
-              />
-              <button
-                class="px-4 bg-flame-600 hover:bg-flame-500 text-white text-sm font-medium transition"
-              >
-                Join
-              </button>
+            <h3 class="font-mono text-xs uppercase tracking-widest text-ink-500 mb-4">Get updates</h3>
+            <p class="text-sm text-ink-500 dark:text-ink-400 mb-3">Product news, no spam.</p>
+            <form class="flex rounded-lg overflow-hidden border border-ink-200 dark:border-white/10 focus-within:border-flame-600/50 transition">
+              <input type="email" placeholder="you@company.com" class="flex-1 bg-transparent px-3 py-2.5 text-sm text-ink-900 dark:text-ink-100 placeholder-ink-400 dark:placeholder-ink-500 focus:outline-none" />
+              <button class="px-4 bg-flame-600 hover:bg-flame-500 text-white text-sm font-medium transition">Join</button>
             </form>
           </div>
         </div>
 
-        <div
-          class="border-t border-white/5 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-500"
-        >
+        <div class="border-t border-ink-200 dark:border-white/5 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-500">
           <p>© 2026 EventzUp. All rights reserved.</p>
           <div class="flex gap-6">
-            <a href="#" class="hover:text-ink-300 transition">Privacy</a>
-            <a href="#" class="hover:text-ink-300 transition">Terms</a>
-            <a href="#" class="hover:text-ink-300 transition">Security</a>
+            <a href="#" class="hover:text-ink-800 dark:hover:text-ink-300 transition">Privacy</a>
+            <a href="#" class="hover:text-ink-800 dark:hover:text-ink-300 transition">Terms</a>
+            <a href="#" class="hover:text-ink-800 dark:hover:text-ink-300 transition">Security</a>
           </div>
         </div>
       </div>

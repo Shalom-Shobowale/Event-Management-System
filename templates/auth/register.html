@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="scroll-smooth dark" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,130 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script>
-    // Set theme before paint to avoid flash of unstyled content.
-    (function() {
-      try {
-        var saved = localStorage.getItem("darkMode");
-        if (saved === "false") {
-          document.documentElement.classList.remove("dark");
-        } else {
-          document.documentElement.classList.add("dark");
-        }
-      } catch (e) {
-        // localStorage unavailable (private mode, etc.) — default to dark
-        document.documentElement.classList.add("dark");
-      }
-    })();
+    // Auth pages are always dark — lock it before paint.
+    document.documentElement.classList.add("dark");
   </script>
   <link rel="stylesheet" href="{% static 'css/app.css' %}" />
   <script src="{% static 'js/app.js' %}" defer></script>
-
-  <style>
-    :root {
-      --ink-950:#05050d; --ink-900:#0a0a18; --ink-800:#111124;
-      --ink-500:#4d4d66; --ink-400:#71718a; --ink-300:#a0a0b3;
-      --flame-600:#ff4800; --flame-500:#ff5a1f; --flame-400:#ff7a3d;
-      --violet-500:#7c5cff; --violet-400:#9b84ff;
-      --lime-500:#c6f24e;
-    }
-    html, body { background:#05050d; color:#f6f6f8; }
-    body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-    .font-display, h1, h2, h3 { font-family:"Instrument Serif", Georgia, serif; font-weight:400; letter-spacing:-0.01em; }
-    .font-mono { font-family:"JetBrains Mono", ui-monospace, monospace; }
-
-    /* color reinforcement (in case app.css overrides) */
-    .bg-ink-950 { background-color:var(--ink-950); }
-    .bg-ink-900 { background-color:var(--ink-900); }
-    .bg-ink-800 { background-color:var(--ink-800); }
-    .text-ink-50 { color:#f6f6f8; }
-    .text-ink-100 { color:#e9e9ee; }
-    .text-ink-200 { color:#cbcbd6; }
-    .text-ink-300 { color:var(--ink-300); }
-    .text-ink-400 { color:var(--ink-400); }
-    .text-ink-500 { color:var(--ink-500); }
-    .bg-flame-600 { background-color:var(--flame-600); }
-    .bg-flame-600\/10 { background-color:rgba(255,72,0,.10); }
-    .bg-flame-600\/15 { background-color:rgba(255,72,0,.15); }
-    .bg-flame-600\/20 { background-color:rgba(255,72,0,.20); }
-    .text-flame-400 { color:var(--flame-400); }
-    .text-flame-500 { color:var(--flame-500); }
-    .text-violet2-400 { color:var(--violet-400); }
-    .text-lime2-500 { color:var(--lime-500); }
-    .border-flame-600 { border-color:var(--flame-600); }
-    .border-flame-600\/30 { border-color:rgba(255,72,0,.30); }
-    .border-flame-600\/50 { border-color:rgba(255,72,0,.50); }
-    .border-violet2-500 { border-color:var(--violet-500); }
-    .border-violet2-500\/30 { border-color:rgba(124,92,255,.30); }
-    .border-violet2-500\/50 { border-color:rgba(124,92,255,.50); }
-    .border-lime2-500 { border-color:var(--lime-500); }
-    .border-lime2-500\/30 { border-color:rgba(198,242,78,.30); }
-    .hover\:bg-flame-500:hover { background-color:var(--flame-500); }
-
-    /* ambient grid — flat 1px lines, not a colored gradient */
-    .bg-grid {
-      background-image:
-        linear-gradient(to right, #ffffff 1px, transparent 1px),
-        linear-gradient(to bottom, #ffffff 1px, transparent 1px);
-      background-size: 64px 64px;
-      opacity: .05;
-    }
-
-    /* animations */
-    @keyframes ef-pulse-ring {
-      0%   { transform: scale(.8); opacity:.7; }
-      100% { transform: scale(2.2); opacity:0; }
-    }
-    .animate-pulse-ring { animation: ef-pulse-ring 2.2s cubic-bezier(.4,0,.6,1) infinite; }
-
-    @keyframes ef-fade-up {
-      0%   { opacity:0; transform: translateY(16px); }
-      100% { opacity:1; transform: translateY(0); }
-    }
-    .fade-up { opacity:0; animation: ef-fade-up .7s cubic-bezier(.2,.7,.2,1) forwards; }
-    .d1{animation-delay:.05s} .d2{animation-delay:.12s} .d3{animation-delay:.2s}
-    .d4{animation-delay:.28s} .d5{animation-delay:.36s} .d6{animation-delay:.44s}
-
-    /* form controls */
-    .ef-input {
-      width: 100%;
-      padding: .8rem 1rem;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: .75rem;
-      color: #f6f6f8;
-      font-size: .875rem;
-      transition: border-color .2s, background .2s, box-shadow .2s;
-      outline: none;
-    }
-    .ef-input::placeholder { color: rgba(255,255,255,.28); }
-    .ef-input:hover { border-color: rgba(255,255,255,.15); }
-    .ef-input:focus {
-      border-color: var(--flame-600);
-      background: rgba(255,72,0,.04);
-      box-shadow: 0 0 0 4px rgba(255,72,0,.12);
-    }
-    .ef-label {
-      display: block;
-      font-size: .75rem;
-      font-family: "JetBrains Mono", monospace;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: #71718a;
-      margin-bottom: .5rem;
-    }
-    .ef-label .req { color: var(--flame-500); margin-left: .15rem; }
-
-    /* autofill fix */
-    input:-webkit-autofill, input:-webkit-autofill:focus {
-      -webkit-text-fill-color: #f6f6f8;
-      -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
-      transition: background-color 5000s ease-in-out 0s;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .fade-up, .animate-pulse-ring { animation: none !important; opacity:1 !important; }
-    }
-  </style>
 </head>
 
 <body class="min-h-screen bg-ink-950 text-ink-50 antialiased">
@@ -145,7 +26,7 @@
 
       <!-- top: logo -->
       <div class="relative ">
-        <img src="/media/event_banners/logoz1.png" alt="EventzUp Logo" class="h-8 w-auto"></img>
+        <img src="{% static 'images/logoz1.png' %}" alt="EventzUp" class="h-8 w-auto" />
       </div>
 
       <!-- middle: pitch -->

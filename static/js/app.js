@@ -163,15 +163,18 @@ function showToast(message, type = "info") {
 
 function initializeApp() {
   // ------------------------------------
-  // Dark mode
+  // Dark mode — skip pages that hard-lock a theme
   // ------------------------------------
 
-  initializeDarkMode();
+  const isLockedTheme = document.documentElement.hasAttribute("data-theme");
 
-  const darkModeButton = document.getElementById("dark-mode-toggle");
+  if (!isLockedTheme) {
+    initializeDarkMode();
 
-  if (darkModeButton) {
-    darkModeButton.addEventListener("click", toggleDarkMode);
+    const darkModeButton = document.getElementById("dark-mode-toggle");
+    if (darkModeButton) {
+      darkModeButton.addEventListener("click", toggleDarkMode);
+    }
   }
 
   // ------------------------------------

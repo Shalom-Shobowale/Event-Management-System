@@ -11,7 +11,7 @@ the button and the data attributes the modal reads.
 {% if user.is_authenticated %}
     <button
         type="button"
-        class="report-trigger group inline-flex items-center gap-1.5 text-xs text-ink-500 hover:text-flame-500 transition-colors"
+        class="report-trigger group inline-flex items-center gap-1.5 text-xs text-ink-500 hover:text-flame-600 dark:hover:text-flame-500 transition-colors"
         data-target-type="{{ target_type }}"
         data-target-id="{{ target_id }}"
         data-target-label="{{ target_label|default:'' }}"

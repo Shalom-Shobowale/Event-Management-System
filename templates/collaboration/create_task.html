@@ -9,14 +9,12 @@
 
   <!-- ===================== HEADER ===================== -->
   <div class="mb-8 fade-up d1">
-    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">
-      {{ event.name }}
-    </p>
-    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight">
+    <p class="font-mono text-xs uppercase tracking-widest text-flame-500 mb-3">{{ event.name }}</p>
+    <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50">
       One more thing<br />
-      <span class="italic text-ink-400">to get done.</span>
+      <span class="italic text-ink-500 dark:text-ink-400">to get done.</span>
     </h2>
-    <p class="mt-4 text-sm text-ink-400 max-w-xl">
+    <p class="mt-4 text-sm text-ink-500 dark:text-ink-400 max-w-xl">
       Add a task to your checklist — due dates and priorities help you see what to tackle first.
     </p>
   </div>
@@ -25,20 +23,18 @@
     {% csrf_token %}
 
     <!-- ============ 01 TASK DETAILS ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-flame-600"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-400 font-mono text-xs">01</span>
+        <span class="w-8 h-8 rounded-lg bg-flame-600/15 border border-flame-600/25 grid place-items-center text-flame-600 dark:text-flame-400 font-mono text-xs">01</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">The basics</p>
-          <h3 class="font-display text-2xl leading-none">Task details</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Task details</h3>
         </div>
       </div>
 
       <div class="space-y-5">
-
-        <!-- title -->
         <div>
           <label for="id_title" class="ef-label">Task title <span class="req">*</span></label>
           <input id="id_title" type="text" name="title" required
@@ -47,7 +43,6 @@
                  autocomplete="off" />
         </div>
 
-        <!-- description -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <label for="id_description" class="ef-label" style="margin-bottom:0;">Description</label>
@@ -57,25 +52,22 @@
                     class="ef-input ef-textarea resize-none"
                     placeholder="Any context the person doing this needs to know…"></textarea>
         </div>
-
       </div>
     </div>
 
     <!-- ============ 02 SCHEDULING & PRIORITY ============ -->
-    <div class="relative rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-7 overflow-hidden">
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-6 sm:p-7 overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
 
       <div class="flex items-center gap-3 mb-6">
-        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 font-mono text-xs">02</span>
+        <span class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 font-mono text-xs">02</span>
         <div>
           <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">When and how urgent</p>
-          <h3 class="font-display text-2xl leading-none">Scheduling &amp; priority</h3>
+          <h3 class="font-display text-2xl leading-none text-ink-900 dark:text-ink-50">Scheduling &amp; priority</h3>
         </div>
       </div>
 
       <div class="space-y-5">
-
-        <!-- due date + priority -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label for="id_due_date" class="ef-label">Due date</label>
@@ -92,7 +84,6 @@
           </div>
         </div>
 
-        <!-- status -->
         <div>
           <label for="id_status" class="ef-label">Status</label>
           <select id="id_status" name="status" class="ef-input ef-select">
@@ -103,14 +94,13 @@
             You can change this anytime from the task list
           </p>
         </div>
-
       </div>
     </div>
 
     <!-- ============ ACTIONS ============ -->
     <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-3 pt-2 fade-up d3">
       <a href="{% url 'event_tasks' event.id %}"
-         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/10 hover:border-white/25 hover:bg-white/5 text-ink-100 text-sm font-medium transition">
+         class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-ink-200 dark:border-white/10 hover:border-ink-300 dark:hover:border-white/25 hover:bg-ink-50 dark:hover:bg-white/5 text-ink-700 dark:text-ink-100 text-sm font-medium transition">
         Cancel
       </a>
       <button type="submit"
@@ -122,95 +112,28 @@
         </svg>
       </button>
     </div>
-
   </form>
 
   <!-- ============ TIP ============ -->
   <div class="mt-6 relative rounded-2xl border border-violet2-500/25 bg-violet2-500/[.04] p-4 overflow-hidden fade-up d3">
     <div class="flex items-start gap-3">
-      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-400 flex-shrink-0">
+      <div class="w-8 h-8 rounded-lg bg-violet2-500/15 border border-violet2-500/25 grid place-items-center text-violet2-600 dark:text-violet2-400 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
         </svg>
       </div>
-      <div class="text-xs text-ink-300 leading-relaxed">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-400 block mb-1">Tip</span>
+      <div class="text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400 block mb-1">Tip</span>
         Keep task titles action-oriented — start with a verb like "Confirm", "Book", "Send". It makes the list scannable at a glance.
       </div>
     </div>
   </div>
 
 </div>
+{% endblock %}
 
-<!-- ===================== PAGE STYLES ===================== -->
-<style>
-  .ef-input {
-    width: 100%;
-    padding: .8rem 1rem;
-    background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: .75rem;
-    color: #f6f6f8;
-    font-size: .875rem;
-    transition: border-color .2s, background .2s, box-shadow .2s;
-    outline: none;
-    font-family: inherit;
-  }
-  .ef-input::placeholder { color: rgba(255,255,255,.28); }
-  .ef-input:hover { border-color: rgba(255,255,255,.15); }
-  .ef-input:focus {
-    border-color: #ff4800;
-    background: rgba(255,72,0,.04);
-    box-shadow: 0 0 0 4px rgba(255,72,0,.12);
-  }
-  .ef-textarea { min-height: 90px; line-height: 1.55; resize: none; }
-
-  .ef-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371718a' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-    padding-right: 2.5rem;
-  }
-  .ef-select option { background:#0a0a18; color:#f6f6f8; }
-
-  .ef-label {
-    display: block;
-    font-size: .75rem;
-    font-family: "JetBrains Mono", monospace;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #71718a;
-    margin-bottom: .5rem;
-  }
-  .ef-label .req { color: #ff5a1f; margin-left: .15rem; }
-
-  input:-webkit-autofill, input:-webkit-autofill:focus,
-  textarea:-webkit-autofill, textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f6f6f8;
-    -webkit-box-shadow: 0 0 0 1000px #0a0a18 inset;
-    transition: background-color 5000s ease-in-out 0s;
-  }
-
-  .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.7);
-    cursor: pointer;
-  }
-
-  /* light mode */
-  html:not(.dark) .ef-input { background:#ffffff; border-color: rgba(0,0,0,.08); color:#0a0a18; }
-  html:not(.dark) .ef-input::placeholder { color: rgba(0,0,0,.35); }
-  html:not(.dark) .ef-select option { background:#ffffff; color:#0a0a18; }
-  html:not(.dark) input:-webkit-autofill,
-  html:not(.dark) textarea:-webkit-autofill {
-    -webkit-text-fill-color: #0a0a18;
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
-  }
-</style>
-
-<!-- ===================== SCRIPT ===================== -->
+{% block extra_scripts %}
 <script>
   (function () {
     const desc = document.getElementById('id_description');
@@ -225,5 +148,4 @@
     desc.addEventListener('input', update);
   })();
 </script>
-
 {% endblock %}

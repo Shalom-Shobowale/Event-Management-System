@@ -31,7 +31,7 @@ if not SECRET_KEY:
 
 # ---- Allowed hosts ----
 if DEBUG:
-    ALLOWED_HOSTS = ['eventzup-ii1a.onrender.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+    ALLOWED_HOSTS = ['eventzup.com','www.eventzup.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
 else:
     _hosts_raw = os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip()
     ALLOWED_HOSTS = [
@@ -40,7 +40,7 @@ else:
     if not ALLOWED_HOSTS:
         raise ImproperlyConfigured(
             'DJANGO_ALLOWED_HOSTS environment variable must be set in production '
-            '(e.g. "eventflow.ng,www.eventflow.ng").'
+            '(e.g. "eventzup.ng,www.eventzup.ng").'
         )
 
 

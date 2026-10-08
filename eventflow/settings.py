@@ -31,7 +31,7 @@ if not SECRET_KEY:
 
 # ---- Allowed hosts ----
 if DEBUG:
-    ALLOWED_HOSTS = ['eventzup.com','www.eventzup.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+    ALLOWED_HOSTS = ["eventzup-ii1a.onrender.com",'eventzup.com','www.eventzup.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
 else:
     _hosts_raw = os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip()
     ALLOWED_HOSTS = [
@@ -108,6 +108,7 @@ if DEBUG:
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True

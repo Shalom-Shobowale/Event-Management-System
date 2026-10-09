@@ -14,15 +14,13 @@ def landing(request):
         return redirect('dashboard')
 
     events = (
-        Event.objects
-        .select_related('host')
-        .filter(
+        Event.objects.filter(
             is_published=True,
+            is_listed=True,
             is_archived=False,
             is_suspended=False,
             date__gte=timezone.now(),
-        )
-        .order_by('date')[:6]   # ← the fix
+        ).order_by('date')[:6]
     )
 
     return render(request, 'landing.html', {

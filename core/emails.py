@@ -83,7 +83,7 @@ def _send(
 def send_verification_email(*, user, code: str):
     """Send the 6-digit email-verification code."""
     _send(
-        subject='Verify your EventFlow email',
+        subject='Verify your EventzUp email',
         template_base='emails/verification',
         context={
             'user': user,
@@ -97,7 +97,7 @@ def send_verification_email(*, user, code: str):
 def send_password_reset_email(*, user, reset_url: str):
     """Send a password reset link. `reset_url` is an absolute URL."""
     _send(
-        subject='Reset your EventFlow password',
+        subject='Reset your EventzUp password',
         template_base='emails/password_reset',
         context={
             'user': user,
@@ -111,7 +111,7 @@ def send_password_reset_email(*, user, reset_url: str):
 def send_welcome_email(*, user):
     """Optional: sent after a host/vendor signs up."""
     _send(
-        subject='Welcome to EventFlow',
+        subject='Welcome to EventzUp',
         template_base='emails/welcome',
         context={'user': user},
         to=[user.email],

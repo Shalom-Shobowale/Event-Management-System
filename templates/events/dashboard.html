@@ -24,21 +24,22 @@
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap mb-3">
-          {% if event.is_published %}
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
-            Published
-          </span>
-          {% else %}
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-600 dark:text-flame-400">
-            <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span> Draft
-          </span>
-          {% endif %}
-          {% if event.get_category_display %}
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet2-500/15 border border-violet2-500/30 font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400">
-            {{ event.get_category_display }}
-          </span>
-          {% endif %}
+          {% if event.is_published and event.is_listed %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
+              <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+              Public
+            </span>
+            {% elif event.is_published %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet2-500/15 border border-violet2-500/30 font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-violet2-500"></span>
+              Unlisted
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-600 dark:text-flame-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
+              Draft
+            </span>
+            {% endif %}
         </div>
 
         <h1 class="font-display text-3xl sm:text-4xl leading-tight tracking-tight text-ink-900 dark:text-ink-50">

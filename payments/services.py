@@ -14,7 +14,7 @@ def create_host_subaccount(host, bank_code, account_number):
         'settlement_bank': bank_code,
         'account_number': account_number,
         'percentage_charge': 5.0,  # Platform gets 5% on all payments to this host
-        'description': f'EventFlow host: {host.username}'
+        'description': f'EventzUp host: {host.username}'
     }
     response = requests.post(url, json=payload, headers=headers)
     data = response.json()

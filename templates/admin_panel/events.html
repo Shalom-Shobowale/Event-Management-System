@@ -24,7 +24,7 @@
   </div>
 
   <!-- ===================== STAT STRIP ===================== -->
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+  <div class="grid grid-cols-2 lg:grid-cols-7 gap-4">
 
     <!-- Active -->
     <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
@@ -94,6 +94,29 @@
       <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ archived_count }}</p>
       <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Moved aside</p>
     </div>
+
+
+    <!-- Public -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500"></div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-violet2-500"></span>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Public</p>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ public_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Listed</p>
+    </div>
+
+    <!-- Unlisted -->
+    <div class="relative rounded-2xl border border-ink-200 dark:border-white/10 bg-white dark:bg-ink-900 p-4 overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet2-500/40"></div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-violet2-500/40"></span>
+        <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500">Unlisted</p>
+      </div>
+      <p class="font-display text-3xl leading-none text-ink-900 dark:text-ink-50">{{ unlisted_count }}</p>
+      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-500 mt-2">Link-only</p>
+    </div>
   </div>
 
   <!-- ===================== FILTERS ===================== -->
@@ -124,6 +147,9 @@
           <option value="suspended"  {% if status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
           <option value="flagged"    {% if status_filter == 'flagged'   %}selected{% endif %}>Flagged</option>
           <option value="archived"   {% if status_filter == 'archived'  %}selected{% endif %}>Archived</option>
+          <option value="public"     {% if status_filter == 'public'    %}selected{% endif %}>Public only</option>
+          <option value="unlisted"   {% if status_filter == 'unlisted'  %}selected{% endif %}>Unlisted only</option>
+          <option value="draft"      {% if status_filter == 'draft'     %}selected{% endif %}>Drafts only</option>
         </select>
 
         <!-- category -->
@@ -238,25 +264,43 @@
 
             <!-- state -->
             <td class="px-5 py-4">
-              {% if event.display_status == 'suspended' %}
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-400">
-                  <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
-                  Suspended
-                </span>
-              {% elif event.display_status == 'archived' %}
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500">
-                  Archived
-                </span>
-              {% elif event.display_status == 'active'%}
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500">
-                  <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
-                  Active
-                </span>
-              {% else %}
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500">
-                  Completed
-                </span>
-              {% endif %}
+              <div class="flex flex-col gap-1.5">
+                <!-- Operational state -->
+                {% if event.display_status == 'suspended' %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-flame-600/15 border border-flame-600/30 font-mono text-[10px] uppercase tracking-widest text-flame-600 dark:text-flame-400 w-fit">
+                    <span class="w-1.5 h-1.5 rounded-full bg-flame-500 animate-pulse"></span>
+                    Suspended
+                  </span>
+                {% elif event.display_status == 'archived' %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500 w-fit">
+                    Archived
+                  </span>
+                {% elif event.display_status == 'active' %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime2-500/15 border border-lime2-500/30 font-mono text-[10px] uppercase tracking-widest text-lime2-600 dark:text-lime2-500 w-fit">
+                    <span class="w-1.5 h-1.5 rounded-full bg-lime2-500"></span>
+                    Active
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500 w-fit">
+                    Completed
+                  </span>
+                {% endif %}
+
+                <!-- Visibility state -->
+                {% if event.visibility == 'public' %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet2-500/15 border border-violet2-500/30 font-mono text-[10px] uppercase tracking-widest text-violet2-600 dark:text-violet2-400 w-fit">
+                    Public
+                  </span>
+                {% elif event.visibility == 'unlisted' %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet2-500/10 border border-violet2-500/20 font-mono text-[10px] uppercase tracking-widest text-violet2-500 w-fit">
+                    Unlisted
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ink-100 dark:bg-white/5 border border-ink-200 dark:border-white/10 font-mono text-[10px] uppercase tracking-widest text-ink-500 w-fit">
+                    Draft
+                  </span>
+                {% endif %}
+              </div>
             </td>
 
             <!-- action -->

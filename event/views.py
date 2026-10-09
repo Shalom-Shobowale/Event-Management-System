@@ -55,6 +55,7 @@ def create_event(request):
             seat_arrangement=request.POST.get('seat_arrangement', 'general'),
             vip_support=bool(request.POST.get('vip_support')),
             is_published=bool(request.POST.get('is_published')),
+            is_listed=bool(request.POST.get('is_listed')),
             price=price,
             host_subaccount_code=request.user.host_subaccount_code or '',
         )
@@ -107,6 +108,7 @@ def edit_event(request, event_id):
         event.seat_arrangement = request.POST.get('seat_arrangement', 'general')
         event.vip_support = bool(request.POST.get('vip_support'))
         event.is_published = bool(request.POST.get('is_published'))
+        event.is_listed = bool(request.POST.get('is_listed'))
         event.price = price
         event.host_subaccount_code = request.user.host_subaccount_code or ''
 
@@ -232,6 +234,7 @@ def event_public(request, event_id):
     event = get_object_or_404(
         Event.objects.select_related('host'),
         id=event_id,
+        is_published=True,
         is_suspended=False,
         is_archived=False,
     )
@@ -504,6 +507,7 @@ def event_browse(request):
         .select_related('host')
         .filter(
             is_published=True,
+            is_listed=True,        # ← add this
             is_archived=False,
             is_suspended=False,
             date__gte=timezone.now(),

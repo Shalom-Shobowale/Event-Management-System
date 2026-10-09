@@ -214,8 +214,8 @@ class PlatformNotification(models.Model):
 
 class PlatformSettings(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    platform_name = models.CharField(max_length=200, default='EventFlow')
-    support_email = models.EmailField(default='support@eventflow.com')
+    platform_name = models.CharField(max_length=200, default='EventzUp')
+    support_email = models.EmailField(default='support@eventzup.com')
     maintenance_mode = models.BooleanField(default=False)
     maintenance_message = models.TextField(blank=True, default='We are currently performing maintenance. Please check back soon.')
     max_events_per_host = models.PositiveIntegerField(default=50)

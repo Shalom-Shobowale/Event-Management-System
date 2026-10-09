@@ -39,6 +39,7 @@ class Event(models.Model):
     is_published = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)
+    is_listed = models.BooleanField(default=False, help_text="Show this event in the public marketplace browse page and homepage.")
     suspended_at = models.DateTimeField(null=True, blank=True)
     suspended_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='suspended_events')
     admin_flags = models.JSONField(default=list, blank=True)
@@ -58,6 +59,7 @@ class Event(models.Model):
             models.Index(fields=['date'], name='event_date_idx'),
             models.Index(fields=['category'], name='event_category_idx'),
             models.Index(fields=['is_suspended', 'is_archived'], name='event_admin_flags_idx'),
+            models.Index(fields=['is_published', 'is_listed', 'date'], name='event_public_idx'),
         ]
 
     def __str__(self):
@@ -96,6 +98,26 @@ class Event(models.Model):
     def is_active_now(self):
         from django.utils import timezone
         return self.date > timezone.now() and not self.is_suspended and not self.is_archived
+
+
+    @property
+    def is_draft(self):
+        """Not yet published — invisible to guests even by direct link."""
+        return not self.is_published
+
+    @property
+    def is_discoverable(self):
+        """
+        Publicly discoverable in browse/landing.
+        Requires: published AND listed AND not archived AND not suspended.
+        """
+        return (
+            self.is_published
+            and self.is_listed
+            and not self.is_archived
+            and not self.is_suspended
+        )
+
 
     @property
     def is_completed(self):

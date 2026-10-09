@@ -11,7 +11,7 @@ def notify_user(user, title, message, notification_type=UserNotification.Type.SY
     if should_email and user.email:
         try:
             send_mail(
-                subject=f'{settings.PLATFORM_NAME if hasattr(settings, "PLATFORM_NAME") else "EventFlow"}: {title}',
+                subject=f'{settings.PLATFORM_NAME if hasattr(settings, "PLATFORM_NAME") else "EventzUp"}: {title}',
                 message=strip_tags(message),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],

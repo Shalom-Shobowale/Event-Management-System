@@ -150,7 +150,9 @@
           </p>
         </div>
 
+        <!-- toggles -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+
           <label class="ef-toggle">
             <input type="checkbox" name="is_published" {% if event.is_published %}checked{% endif %} class="peer sr-only" />
             <span class="ef-toggle-box">
@@ -159,10 +161,28 @@
               </svg>
             </span>
             <span class="flex-1">
-              <span class="block text-sm font-medium text-ink-900 dark:text-ink-100">Published</span>
-              <span class="block text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">Visible on marketplace</span>
+              <span class="block text-sm font-medium text-ink-900 dark:text-ink-100">Publish event</span>
+              <span class="block text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">
+                Guests can register using the shared link
+              </span>
             </span>
           </label>
+
+          <label class="ef-toggle">
+            <input type="checkbox" name="is_listed" {% if event.is_listed %}checked{% endif %} class="peer sr-only" />
+            <span class="ef-toggle-box">
+              <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <span class="flex-1">
+              <span class="block text-sm font-medium text-ink-900 dark:text-ink-100">List in marketplace</span>
+              <span class="block text-[11px] font-mono uppercase tracking-widest text-ink-500 mt-0.5">
+                Anyone can find it on the browse page and homepage
+              </span>
+            </span>
+          </label>
+
         </div>
 
       </div>

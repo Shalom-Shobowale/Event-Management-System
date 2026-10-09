@@ -404,6 +404,7 @@ def admin_events(request):
     - Paginated at 25/page (events are heavy rows)
     - Count annotations use distinct=True to avoid cartesian double-counting
     - admin_flags filtering handles both [] and null defaults
+    - Visibility filter (draft / unlisted / public) reflects is_published + is_listed
     - All filters indexed at the DB level (verify with `python manage.py check`)
     """
     search = request.GET.get('search', '').strip()
@@ -436,6 +437,13 @@ def admin_events(request):
         events_qs = events_qs.exclude(
             Q(admin_flags=[]) | Q(admin_flags__isnull=True)
         )
+    # ---- Visibility filters ----
+    elif status_filter == 'public':
+        events_qs = events_qs.filter(is_published=True, is_listed=True)
+    elif status_filter == 'unlisted':
+        events_qs = events_qs.filter(is_published=True, is_listed=False)
+    elif status_filter == 'draft':
+        events_qs = events_qs.filter(is_published=False)
 
     # ---- Category filter ----
     if category_filter:
@@ -465,9 +473,9 @@ def admin_events(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-
-    # After pagination, annotate each event with a display_status
+    # After pagination, annotate each event with display states
     for event in page_obj:
+        # Operational state
         if event.is_suspended:
             event.display_status = 'suspended'
         elif event.is_archived:
@@ -476,6 +484,14 @@ def admin_events(request):
             event.display_status = 'active'
         else:
             event.display_status = 'completed'
+
+        # Visibility state
+        if not event.is_published:
+            event.visibility = 'draft'
+        elif event.is_listed:
+            event.visibility = 'public'
+        else:
+            event.visibility = 'unlisted'
 
     # ---- Stat strip counts (single query each) ----
     stat_base = Event.objects.all()
@@ -493,6 +509,11 @@ def admin_events(request):
     flagged_count = stat_base.exclude(
         Q(admin_flags=[]) | Q(admin_flags__isnull=True)
     ).count()
+
+    # ---- Visibility counts ----
+    public_count = stat_base.filter(is_published=True, is_listed=True).count()
+    unlisted_count = stat_base.filter(is_published=True, is_listed=False).count()
+    draft_count = stat_base.filter(is_published=False).count()
 
     # ---- Category list for the filter dropdown ----
     # Only show categories that actually have events
@@ -517,10 +538,12 @@ def admin_events(request):
         'suspended_count': suspended_count,
         'archived_count': archived_count,
         'flagged_count': flagged_count,
+        'public_count': public_count,
+        'unlisted_count': unlisted_count,
+        'draft_count': draft_count,
         'total_count': paginator.count,
     }
     return render(request, 'admin_panel/events.html', context)
-
 
 @admin_required
 @permission_required('manage_events')

@@ -140,7 +140,7 @@ def connect_bank_account(request):
             'settlement_bank': bank_code,
             'account_number': account_number,
             'percentage_charge': 5.0,
-            'description': f'EventFlow host: {request.user.username}',
+            'description': f'EventzUp host: {request.user.username}',
         }
         try:
             resp = requests.post(url, json=payload, headers=_paystack_headers(), timeout=15)

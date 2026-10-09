@@ -171,10 +171,13 @@ function initializeApp() {
   if (!isLockedTheme) {
     initializeDarkMode();
 
-    const darkModeButton = document.getElementById("dark-mode-toggle");
-    if (darkModeButton) {
-      darkModeButton.addEventListener("click", toggleDarkMode);
-    }
+    // Theme toggles — desktop + mobile
+    ["dark-mode-toggle", "dark-mode-toggle-mobile"].forEach(function (id) {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener("click", toggleDarkMode);
+      }
+    });
   }
 
   // ------------------------------------

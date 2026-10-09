@@ -31,7 +31,7 @@ if not SECRET_KEY:
 
 # ---- Allowed hosts ----
 if DEBUG:
-    ALLOWED_HOSTS = ["eventzup-ii1a.onrender.com",'eventzup.com','www.eventzup.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
+    ALLOWED_HOSTS = ['eventzup.com','www.eventzup.com','127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
 else:
     _hosts_raw = os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip()
     ALLOWED_HOSTS = [
@@ -230,7 +230,7 @@ ANYMAIL = {
 
 DEFAULT_FROM_EMAIL = os.environ.get(
     'DEFAULT_FROM_EMAIL',
-    'EventzUp <noreply@resend.dev>'
+    'noreply@send.eventzup.com'
 )
 
 # Base URL — used to build absolute links in emails.

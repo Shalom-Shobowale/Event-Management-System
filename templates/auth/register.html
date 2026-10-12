@@ -87,9 +87,8 @@
     <main class="relative flex items-center justify-center p-6 sm:p-10 lg:p-12">
       <!-- mobile-only top bar -->
       <div class="absolute top-6 left-6 right-6 flex lg:hidden items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-flame-600 grid place-items-center font-display text-lg leading-none text-ink-950">E</div>
-          <span class="font-display text-xl tracking-tight">EventzUp</span>
+        <div>
+          <img src="{% static 'images/logoz1.png' %}" alt="EventzUp" class="h-8 w-auto" />
         </div>
         <a href="{% url 'login' %}" class="text-xs font-mono uppercase tracking-widest text-ink-400 hover:text-white transition">
           Sign in →
